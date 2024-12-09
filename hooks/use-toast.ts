@@ -4,9 +4,10 @@
 import * as React from "react"
 
 import type {
-  ToastActionElement,
   ToastProps,
-} from "@/components/ui/toast"
+} from "@radix-ui/react-toast"
+
+type ToastActionElement = React.ReactElement<any>
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 1000000

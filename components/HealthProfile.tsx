@@ -41,7 +41,20 @@ export default function HealthProfile() {
 
       if (error) throw error
 
-      setProfile(data)
+      // Convert the raw data into the expected HealthProfile shape
+      const healthProfile: HealthProfile = {
+        id: data.id,
+        user_id: data.user_id,
+        date_of_birth: data.date_of_birth,
+        // Convert height from feet/inches to total inches
+        height: data.height_feet && data.height_inches ? 
+          data.height_feet * 12 + data.height_inches : null,
+        weight: data.weight_lbs,
+        blood_type: data.blood_type,
+        allergies: data.allergies
+      }
+
+      setProfile(healthProfile)
     } catch (error) {
       console.error('Error fetching health profile:', error)
       toast({
@@ -66,16 +79,36 @@ export default function HealthProfile() {
     try {
       const { data, error } = await supabase
         .from('health_profiles')
-        .upsert({ ...updatedProfile, user_id: user!.id })
+        .upsert({ 
+          ...updatedProfile,
+          user_id: user!.id,
+          name: user!.email || 'Unknown', // Add required name field
+          height_feet: updatedProfile.height ? Math.floor(updatedProfile.height / 12) : null, // Convert height to feet
+          height_inches: updatedProfile.height ? updatedProfile.height % 12 : null, // Convert remaining inches
+          weight_lbs: updatedProfile.weight // Rename to match DB column
+        })
         .select()
         .single()
 
       if (error) throw error
 
-      setProfile(data)
+      // Convert the raw data into the expected HealthProfile shape before setting state
+      const healthProfile: HealthProfile = {
+        id: data.id,
+        user_id: data.user_id,
+        date_of_birth: data.date_of_birth,
+        // Convert height from feet/inches to total inches
+        height: data.height_feet && data.height_inches ? 
+          data.height_feet * 12 + data.height_inches : null,
+        weight: data.weight_lbs,
+        blood_type: data.blood_type,
+        allergies: data.allergies
+      }
+
+      setProfile(healthProfile)
       setIsEditing(false)
       toast({
-        title: "Success",
+        title: "Success", 
         description: "Health profile updated successfully",
       })
     } catch (error) {
