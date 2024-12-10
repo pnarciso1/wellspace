@@ -1,16 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    eslint: {
-      // Warning: This allows production builds to successfully complete even if
-      // your project has ESLint errors.
+  eslint: {
       ignoreDuringBuilds: true,
-    },
-    typescript: {
-      // !! WARN !!
-      // Dangerously allow production builds to successfully complete even if
-      // your project has type errors.
+  },
+  typescript: {
       ignoreBuildErrors: true,
-    },
-  }
-  
-  export default nextConfig
+  },
+  reactStrictMode: false,
+}
+
+export default nextConfig

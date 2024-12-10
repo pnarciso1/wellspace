@@ -2,6 +2,9 @@
 
 import { Toaster as SonnerToaster } from "sonner"
 
+// No need for ToastActionElement since we're not using ToastAction component
+// Removing the problematic line
+
 export function Toaster() {
   return (
     <SonnerToaster
