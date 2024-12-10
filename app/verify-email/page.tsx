@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useAuth } from '@/contexts/AuthContext'
@@ -11,9 +11,17 @@ export default function VerifyEmail() {
   const [isVerified, setIsVerified] = useState(false)
   const { user, refreshSession } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const code = searchParams?.get('code')
 
   useEffect(() => {
     const checkVerification = async () => {
+      if (code) {
+        // If we have a code, redirect to login
+        router.push('/login')
+        return
+      }
+
       if (user) {
         await refreshSession()
         if (user.email_confirmed_at) {
@@ -29,7 +37,7 @@ export default function VerifyEmail() {
     const interval = setInterval(checkVerification, 5000)
 
     return () => clearInterval(interval)
-  }, [user, refreshSession, router])
+  }, [user, refreshSession, router, code])
 
   return (
     <div className="container mx-auto py-10">
