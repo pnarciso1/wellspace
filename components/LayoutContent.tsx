@@ -7,11 +7,16 @@ import { usePathname } from 'next/navigation'
 
 export function LayoutContent({ children }: { children: React.ReactNode }) {
   const { user } = useAuth()
-  const pathname = usePathname()
+  const pathname = usePathname() || ''
 
-  const isAuthPage = pathname === '/login' || pathname === '/signup' || pathname === '/verify-email'
+  const isAuthPage = 
+    pathname === '/login' || 
+    pathname.startsWith('/signup') || 
+    pathname === '/verify-email' ||
+    !user ||
+    !user.email_confirmed_at
 
-  if (!user || !user.email_confirmed_at) {
+  if (isAuthPage) {
     return (
       <div className="flex-1 overflow-y-auto w-full">
         {children}
@@ -21,8 +26,8 @@ export function LayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex h-screen">
-      {!isAuthPage && <GlobalNav />}
-      <main className={`flex-1 overflow-y-auto ${isAuthPage ? 'w-full' : ''}`}>
+      <GlobalNav />
+      <main className="flex-1 overflow-y-auto">
         {children}
       </main>
     </div>
