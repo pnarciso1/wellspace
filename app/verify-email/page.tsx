@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -7,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button"
 import { useAuth } from '@/contexts/AuthContext'
 
-export default function VerifyEmail() {
+function VerifyEmailPage() {
   const [isVerified, setIsVerified] = useState(false)
   const { user, refreshSession } = useAuth()
   const router = useRouter()
@@ -61,6 +62,17 @@ export default function VerifyEmail() {
     </div>
   )
 }
+
+// Create a wrapper component with Suspense
+function VerifyEmailWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailPage />
+    </Suspense>
+  )
+}
+
+export default VerifyEmailWrapper
 
 
 
