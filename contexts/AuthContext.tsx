@@ -52,7 +52,21 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [showSidebar, setShowSidebar] = useState(false)
+  const [showSidebar, setShowSidebar] = useState(() => {
+    // Initialize from localStorage if available
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('showSidebar')
+      return stored === 'true'
+    }
+    return false
+  })
+
+  // Update localStorage when sidebar state changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('showSidebar', showSidebar.toString())
+    }
+  }, [showSidebar])
 
   const getHealthProfile = async () => {
     if (!user) return null;
@@ -139,9 +153,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { data: { user } } = await supabase.auth.getUser()
         setUser(user)
         setIsAuthenticated(!!user)
-        setShowSidebar(!!user?.email_confirmed_at)
+        if (user) {
+          setShowSidebar(true)
+        }
       } catch (error) {
         console.error('Error checking user:', error)
+        setUser(null)
+        setIsAuthenticated(false)
+        setShowSidebar(false)
       }
     }
 
@@ -151,7 +170,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async (event, session) => {
         setUser(session?.user ?? null)
         setIsAuthenticated(!!session?.user)
-        setShowSidebar(!!session?.user?.email_confirmed_at)
+        if (session?.user) {
+          setShowSidebar(true)
+        } else {
+          setShowSidebar(false)
+        }
       }
     )
 
