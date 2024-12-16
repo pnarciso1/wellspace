@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
-export default function PremiumSignUpSuccess() {
+function SuccessPage() {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -57,5 +57,15 @@ export default function PremiumSignUpSuccess() {
     </div>
   )
 }
+
+function SuccessPageWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SuccessPage />
+    </Suspense>
+  )
+}
+
+export default SuccessPageWrapper
 
 
