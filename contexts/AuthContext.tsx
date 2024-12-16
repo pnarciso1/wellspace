@@ -140,14 +140,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsAuthenticated(!!user)
         setShowSidebar(!!user?.email_confirmed_at)
       } catch (error) {
-        const err = error as Error
-        // Silently handle refresh token errors for non-authenticated users
-        if (err.message?.includes('Refresh Token Not Found')) {
-          setUser(null)
-          setIsAuthenticated(false)
-          setShowSidebar(false)
-          return
-        }
         console.error('Error checking user:', error)
       }
     }
@@ -155,7 +147,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     checkUser()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event: string, session: Session | null) => {
+      async (event, session) => {
         setUser(session?.user ?? null)
         setIsAuthenticated(!!session?.user)
         setShowSidebar(!!session?.user?.email_confirmed_at)
