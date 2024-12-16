@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { useAuth } from '@/contexts/AuthContext'
 import { Home, MessageCircle, Users, Activity, FileText, Settings, LogOut, UserCircle } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: Home },
@@ -22,11 +22,6 @@ export function GlobalNav() {
   const router = useRouter()
   const { user, signOut } = useAuth()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const handleSignOut = async () => {
     try {
@@ -38,10 +33,6 @@ export function GlobalNav() {
     } finally {
       setIsLoggingOut(false)
     }
-  }
-
-  if (!mounted) {
-    return null
   }
 
   return (

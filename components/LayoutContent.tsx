@@ -6,7 +6,7 @@ import { GlobalNav } from '@/components/GlobalNav'
 import { usePathname } from 'next/navigation'
 
 export function LayoutContent({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth()
+  const { user, showSidebar } = useAuth()
   const pathname = usePathname() || ''
 
   const isAuthPage = 
@@ -26,7 +26,11 @@ export function LayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex h-screen">
-      <GlobalNav />
+      {showSidebar && (
+        <div className="flex-shrink-0 h-full">
+          <GlobalNav />
+        </div>
+      )}
       <main className="flex-1 overflow-y-auto">
         {children}
       </main>

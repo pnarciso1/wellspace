@@ -50,7 +50,20 @@ export default function HealthProfilePage() {
       const data = await getHealthProfile()
       console.log('Health profile data received:', data);
       
-      if (data) {
+      if (!data) {
+        // If no profile exists, create an empty one
+        const emptyProfile: HealthProfile = {
+          user_id: user.id,
+          height_feet: null,
+          height_inches: null,
+          weight_lbs: null,
+          name: user.user_metadata?.name || '',
+          date_of_birth: null,
+          blood_type: null,
+          allergies: []
+        }
+        setProfile(emptyProfile)
+      } else {
         setProfile(data)
         setHeightFeet(data.height_feet?.toString() ?? '')
         setHeightInches(data.height_inches?.toString() ?? '')
@@ -71,7 +84,7 @@ export default function HealthProfilePage() {
 
   useEffect(() => {
     fetchHealthProfile()
-  }, []) // Removed fetchHealthProfile from dependency array
+  }, [fetchHealthProfile])
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -135,7 +148,18 @@ export default function HealthProfilePage() {
         <Card className="w-full max-w-2xl mx-auto">
           <CardContent className="p-8">
             <p className="text-red-500 mb-4">Error: {error}</p>
-            <Button onClick={() => router.push('/dashboard')}>Return to Dashboard</Button>
+            <div className="space-x-2">
+              <Button onClick={() => {
+                setError(null);
+                setIsLoading(true);
+                fetchHealthProfile();
+              }}>
+                Retry
+              </Button>
+              <Button variant="outline" onClick={() => router.push('/dashboard')}>
+                Return to Dashboard
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
