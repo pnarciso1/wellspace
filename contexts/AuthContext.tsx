@@ -55,18 +55,74 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [showSidebar, setShowSidebar] = useState(() => {
     // Initialize from localStorage if available
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('showSidebar')
-      return stored === 'true'
+      return localStorage.getItem('isAuthenticated') === 'true'
     }
     return false
   })
 
-  // Update localStorage when sidebar state changes
+  // Handle page visibility changes
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('showSidebar', showSidebar.toString())
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState === 'visible') {
+        // Check auth status when page becomes visible
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          setUser(user)
+          setIsAuthenticated(true)
+          setShowSidebar(true)
+          localStorage.setItem('isAuthenticated', 'true')
+        }
+      }
     }
-  }, [showSidebar])
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [])
+
+  // Main auth effect
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          setUser(user)
+          setIsAuthenticated(true)
+          setShowSidebar(true)
+          localStorage.setItem('isAuthenticated', 'true')
+        }
+      } catch (error) {
+        console.error('Error checking user:', error)
+        setUser(null)
+        setIsAuthenticated(false)
+        setShowSidebar(false)
+        localStorage.setItem('isAuthenticated', 'false')
+      }
+    }
+
+    checkUser()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (session?.user) {
+          setUser(session.user)
+          setIsAuthenticated(true)
+          setShowSidebar(true)
+          localStorage.setItem('isAuthenticated', 'true')
+        } else {
+          setUser(null)
+          setIsAuthenticated(false)
+          setShowSidebar(false)
+          localStorage.setItem('isAuthenticated', 'false')
+        }
+      }
+    )
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
 
   const getHealthProfile = async () => {
     if (!user) return null;
@@ -147,42 +203,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Implement your session refresh logic
   }
 
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser()
-        setUser(user)
-        setIsAuthenticated(!!user)
-        if (user) {
-          setShowSidebar(true)
-        }
-      } catch (error) {
-        console.error('Error checking user:', error)
-        setUser(null)
-        setIsAuthenticated(false)
-        setShowSidebar(false)
-      }
-    }
-
-    checkUser()
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setUser(session?.user ?? null)
-        setIsAuthenticated(!!session?.user)
-        if (session?.user) {
-          setShowSidebar(true)
-        } else {
-          setShowSidebar(false)
-        }
-      }
-    )
-
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
-
   const signUp = async (email: string, password: string, name: string) => {
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -211,12 +231,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null)
       setIsAuthenticated(false)
       setShowSidebar(false)
+      localStorage.setItem('isAuthenticated', 'false')
     } catch (error) {
       console.error('Error signing out:', error)
-      // Optionally force a clean state even if there's an error
+      // Force clean state even if there's an error
       setUser(null)
       setIsAuthenticated(false)
       setShowSidebar(false)
+      localStorage.setItem('isAuthenticated', 'false')
     }
   }
 
