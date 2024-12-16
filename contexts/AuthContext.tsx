@@ -44,6 +44,7 @@ type AuthContextType = {
   getHealthProfile: () => Promise<HealthProfile | null>
   updateHealthProfile: (data: UpdateHealthProfileInput) => Promise<HealthProfile>
   refreshSession: () => Promise<void>
+  resetPassword: (email: string) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -196,6 +197,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const resetPassword = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email)
+      if (error) throw error
+    } catch (error) {
+      console.error('Error resetting password:', error)
+      throw error
+    }
+  }
+
   return (
     <AuthContext.Provider value={{ 
       user, 
@@ -213,7 +224,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       showSidebar,
       getHealthProfile,
       updateHealthProfile,
-      refreshSession
+      refreshSession,
+      resetPassword,
     }}>
       {children}
     </AuthContext.Provider>
