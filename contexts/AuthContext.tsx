@@ -51,70 +51,85 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [showSidebar, setShowSidebar] = useState(() => {
-    // Initialize from localStorage if available
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('isAuthenticated') === 'true'
+      return sessionStorage.getItem('isAuthenticated') === 'true'
+    }
+    return false
+  })
+  const [showSidebar, setShowSidebar] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('isAuthenticated') === 'true'
     }
     return false
   })
 
-  // Handle page visibility changes
-  useEffect(() => {
-    const handleVisibilityChange = async () => {
-      if (document.visibilityState === 'visible') {
-        // Check auth status when page becomes visible
-        const { data: { user } } = await supabase.auth.getUser()
-        if (user) {
-          setUser(user)
-          setIsAuthenticated(true)
-          setShowSidebar(true)
-          localStorage.setItem('isAuthenticated', 'true')
-        }
+  // Function to check auth status
+  const checkAuthStatus = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      const session = await supabase.auth.getSession()
+      
+      if (user && session.data.session) {
+        setUser(user)
+        setIsAuthenticated(true)
+        setShowSidebar(true)
+        sessionStorage.setItem('isAuthenticated', 'true')
+      } else {
+        handleLogout()
       }
+    } catch (error) {
+      console.error('Error checking auth status:', error)
+      handleLogout()
     }
+  }
 
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
+  // Function to handle logout/cleanup
+  const handleLogout = () => {
+    setUser(null)
+    setIsAuthenticated(false)
+    setShowSidebar(false)
+    sessionStorage.removeItem('isAuthenticated')
+  }
+
+  // Initial auth check
+  useEffect(() => {
+    const savedAuth = sessionStorage.getItem('isAuthenticated') === 'true'
+    if (savedAuth) {
+      checkAuthStatus()
     }
   }, [])
 
-  // Main auth effect
+  // Listen for focus/visibility changes
   useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (user) {
-          setUser(user)
-          setIsAuthenticated(true)
-          setShowSidebar(true)
-          localStorage.setItem('isAuthenticated', 'true')
-        }
-      } catch (error) {
-        console.error('Error checking user:', error)
-        setUser(null)
-        setIsAuthenticated(false)
-        setShowSidebar(false)
-        localStorage.setItem('isAuthenticated', 'false')
-      }
+    const handleFocus = () => {
+      checkAuthStatus()
     }
 
-    checkUser()
+    window.addEventListener('focus', handleFocus)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        checkAuthStatus()
+      }
+    })
 
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+      document.removeEventListener('visibilitychange', handleFocus)
+    }
+  }, [])
+
+  // Auth state change listener
+  useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (session?.user) {
           setUser(session.user)
           setIsAuthenticated(true)
           setShowSidebar(true)
-          localStorage.setItem('isAuthenticated', 'true')
+          sessionStorage.setItem('isAuthenticated', 'true')
         } else {
-          setUser(null)
-          setIsAuthenticated(false)
-          setShowSidebar(false)
-          localStorage.setItem('isAuthenticated', 'false')
+          handleLogout()
         }
       }
     )
@@ -123,6 +138,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       subscription.unsubscribe()
     }
   }, [])
+
+  const signOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+      handleLogout()
+    } catch (error) {
+      console.error('Error signing out:', error)
+      handleLogout()
+    }
+  }
 
   const getHealthProfile = async () => {
     if (!user) return null;
@@ -220,26 +246,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error
     setUser(data.user)
     setIsAuthenticated(!!data.user)
-    setShowSidebar(!!data.user?.email_confirmed_at)
+    setShowSidebar(true)
+    sessionStorage.setItem('isAuthenticated', 'true')
     return { user: data.user, error }
-  }
-
-  const signOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut()
-      if (error) throw error
-      setUser(null)
-      setIsAuthenticated(false)
-      setShowSidebar(false)
-      localStorage.setItem('isAuthenticated', 'false')
-    } catch (error) {
-      console.error('Error signing out:', error)
-      // Force clean state even if there's an error
-      setUser(null)
-      setIsAuthenticated(false)
-      setShowSidebar(false)
-      localStorage.setItem('isAuthenticated', 'false')
-    }
   }
 
   const resetPassword = async (email: string) => {
