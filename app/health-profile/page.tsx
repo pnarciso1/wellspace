@@ -39,51 +39,60 @@ export default function HealthProfilePage() {
   };
 
   const fetchHealthProfile = useCallback(async () => {
+    let isMounted = true;
+
     if (!user) {
-      console.log('No user found, redirecting to login');
       router.push('/login')
       return
     }
 
     try {
-      console.log('Fetching health profile for user:', user.id);
       const data = await getHealthProfile()
-      console.log('Health profile data received:', data);
       
-      if (!data) {
-        // If no profile exists, create an empty one
-        const emptyProfile: HealthProfile = {
-          user_id: user.id,
-          height_feet: null,
-          height_inches: null,
-          weight_lbs: null,
-          name: user.user_metadata?.name || '',
-          date_of_birth: null,
-          blood_type: null,
-          allergies: []
+      if (isMounted && user) {
+        if (!data) {
+          const emptyProfile: HealthProfile = {
+            user_id: user.id,
+            height_feet: null,
+            height_inches: null,
+            weight_lbs: null,
+            name: user.user_metadata?.name || '',
+            date_of_birth: null,
+            blood_type: null,
+            allergies: []
+          }
+          setProfile(emptyProfile)
+        } else {
+          setProfile(data)
+          setHeightFeet(data.height_feet?.toString() ?? '')
+          setHeightInches(data.height_inches?.toString() ?? '')
+          setWeightLbs(data.weight_lbs?.toString() ?? '')
         }
-        setProfile(emptyProfile)
-      } else {
-        setProfile(data)
-        setHeightFeet(data.height_feet?.toString() ?? '')
-        setHeightInches(data.height_inches?.toString() ?? '')
-        setWeightLbs(data.weight_lbs?.toString() ?? '')
+        setIsLoading(false)
       }
     } catch (error) {
-      console.error('Error fetching health profile:', error)
-      setError(error instanceof Error ? error.message : "Failed to fetch health profile")
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to fetch health profile",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
+      if (isMounted && user) {
+        console.error('Error fetching health profile:', error)
+        setError(error instanceof Error ? error.message : "Failed to fetch health profile")
+        setIsLoading(false)
+      }
     }
-  }, [user, getHealthProfile, router, toast])
+  }, [user, getHealthProfile, router])
 
   useEffect(() => {
-    fetchHealthProfile()
+    let isMounted = true;
+
+    const loadProfile = async () => {
+      if (isMounted) {
+        await fetchHealthProfile()
+      }
+    }
+
+    loadProfile()
+
+    return () => {
+      isMounted = false
+    }
   }, [fetchHealthProfile])
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -100,16 +109,25 @@ export default function HealthProfilePage() {
     setIsSaving(true)
     
     try {
-      const formData = new FormData(event.currentTarget)
+      console.log('Submitting values:', {
+        heightFeet,
+        heightInches,
+        weightLbs
+      });
+
       const updateData: UpdateHealthProfileInput = {
         name: profile.name,
-        date_of_birth: formData.get('date_of_birth') as string || null,
-        height_feet: heightFeet ? parseFloat(heightFeet) : null,
-        height_inches: heightInches ? parseFloat(heightInches) : null,
-        weight_lbs: weightLbs ? parseFloat(weightLbs) : null,
-        blood_type: formData.get('blood_type') as string || null,
-        allergies: formData.get('allergies') ? (formData.get('allergies') as string).split(',').map(a => a.trim()) : null,
+        date_of_birth: event.currentTarget.date_of_birth.value || null,
+        height_feet: heightFeet ? parseFloat(heightFeet) || null : null,
+        height_inches: heightInches ? parseFloat(heightInches) || null : null,
+        weight_lbs: weightLbs ? parseFloat(weightLbs) || null : null,
+        blood_type: event.currentTarget.blood_type.value || null,
+        allergies: event.currentTarget.allergies.value 
+          ? event.currentTarget.allergies.value.split(',').map((a: string) => a.trim()) 
+          : null,
       }
+
+      console.log('Update data:', updateData);
 
       const updatedProfile = await updateHealthProfile(updateData)
       setProfile(updatedProfile)
@@ -208,7 +226,7 @@ export default function HealthProfilePage() {
                     id="height_feet" 
                     name="height_feet" 
                     type="number" 
-                    defaultValue={heightFeet}
+                    value={heightFeet}
                     onChange={handleHeightFeetChange}
                     min="0"
                     max="8"
@@ -221,7 +239,7 @@ export default function HealthProfilePage() {
                     id="height_inches" 
                     name="height_inches" 
                     type="number" 
-                    defaultValue={heightInches}
+                    value={heightInches}
                     onChange={handleHeightInchesChange}
                     min="0"
                     max="11"
@@ -236,7 +254,7 @@ export default function HealthProfilePage() {
                 id="weight" 
                 name="weight" 
                 type="number" 
-                defaultValue={weightLbs}
+                value={weightLbs}
                 onChange={handleWeightChange}
                 min="0"
                 step="0.1"
