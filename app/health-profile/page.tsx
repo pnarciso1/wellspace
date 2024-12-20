@@ -39,7 +39,7 @@ export default function HealthProfilePage() {
   };
 
   const fetchHealthProfile = useCallback(async () => {
-    let isMounted = true;
+    const isMounted = true;
 
     if (!user) {
       router.push('/login')
