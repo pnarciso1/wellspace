@@ -5,17 +5,10 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useAuth } from '@/contexts/AuthContext'
 import { ProtectedRoute } from '@/components/ProtectedRoute'
-import { UserCircle, MessageCircle, Users, Activity, FileText, Heart, Zap, Award, Upload } from 'lucide-react'
+import { UserCircle, MessageCircle, Users, Activity, FileText, Heart, Zap } from 'lucide-react'
 
 export default function Dashboard() {
   const { user } = useAuth()
-
-  const tokenBalance = 150
-  const recentActivities = [
-    { id: 1, description: "Completed 'Reduce Sugar' task", tokens: 10, icon: Award },
-    { id: 2, description: "Joined 'Stress Management' group", tokens: 5, icon: Users },
-    { id: 3, description: "Uploaded medical record", tokens: 15, icon: Upload },
-  ]
 
   return (
     <ProtectedRoute>
@@ -38,13 +31,15 @@ export default function Dashboard() {
             </Card>
             <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
-                <CardTitle className="text-2xl text-indigo-600 dark:text-indigo-400">Token Balance</CardTitle>
+                <CardTitle className="text-2xl text-indigo-600 dark:text-indigo-400">Rewards Coming Soon!</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-5xl font-bold text-green-500 dark:text-green-400 flex items-center justify-center">
-                  <Zap className="mr-2 h-8 w-8" />
-                  {tokenBalance}
-                </p>
+                <div className="text-center space-y-2">
+                  <Zap className="h-8 w-8 mx-auto text-indigo-500" />
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Our rewards system is currently under development. Soon you'll be able to earn tokens for your wellness journey!
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -85,20 +80,15 @@ export default function Dashboard() {
             </Card>
             <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardHeader>
-                <CardTitle className="text-2xl text-indigo-600 dark:text-indigo-400">Recent Activity</CardTitle>
+                <CardTitle className="text-2xl text-indigo-600 dark:text-indigo-400">Activity Feed</CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-4">
-                  {recentActivities.map((activity) => (
-                    <li key={activity.id} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                      <span className="flex items-center text-gray-700 dark:text-gray-200">
-                        <activity.icon className="mr-2 h-5 w-5 text-indigo-500 dark:text-indigo-400" />
-                        {activity.description}
-                      </span>
-                      <span className="text-green-600 dark:text-green-400 font-semibold">+{activity.tokens} tokens</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="text-center space-y-2">
+                  <Activity className="h-8 w-8 mx-auto text-indigo-500" />
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Track your wellness journey progress here. Coming soon!
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </div>
