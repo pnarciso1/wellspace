@@ -13,22 +13,30 @@ export function ShareProgress({ track }: ShareProgressProps) {
   const shareText = `I'm on Day ${track.current_day} of ${track.module.title} with a ${track.progress.current_streak} day streak! 💪`
 
   const handleShare = async () => {
-    if (navigator.share) {
-      try {
+    try {
+      if (navigator.share) {
         await navigator.share({
           title: track.module.title,
           text: shareText,
           url: shareUrl
         })
-      } catch (err) {
-        console.error('Error sharing:', err)
+      } else {
+        await navigator.clipboard.writeText(`${shareText}\n${shareUrl}`)
+        toast({
+          title: "Link Copied!",
+          description: "Share your progress with friends",
+        })
       }
-    } else {
-      await navigator.clipboard.writeText(`${shareText}\n${shareUrl}`)
-      toast({
-        title: "Link Copied!",
-        description: "Share your progress with friends",
-      })
+    } catch (err) {
+      // Only show error toast if it's not an AbortError
+      if (!(err instanceof Error) || err.name !== 'AbortError') {
+        console.error('Share error:', err)
+        toast({
+          title: "Sharing failed",
+          description: "Please try again",
+          variant: "destructive"
+        })
+      }
     }
   }
 

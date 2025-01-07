@@ -1,38 +1,56 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
+import { supabase } from '../../../../lib/supabase'
+import type { Database } from '../../../../types/supabase'
+
+type Track = Database['public']['Tables']['user_health_tracks']['Row']
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { trackId: string } }
 ) {
-  const supabase = createRouteHandlerClient({ cookies })
-
-  const { data: track } = await supabase
-    .from('user_health_tracks')
-    .select(`
-      *,
-      module:health_track_modules (
-        title,
-        description,
-        duration_days
-      )
-    `)
-    .eq('id', params.trackId)
-    .single()
-
-  if (!track) {
+  if (!params.trackId) {
     return NextResponse.json(
-      { error: 'Track not found' },
-      { status: 404 }
+      { error: 'Track ID is required' },
+      { status: 400 }
     )
   }
 
-  return NextResponse.json({
-    title: track.module.title,
-    currentDay: track.current_day,
-    totalDays: track.module.duration_days,
-    streak: track.progress.current_streak,
-    lastActive: track.last_active
-  })
+  try {
+    const { data: track, error } = await supabase
+      .from('user_health_tracks')
+      .select(`
+        id,
+        current_day,
+        progress,
+        module:health_track_modules (
+          title
+        )
+      `)
+      .eq('id', params.trackId)
+      .single()
+
+    if (error) {
+      console.error('Supabase error:', error)
+      return NextResponse.json(
+        { error: 'Database error occurred' },
+        { status: 500 }
+      )
+    }
+
+    if (!track) {
+      return NextResponse.json(
+        { error: 'Track not found' },
+        { status: 404 }
+      )
+    }
+
+    return NextResponse.json(track)
+
+  } catch (error) {
+    console.error('Share API Error:', error)
+    return NextResponse.json(
+      { error: 'An unexpected error occurred' },
+      { status: 500 }
+    )
+  }
 } 
