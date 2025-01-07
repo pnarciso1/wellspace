@@ -2,77 +2,75 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Button } from "@/components/ui/button"
+import { cn } from '@/lib/utils'
+import {
+  LayoutDashboard,
+  FileText,
+  Users,
+  MessageSquare,
+  Activity,
+  UserCircle,
+  LogOut
+} from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-import { Home, MessageCircle, Users, Activity, FileText, Settings, LogOut, UserCircle } from 'lucide-react'
-import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 
-const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: Home },
-  { href: '/ai-chat', label: 'AI Chat', icon: MessageCircle },
-  { href: '/community', label: 'Community', icon: Users },
-  { href: '/health-tracks', label: 'Health Tracks', icon: Activity },
-  { href: '/medical-records', label: 'Medical Records', icon: FileText },
-  { href: '/health-profile', label: 'Health Profile', icon: UserCircle },
-  { href: '/settings', label: 'Settings', icon: Settings },
+const links = [
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { name: 'Medical Records', href: '/medical-records', icon: FileText },
+  { name: 'Health Profile', href: '/health-profile', icon: UserCircle },
+  { name: 'Health Tracks', href: '/health-tracks', icon: Activity },
+  { name: 'AI Chat', href: '/ai-chat', icon: MessageSquare },
+  { name: 'Community', href: '/community', icon: Users },
 ]
 
 export function GlobalNav() {
   const pathname = usePathname()
   const router = useRouter()
-  const { user, signOut } = useAuth()
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
-
+  const { signOut } = useAuth()
+  
   const handleSignOut = async () => {
-    try {
-      setIsLoggingOut(true)
-      await signOut()
-      router.push('/login')
-    } catch (error) {
-      console.error('Error signing out:', error)
-    } finally {
-      setIsLoggingOut(false)
-    }
+    await signOut()
+    router.push('/login')
   }
 
   return (
-    <nav className="flex flex-col h-full bg-gray-100 w-64 p-4">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-800">Wellspace</h1>
-      </div>
-      <ul className="space-y-2 flex-grow">
-        {navItems.map((item) => {
-          const Icon = item.icon
-          return (
-            <li key={item.href}>
-              <Link 
-                href={item.href} 
-                className={`flex items-center p-2 rounded-lg ${
-                  pathname === item.href 
-                    ? 'bg-gray-200 text-gray-900' 
-                    : 'text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                <Icon className="mr-2 h-5 w-5" />
-                {item.label}
-              </Link>
-            </li>
-          )
-        })}
-      </ul>
-      {user && (
-        <div className="mt-auto">
-          <Button 
-            variant="outline" 
-            className="w-full flex items-center justify-center" 
-            onClick={handleSignOut}
-            disabled={isLoggingOut}
-          >
-            <LogOut className="mr-2 h-5 w-5" />
-            {isLoggingOut ? 'Logging out...' : 'Log Out'}
-          </Button>
+    <nav className="w-64 min-h-screen border-r bg-white flex flex-col">
+      <div className="flex-1 space-y-4 py-4">
+        <div className="px-3 py-2">
+          <h2 className="mb-2 px-4 text-lg font-semibold">Navigation</h2>
+          <div className="space-y-1">
+            {links.map((link) => {
+              const Icon = link.icon
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900",
+                    pathname === link.href ? "bg-gray-100 text-gray-900" : ""
+                  )}
+                >
+                  <Icon className="h-4 w-4" />
+                  {link.name}
+                </Link>
+              )
+            })}
+          </div>
         </div>
-      )}
+      </div>
+      
+      {/* Sign Out Button */}
+      <div className="p-4 border-t">
+        <Button
+          variant="ghost"
+          className="w-full flex items-center gap-2 text-gray-500 hover:text-gray-900"
+          onClick={handleSignOut}
+        >
+          <LogOut className="h-4 w-4" />
+          Sign Out
+        </Button>
+      </div>
     </nav>
   )
 }

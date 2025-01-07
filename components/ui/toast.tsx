@@ -1,13 +1,25 @@
 "use client"
 
-import { Toaster as SonnerToaster } from "sonner"
+import { toast as sonnerToast, Toaster as Sonner } from "sonner"
 
-// No need for ToastActionElement since we're not using ToastAction component
-// Removing the problematic line
+export type ToastProps = {
+  title?: string
+  description?: string
+  variant?: "default" | "destructive"
+}
+
+export type ToastActionElement = React.ReactElement
+
+export const toast = ({ title, description, variant }: ToastProps) => {
+  sonnerToast(title, {
+    description,
+    className: variant === "destructive" ? "bg-destructive text-destructive-foreground" : undefined,
+  })
+}
 
 export function Toaster() {
   return (
-    <SonnerToaster
+    <Sonner
       className="toaster group"
       position="bottom-right"
       toastOptions={{
@@ -20,6 +32,13 @@ export function Toaster() {
       }}
     />
   )
+}
+
+export function useToast() {
+  return {
+    toast,
+    dismiss: sonnerToast.dismiss,
+  }
 }
 
 

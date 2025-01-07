@@ -9,7 +9,7 @@ import { Heart, Users, Zap, Award, Mail, AtSign, Twitter } from 'lucide-react'
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-white">
       <header className="bg-white shadow-md">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between py-6">
@@ -35,92 +35,116 @@ export default function AboutPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-12">
-        <section className="mb-16 text-center">
-          <h1 className="text-5xl font-bold text-gray-800 mb-6">About Wellspace</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Wellspace by PeopleCare.ai is revolutionizing healthcare management through innovative AI-driven solutions. Our mission is to empower individuals to take control of their health journey with ease and confidence.
-          </p>
-        </section>
-
-        <section className="mb-16">
-          <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">Our Core Values</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="hover:shadow-lg transition-shadow duration-300">
-              <CardHeader>
-                <CardTitle className="flex items-center text-2xl text-indigo-600">
-                  <Heart className="mr-2 text-indigo-500" />
-                  Compassion
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>We put the well-being of our users at the heart of everything we do.</p>
-              </CardContent>
-            </Card>
-            <Card className="hover:shadow-lg transition-shadow duration-300">
-              <CardHeader>
-                <CardTitle className="flex items-center text-2xl text-indigo-600">
-                  <Users className="mr-2 text-indigo-500" />
-                  Community
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>We believe in the power of connection and support in health journeys.</p>
-              </CardContent>
-            </Card>
-            <Card className="hover:shadow-lg transition-shadow duration-300">
-              <CardHeader>
-                <CardTitle className="flex items-center text-2xl text-indigo-600">
-                  <Zap className="mr-2 text-indigo-500" />
-                  Innovation
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>We continuously push the boundaries of what's possible in healthcare technology.</p>
-              </CardContent>
-            </Card>
-            <Card className="hover:shadow-lg transition-shadow duration-300">
-              <CardHeader>
-                <CardTitle className="flex items-center text-2xl text-indigo-600">
-                  <Award className="mr-2 text-indigo-500" />
-                  Excellence
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>We strive for the highest standards in all aspects of our service.</p>
-              </CardContent>
-            </Card>
+      <main>
+        <section className="mb-16 text-center relative overflow-hidden min-h-[70vh] flex items-center justify-center">
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-indigo-900">
+            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_#ffffff_1px,_transparent_1px)] bg-[size:20px_20px]" />
+          </div>
+          
+          <div className="relative z-10 container mx-auto px-4">
+            <h1 className="text-7xl font-bold text-white mb-6 tracking-tight">About Wellspace</h1>
+            <p className="text-2xl text-gray-300 max-w-3xl mx-auto">
+              Wellspace by PeopleCare.ai is revolutionizing healthcare management through innovative AI-driven solutions. Our mission is to empower individuals to take control of their health journey with ease and confidence.
+            </p>
           </div>
         </section>
 
-        <Separator className="my-12" />
+        <div className="relative -mt-16 mb-16">
+          <svg 
+            viewBox="0 0 1440 116" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-full"
+          >
+            <path 
+              d="M0 116L60 101.8C120 87.7 240 59.3 360 49.5C480 39.7 600 48.3 720 53.2C840 58 960 58 1080 63.8C1200 69.7 1320 81.3 1380 87.2L1440 93V0H1380C1320 0 1200 0 1080 0C960 0 840 0 720 0C600 0 480 0 360 0C240 0 120 0 60 0H0V116Z" 
+              fill="white"
+            />
+          </svg>
+        </div>
 
-        <section className="mb-16">
-          <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">Our Story</h2>
-          <Card className="hover:shadow-lg transition-shadow duration-300">
-            <CardContent className="p-6">
-              <p className="text-gray-600 mb-4">
-                Wellspace was born from a simple yet powerful idea: healthcare management should be accessible, intuitive, and personalized. Our team of healthcare professionals and tech innovators recognized the challenges individuals face in navigating the complex world of healthcare.
-              </p>
-              <p className="text-gray-600 mb-4">
-                Inspired by the potential of AI to transform healthcare, we set out to create a platform that would serve as a personal health assistant for everyone. We envisioned a world where managing your health is as simple as checking your email, where personalized health insights are at your fingertips, and where taking control of your well-being is empowering rather than overwhelming.
-              </p>
-              <p className="text-gray-600">
-                Today, Wellspace stands as a testament to that vision. We're proud to offer a comprehensive suite of tools that help our users navigate their health journeys with confidence, from AI-powered health navigation to secure medical record storage, from personalized health tracks to community support. As we continue to grow and evolve, our commitment remains the same: to empower every individual to live their healthiest, happiest life.
-              </p>
-            </CardContent>
-          </Card>
-        </section>
+        <div className="container mx-auto px-4">
+          <section className="mb-16">
+            <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">Our Core Values</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <CardHeader>
+                  <CardTitle className="flex items-center text-2xl text-indigo-600">
+                    <Heart className="mr-2 text-indigo-500" />
+                    Compassion
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>We put the well-being of our users at the heart of everything we do.</p>
+                </CardContent>
+              </Card>
+              <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <CardHeader>
+                  <CardTitle className="flex items-center text-2xl text-indigo-600">
+                    <Users className="mr-2 text-indigo-500" />
+                    Community
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>We believe in the power of connection and support in health journeys.</p>
+                </CardContent>
+              </Card>
+              <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <CardHeader>
+                  <CardTitle className="flex items-center text-2xl text-indigo-600">
+                    <Zap className="mr-2 text-indigo-500" />
+                    Innovation
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>We continuously push the boundaries of what's possible in healthcare technology.</p>
+                </CardContent>
+              </Card>
+              <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <CardHeader>
+                  <CardTitle className="flex items-center text-2xl text-indigo-600">
+                    <Award className="mr-2 text-indigo-500" />
+                    Excellence
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>We strive for the highest standards in all aspects of our service.</p>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
 
-        <section className="text-center">
-          <h2 className="text-3xl font-semibold text-gray-800 mb-8">Join Us on This Journey</h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Be part of the healthcare revolution. Experience the future of personalized health management with Wellspace.
-          </p>
-          <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white" asChild>
-            <Link href="/signup">Get Started Today</Link>
-          </Button>
-        </section>
+          <section className="mb-16">
+            <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">Our Story</h2>
+            <Card className="hover:shadow-lg transition-all duration-300">
+              <CardContent className="p-8">
+                <p className="text-gray-600 mb-4">
+                  Wellspace was born from a simple yet powerful idea: healthcare management should be accessible, intuitive, and personalized. Our team of healthcare professionals and tech innovators recognized the challenges individuals face in navigating the complex world of healthcare.
+                </p>
+                <p className="text-gray-600 mb-4">
+                  Inspired by the potential of AI to transform healthcare, we set out to create a platform that would serve as a personal health assistant for everyone. We envisioned a world where managing your health is as simple as checking your email, where personalized health insights are at your fingertips, and where taking control of your well-being is empowering rather than overwhelming.
+                </p>
+                <p className="text-gray-600">
+                  Today, Wellspace stands as a testament to that vision. We're proud to offer a comprehensive suite of tools that help our users navigate their health journeys with confidence, from AI-powered health navigation to secure medical record storage, from personalized health tracks to community support. As we continue to grow and evolve, our commitment remains the same: to empower every individual to live their healthiest, happiest life.
+                </p>
+              </CardContent>
+            </Card>
+          </section>
+
+          <section className="text-center mb-24">
+            <h2 className="text-3xl font-semibold text-gray-800 mb-8">Join Us on This Journey</h2>
+            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+              Be part of the healthcare revolution. Experience the future of personalized health management with Wellspace.
+            </p>
+            <Button 
+              size="lg" 
+              className="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-6 text-lg"
+              asChild
+            >
+              <Link href="/signup">Get Started Today</Link>
+            </Button>
+          </section>
+        </div>
       </main>
 
       <footer className="bg-gray-800 text-white py-12 mt-16">

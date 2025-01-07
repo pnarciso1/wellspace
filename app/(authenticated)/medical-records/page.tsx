@@ -1,12 +1,14 @@
 'use client'
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useState, useEffect, ChangeEvent } from 'react'
-import { useRouter } from 'next/navigation'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useAuth } from '@/contexts/AuthContext'
 import { Download } from 'lucide-react'
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
   SelectContent,
@@ -14,20 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import type { Database } from '@/types/supabase'
 
-interface MedicalRecord {
-  id: string
-  user_id: string
-  file_path: string
-  file_name: string
-  file_type: string
-  file_size: number
-  description: string
-  record_type: string
-  upload_date: string
-}
+type MedicalRecord = Database['public']['Tables']['medical_records']['Row']
 
 export default function MedicalRecords() {
   const [file, setFile] = useState<File | null>(null)
@@ -36,72 +27,52 @@ export default function MedicalRecords() {
   const [description, setDescription] = useState('')
   const [recordType, setRecordType] = useState('Medical History')
   const [records, setRecords] = useState<MedicalRecord[]>([])
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { user } = useAuth()
   const supabase = createClientComponentClient()
-  const router = useRouter()
 
   useEffect(() => {
-    fetchRecords()
-  }, [])
+    if (user) {
+      fetchRecords()
+    }
+  }, [user])
 
   async function fetchRecords() {
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      
-      if (!user) {
-        throw new Error('No authenticated user found')
-      }
-
       const { data, error } = await supabase
         .from('medical_records')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', user!.id)
         .order('upload_date', { ascending: false })
       
-      if (error) {
-        console.error('Supabase error:', error)
-        throw new Error(`Failed to fetch records: ${error.message}`)
-      }
-      
+      if (error) throw error
       setRecords(data || [])
     } catch (error) {
-      console.error('Error fetching records:', error)
-      setError(error instanceof Error ? error.message : 'Failed to fetch records')
+      setError('Failed to fetch records')
+      console.error('Error:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setError(null)
-    
-    if (!file) {
-      setError('Please select a file')
-      return
-    }
+    if (!file || !user) return
 
     try {
       setUploading(true)
-
-      const { data: { user } } = await supabase.auth.getUser()
-      
-      if (!user) {
-        throw new Error('No authenticated user found')
-      }
+      setError(null)
 
       const fileExt = file.name.split('.').pop()
       const fileName = `${Math.random().toString(36).substring(2)}${Date.now().toString()}.${fileExt}`
       const filePath = `${user.id}/${fileName}`
 
-      // Ensure we have the correct file type
-      const fileType = file.type || `application/${fileExt}`
-
       const { error: uploadError } = await supabase.storage
         .from('medical_records')
         .upload(filePath, file)
 
-      if (uploadError) {
-        throw new Error(`Upload failed: ${uploadError.message}`)
-      }
+      if (uploadError) throw uploadError
 
       const { error: insertError } = await supabase
         .from('medical_records')
@@ -109,32 +80,24 @@ export default function MedicalRecords() {
           user_id: user.id,
           file_path: filePath,
           file_name: file.name,
-          file_type: fileType,
+          file_type: file.type,
           file_size: file.size,
-          description: description,
-          record_type: recordType
+          description,
+          record_type: recordType,
+          upload_date: new Date().toISOString()
         })
 
-      if (insertError) {
-        // If database insert fails, clean up the uploaded file
-        await supabase.storage
-          .from('medical_records')
-          .remove([filePath])
-        throw new Error(`Database insert failed: ${insertError.message}`)
-      }
+      if (insertError) throw insertError
+
+      setFile(null)
+      setDescription('')
+      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement
+      if (fileInput) fileInput.value = ''
 
       await fetchRecords()
-      setDescription('')
-      setFile(null)
-      
-      // Reset the file input
-      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement
-      if (fileInput) {
-        fileInput.value = ''
-      }
     } catch (error) {
-      console.error('Upload process error:', error)
-      setError(error instanceof Error ? error.message : 'Failed to upload record')
+      console.error('Upload error:', error)
+      setError('Failed to upload file')
     } finally {
       setUploading(false)
     }
@@ -149,30 +112,27 @@ export default function MedicalRecords() {
         .from('medical_records')
         .download(record.file_path)
 
-      if (error) {
-        throw error
-      }
+      if (error) throw error
 
-      // Create blob and download
-      const blob = new Blob([data], { type: record.file_type })
-      const downloadUrl = window.URL.createObjectURL(blob)
+      const blob = new Blob([data])
+      const url = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
-      link.href = downloadUrl
+      link.href = url
       link.download = record.file_name
       document.body.appendChild(link)
       link.click()
-      window.URL.revokeObjectURL(downloadUrl)
+      window.URL.revokeObjectURL(url)
       document.body.removeChild(link)
     } catch (error) {
       console.error('Download error:', error)
-      setError('Failed to download file. Please try again.')
+      setError('Failed to download file')
     } finally {
       setDownloading(null)
     }
   }
 
-  const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setDescription(e.target.value)
+  if (loading) {
+    return <div className="container mx-auto py-8">Loading...</div>
   }
 
   return (
@@ -276,56 +236,4 @@ export default function MedicalRecords() {
       </Card>
     </div>
   )
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+} 

@@ -5,10 +5,97 @@ import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { CheckCircle, Brain, FileText, Activity, Gift, BotIcon as Robot, Mail, AtSign, Twitter } from 'lucide-react'
+import { CheckCircle, Brain, FileText, Activity, Gift, BotIcon as Robot, Users, Mail, AtSign, Twitter } from 'lucide-react'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
+import { cn } from "@/lib/utils"
+
+const features = [
+  {
+    title: "Meet Charlie, your AI Health Navigator",
+    icon: <Brain className="mr-2 text-indigo-500" />,
+    description: "Get personalized assistance to navigate complex healthcare decisions with AI support."
+  },
+  {
+    title: "Medical Records Storage",
+    icon: <FileText className="mr-2 text-indigo-500" />,
+    description: "Securely store and access your medical records in one centralized location."
+  },
+  {
+    title: "Health Tracks",
+    icon: <Activity className="mr-2 text-indigo-500" />,
+    description: "Follow personalized health improvement plans and track your progress over time."
+  },
+  {
+    title: "Rewards System",
+    icon: <Gift className="mr-2 text-indigo-500" />,
+    description: "Earn tokens that can be converted into cash for healthy behaviors and engaging with the community."
+  },
+  {
+    title: "AI Task Agents",
+    icon: <Robot className="mr-2 text-indigo-500" />,
+    description: "Have your AI Task Agent complete essential healthcare tasks like finding doctors, reviewing medical bills, and recommending insurance plans."
+  },
+  {
+    title: "Community Connections",
+    icon: <Users className="mr-2 text-indigo-500" />,
+    description: "Find local resources and connect with people and organizations to help you achieve your health goals."
+  }
+]
+
+const pricingPlans = [
+  {
+    title: "Free",
+    price: "$0/month",
+    features: [
+      "AI Health Navigator",
+      "Health Records Storage",
+      "Evidence-based Health Tracks"
+    ],
+    buttonText: "Get Started"
+  },
+  {
+    title: "Premium",
+    price: "$9.99/month",
+    features: [
+      "All Free plan features",
+      "Access to AI Agents",
+      "Rewards to Cash Conversion"
+    ],
+    buttonText: "Subscribe Now"
+  },
+  {
+    title: "Enterprise",
+    price: "Contact Sales",
+    features: [
+      "All Premium plan features",
+      "Custom AI Navigators",
+      "Custom AI Agents",
+      "Custom Health Tracks",
+      "Enterprise Health Dashboard"
+    ],
+    buttonText: "Contact Sales"
+  }
+]
+
+const testimonials = [
+  {
+    quote: "Wellspace has transformed how I manage my health. The AI navigator, Charlie, provides incredibly insightful advice, and the health tracks keep me motivated. It's like having a personal health coach in my pocket!",
+    author: "Sarah Johnson",
+    title: "Fitness Enthusiast"
+  },
+  {
+    quote: "As someone with a chronic condition, keeping track of my medical records was always a hassle. Wellspace's secure storage and easy access have been a game-changer. I feel more in control of my health than ever before.",
+    author: "Michael Chen",
+    title: "Software Engineer"
+  },
+  {
+    quote: "The rewards system is brilliant! It's encouraging to see my healthy choices translate into tangible benefits. Plus, the community feature has connected me with others on similar health journeys. Truly a comprehensive health platform!",
+    author: "Emily Rodriguez",
+    title: "Teacher"
+  }
+]
 
 export default function HomePage() {
  const { user } = useAuth()
@@ -21,7 +108,7 @@ export default function HomePage() {
  }, [user, router])
 
 return (
-<div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+<div className="min-h-screen bg-white">
   <header className="bg-white shadow-md">
     <div className="container mx-auto px-4">
       <div className="flex items-center justify-between py-6">
@@ -46,199 +133,145 @@ return (
     </div>
   </header>
 
-  <main className="container mx-auto px-4 py-12">
-    <section className="mb-16 text-center">
-      <h1 className="text-5xl font-bold text-gray-800 mb-6">Welcome to Wellspace by PeopleCare.ai</h1>
-      <Card className="max-w-3xl mx-auto">
-        <CardHeader>
-          <CardTitle className="text-3xl text-indigo-600">Simplify Your Healthcare Journey</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-xl mb-6">Navigate the complex healthcare system, manage your health, take control of your healthcare expenses, and improve outcomes—all in one platform.</p>
-          <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white" asChild>
-            <Link href="/signup">Get Started</Link>
-          </Button>
-        </CardContent>
-      </Card>
+  <main>
+    <section className="mb-16 text-center relative overflow-hidden min-h-[90vh] flex items-center justify-center">
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-indigo-900">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_#ffffff_1px,_transparent_1px)] bg-[size:20px_20px]" />
+      </div>
+      
+      <div className="relative z-10 container mx-auto px-4">
+        <h1 className="text-7xl font-bold text-white mb-6 tracking-tight">
+          Welcome to{" "}
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-blue-400">
+            Wellspace
+          </span>
+        </h1>
+        <p className="text-2xl text-gray-300 mb-12 max-w-2xl mx-auto">
+          Navigate the complex healthcare system, manage your health, and improve outcomes—all in one platform.
+        </p>
+        <Card className="max-w-3xl mx-auto bg-white/10 backdrop-blur-md border-white/20">
+          <CardContent className="py-8">
+            <div className="space-y-6">
+              <div className="flex flex-wrap justify-center gap-4">
+                <Button 
+                  size="lg" 
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-6 text-lg"
+                  asChild
+                >
+                  <Link href="/signup">Get Started Free</Link>
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="border-2 border-indigo-400 text-indigo-300 hover:bg-indigo-400/10 hover:text-indigo-200 px-8 py-6 text-lg transition-all duration-200"
+                  asChild
+                >
+                  <Link href="/features">See How It Works →</Link>
+                </Button>
+              </div>
+              <p className="text-gray-400 text-sm">
+                No credit card required · Free forever plan available
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </section>
+
+    <div className="relative -mt-16 mb-16">
+      <svg 
+        viewBox="0 0 1440 116" 
+        fill="none" 
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-full"
+      >
+        <path 
+          d="M0 116L60 101.8C120 87.7 240 59.3 360 49.5C480 39.7 600 48.3 720 53.2C840 58 960 58 1080 63.8C1200 69.7 1320 81.3 1380 87.2L1440 93V0H1380C1320 0 1200 0 1080 0C960 0 840 0 720 0C600 0 480 0 360 0C240 0 120 0 60 0H0V116Z" 
+          fill="white"
+        />
+      </svg>
+    </div>
 
     <section className="mb-16">
       <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">Core Features</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <Card className="hover:shadow-lg transition-shadow duration-300">
-          <CardHeader>
-            <CardTitle className="flex items-center text-2xl text-indigo-600">
-              <Brain className="mr-2 text-indigo-500" />
-              Meet Charlie, your AI Health Navigator
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Get personalized assistance to navigate complex healthcare decisions with AI support.</p>
-          </CardContent>
-        </Card>
-        <Card className="hover:shadow-lg transition-shadow duration-300">
-          <CardHeader>
-            <CardTitle className="flex items-center text-2xl text-indigo-600">
-              <FileText className="mr-2 text-indigo-500" />
-              Medical Records Storage
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Securely store and access your medical records in one centralized location.</p>
-          </CardContent>
-        </Card>
-        <Card className="hover:shadow-lg transition-shadow duration-300">
-          <CardHeader>
-            <CardTitle className="flex items-center text-2xl text-indigo-600">
-              <Activity className="mr-2 text-indigo-500" />
-              Health Tracks
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Follow personalized health improvement plans and track your progress over time.</p>
-          </CardContent>
-        </Card>
-        <Card className="hover:shadow-lg transition-shadow duration-300">
-          <CardHeader>
-            <CardTitle className="flex items-center text-2xl text-indigo-600">
-              <Gift className="mr-2 text-indigo-500" />
-              Rewards System
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Earn tokens that can be converted into cash for healthy behaviors and engaging with the community.</p>
-          </CardContent>
-        </Card>
-        <Card className="hover:shadow-lg transition-shadow duration-300">
-          <CardHeader>
-            <CardTitle className="flex items-center text-2xl text-indigo-600">
-              <Robot className="mr-2 text-indigo-500" />
-              AI Task Agents
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Have your AI Task Agent complete essential healthcare tasks like finding doctors, reviewing medical bills, and recommending insurance plans.</p>
-          </CardContent>
-        </Card>
+        {features.map((feature) => (
+          <Card key={feature.title} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <CardHeader>
+              <CardTitle className="flex items-center text-2xl text-indigo-600 group-hover:text-indigo-700">
+                {feature.icon}
+                <span className="ml-2">{feature.title}</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600">{feature.description}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </section>
 
     <section className="mb-16">
       <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">Pricing Plans</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 min-h-[600px]">
-        <Card className="hover:shadow-lg transition-shadow duration-300">
-          <CardHeader>
-            <CardTitle className="text-2xl text-indigo-600">Free</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-4xl font-bold mb-4 text-gray-700">$0/month</p>
-            <ul className="space-y-2">
-              <li className="flex items-center">
-                <CheckCircle className="mr-2 text-green-500" />
-                AI Health Navigator
-              </li>
-              <li className="flex items-center">
-                <CheckCircle className="mr-2 text-green-500" />
-                Health Records Storage
-              </li>
-              <li className="flex items-center">
-                <CheckCircle className="mr-2 text-green-500" />
-                Evidence-based Health Tracks
-              </li>
-            </ul>
-            <Button className="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white" asChild>
-              <Link href="/signup">Get Started</Link>
-            </Button>
-          </CardContent>
-        </Card>
-        <Card className="hover:shadow-lg transition-shadow duration-300 border-indigo-200 bg-indigo-50">
-          <CardHeader>
-            <CardTitle className="text-2xl text-indigo-600">Premium</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-4xl font-bold mb-4 text-indigo-700">$9.99/month</p>
-            <ul className="space-y-2">
-              <li className="flex items-center">
-                <CheckCircle className="mr-2 text-green-500" />
-                All Free plan features
-              </li>
-              <li className="flex items-center">
-                <CheckCircle className="mr-2 text-green-500" />
-                Access to AI Agents
-              </li>
-              <li className="flex items-center">
-                <CheckCircle className="mr-2 text-green-500" />
-                Rewards to Cash Conversion
-              </li>
-            </ul>
-            <Button className="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white" asChild>
-              <Link href="/signup/premium">Subscribe Now</Link>
-            </Button>
-          </CardContent>
-        </Card>
-        <Card className="hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
-          <CardHeader>
-            <CardTitle className="text-2xl text-indigo-600">Enterprise</CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 flex flex-col justify-between space-y-6">
-            <div className="space-y-6">
-              <div className="text-center">
-                <p className="text-4xl font-bold text-gray-700">$49.99</p>
-                <p className="text-xl text-gray-600">/member/month</p>
-                <p className="text-sm text-gray-600 mt-2">(minimum 50 members)</p>
+        {pricingPlans.map((plan) => (
+          <Card 
+            key={plan.title}
+            className={cn(
+              "hover:shadow-lg transition-all duration-300 hover:-translate-y-1",
+              plan.title === "Premium" && "border-2 border-indigo-500 relative overflow-hidden"
+            )}
+          >
+            {plan.title === "Premium" && (
+              <div className="absolute -right-12 top-6 bg-indigo-500 text-white px-12 py-1 rotate-45">
+                Popular
               </div>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span>All Premium plan features</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span>Custom AI Navigators</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span>Custom AI Agents</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span>Custom Health Tracks</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span>Enterprise Health Dashboard</span>
-                </li>
+            )}
+            <CardHeader>
+              <CardTitle className="text-2xl text-indigo-600">{plan.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-4xl font-bold mb-4 text-gray-700">{plan.price}</p>
+              <ul className="space-y-2">
+                {plan.features.map((feature) => (
+                  <li key={feature} className="flex items-center">
+                    <CheckCircle className="mr-2 text-green-500" />
+                    {feature}
+                  </li>
+                ))}
               </ul>
-            </div>
-            <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white" asChild>
-              <Link href="/contact-sales">Contact Sales</Link>
-            </Button>
-          </CardContent>
-        </Card>
+              <Button className="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white" asChild>
+                <Link href="/signup">{plan.buttonText}</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </section>
 
-    <section className="mb-16">
-      <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">What Our Users Say</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <Card className="hover:shadow-lg transition-shadow duration-300">
-          <CardContent className="pt-6">
-            <p className="italic mb-4 text-gray-600">"Wellspace has transformed how I manage my health. The AI navigator, Charlie, provides incredibly insightful advice, and the health tracks keep me motivated. It's like having a personal health coach in my pocket!"</p>
-            <p className="font-semibold text-indigo-600">- Sarah Johnson, Fitness Enthusiast</p>
-          </CardContent>
-        </Card>
-        <Card className="hover:shadow-lg transition-shadow duration-300">
-          <CardContent className="pt-6">
-            <p className="italic mb-4 text-gray-600">"As someone with a chronic condition, keeping track of my medical records was always a hassle. Wellspace's secure storage and easy access have been a game-changer. I feel more in control of my health than ever before."</p>
-            <p className="font-semibold text-indigo-600">- Michael Chen, Software Engineer</p>
-          </CardContent>
-        </Card>
-        <Card className="hover:shadow-lg transition-shadow duration-300">
-          <CardContent className="pt-6">
-            <p className="italic mb-4 text-gray-600">"The rewards system is brilliant! It's encouraging to see my healthy choices translate into tangible benefits. Plus, the community feature has connected me with others on similar health journeys. Truly a comprehensive health platform!"</p>
-            <p className="font-semibold text-indigo-600">- Emily Rodriguez, Teacher</p>
-          </CardContent>
-        </Card>
+    <section className="mb-16 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-indigo-50/50 to-transparent" />
+      <div className="relative">
+        <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">What Our Users Say</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {testimonials.map((testimonial) => (
+            <Card key={testimonial.author} className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <CardContent className="pt-6 relative">
+                <div className="absolute -top-4 left-6 text-indigo-200 text-6xl">"</div>
+                <p className="italic mb-4 text-gray-600 relative z-10">{testimonial.quote}</p>
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                    {testimonial.author[0]}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-indigo-600">{testimonial.author}</p>
+                    <p className="text-sm text-gray-500">{testimonial.title}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </section>
   </main>
