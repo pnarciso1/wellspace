@@ -131,12 +131,9 @@ export default function Login() {
                   Sign up
                 </Link>
               </p>
-              <Link 
-                href="/reset-password" 
-                className="text-sm text-gray-400 hover:text-gray-300 hover:underline transition-colors"
-              >
-                Forgot your password?
-              </Link>
+              <Button variant="link" asChild className="px-0">
+                <Link href="/request-reset">Forgot Password?</Link>
+              </Button>
             </div>
           </CardContent>
         </Card>
