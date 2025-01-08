@@ -27,7 +27,7 @@ type AuthContextType = {
   resetPassword: (email: string) => Promise<void>
   getHealthProfile: () => Promise<HealthProfile | null>
   updateHealthProfile: (data: UpdateHealthProfileInput) => Promise<HealthProfile>
-  signUp: (email: string, password: string) => Promise<void>
+  signUp: (email: string, password: string, name: string) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -136,20 +136,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return profile
   }
 
-  const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
+  const signUp = async (email: string, password: string, name: string) => {
+    const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: {
+        data: {
+          full_name: name
+        },
         emailRedirectTo: `${window.location.origin}/auth/callback`
       }
     })
-    if (error) throw error
+    if (signUpError) throw signUpError
   }
 
   const value = {
     user,
-    isAuthenticated,
+    isAuthenticated: !!user,
     loading,
     signIn,
     signOut,
