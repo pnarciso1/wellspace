@@ -1,70 +1,86 @@
 "use client"
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
+import { updatePassword } from '@/utils/auth'
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/components/ui/use-toast"
-import { Toaster } from "@/components/ui/toaster"
-import { useAuth } from '@/contexts/AuthContext'
 
-export default function ResetPassword() {
-  const [email, setEmail] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const { resetPassword } = useAuth()
+export default function ResetPasswordPage() {
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const searchParams = useSearchParams()
   const router = useRouter()
   const { toast } = useToast()
+  const token = searchParams?.get('access_token')
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setIsLoading(true)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+
     try {
-      await resetPassword(email)
+      if (!token) throw new Error('No reset token provided')
+      await updatePassword(password, token)
+
       toast({
-        title: "Password Reset Email Sent",
-        description: "Check your email for the password reset link.",
+        title: "Success",
+        description: "Password has been reset. Please log in.",
       })
+
       router.push('/login')
-    } catch (error) {
-      console.error('Password reset error:', error)
+    } catch (error: any) {
       toast({
-        title: "Password Reset Failed",
-        description: "An error occurred. Please try again.",
-        variant: "destructive",
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
       })
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
+  if (searchParams?.get('type') !== 'recovery' || !searchParams?.get('access_token')) {
+    return (
+      <div className="container mx-auto flex items-center justify-center min-h-screen p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Invalid Reset Link</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-gray-500">This password reset link is invalid or has expired.</p>
+            <Button className="w-full mt-4" onClick={() => router.push('/login')}>
+              Return to Login
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="container mx-auto flex items-center justify-center min-h-screen p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Reset Your Password</CardTitle>
+          <CardTitle>Reset Password</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="john@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Sending...' : 'Send Reset Link'}
+            <Input
+              type="password"
+              placeholder="New Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+            />
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Resetting...' : 'Reset Password'}
             </Button>
           </form>
         </CardContent>
       </Card>
-      <Toaster />
     </div>
   )
 }
