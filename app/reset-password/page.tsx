@@ -1,14 +1,15 @@
 "use client"
 
+import React, { Suspense } from 'react'
 import { useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { updatePassword } from '@/utils/auth'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/components/ui/use-toast"
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const searchParams = useSearchParams()
@@ -22,7 +23,13 @@ export default function ResetPasswordPage() {
 
     try {
       if (!token) throw new Error('No reset token provided')
-      await updatePassword(password, token)
+      const supabase = createClientComponentClient()
+
+      const { error } = await supabase.auth.updateUser({
+        password: password
+      })
+
+      if (error) throw error
 
       toast({
         title: "Success",
@@ -41,47 +48,60 @@ export default function ResetPasswordPage() {
     }
   }
 
-  if (searchParams?.get('type') !== 'recovery' || !searchParams?.get('access_token')) {
+  if (!searchParams?.get('type') || !token) {
     return (
-      <div className="container mx-auto flex items-center justify-center min-h-screen p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Invalid Reset Link</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-500">This password reset link is invalid or has expired.</p>
-            <Button className="w-full mt-4" onClick={() => router.push('/login')}>
-              Return to Login
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Invalid Reset Link</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-500">This password reset link is invalid or has expired.</p>
+          <Button className="w-full mt-4" onClick={() => router.push('/login')}>
+            Return to Login
+          </Button>
+        </CardContent>
+      </Card>
     )
   }
 
   return (
-    <div className="container mx-auto flex items-center justify-center min-h-screen p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Reset Password</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              type="password"
-              placeholder="New Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-            />
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Resetting...' : 'Reset Password'}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle>Reset Password</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            type="password"
+            placeholder="New Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={6}
+          />
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? 'Resetting...' : 'Reset Password'}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   )
 }
 
+export default function ResetPasswordPage() {
+  return (
+    <div className="container mx-auto flex items-center justify-center min-h-screen p-4">
+      <Suspense 
+        fallback={
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle>Loading...</CardTitle>
+            </CardHeader>
+          </Card>
+        }
+      >
+        <ResetPasswordForm />
+      </Suspense>
+    </div>
+  )
+} 
