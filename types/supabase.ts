@@ -151,6 +151,41 @@ export interface Database {
           progress?: Json
         }
       }
+      health_goals: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          description: string | null
+          target_value: number
+          current_value: number
+          unit: string
+          target_date: string
+          status: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title: string
+          description?: string | null
+          target_value: number
+          current_value?: number
+          unit: string
+          target_date: string
+          status?: string
+        }
+        Update: {
+          title?: string
+          description?: string | null
+          target_value?: number
+          current_value?: number
+          unit?: string
+          target_date?: string
+          status?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never

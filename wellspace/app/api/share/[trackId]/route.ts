@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '../../../../lib/supabase'
-import type { Database } from '../../../../types/supabase'
+import { supabase } from '@/lib/supabase'
+import type { Database } from '@/types/supabase'
 
 type Track = Database['public']['Tables']['user_health_tracks']['Row']
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { trackId: string } }
+  context: { params: { trackId: string } }
 ) {
-  if (!params.trackId) {
+  const { trackId } = context.params
+  
+  if (!trackId) {
     return NextResponse.json(
       { error: 'Track ID is required' },
       { status: 400 }
@@ -26,7 +28,7 @@ export async function GET(
           title
         )
       `)
-      .eq('id', params.trackId)
+      .eq('id', trackId)
       .single()
 
     if (error) {
@@ -53,4 +55,4 @@ export async function GET(
       { status: 500 }
     )
   }
-} 
+}
