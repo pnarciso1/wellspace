@@ -92,99 +92,111 @@ export default function PremiumSignUp() {
 
   if (showVerificationMessage) {
     return (
-      <div className="container mx-auto py-10">
-        <Card className="max-w-md mx-auto">
-          <CardHeader>
-            <CardTitle>Check Your Email</CardTitle>
-            <CardDescription>
-              We've sent you an email verification link. Please verify your email before proceeding with the subscription.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Alert className="mb-4">
-              <Info className="h-4 w-4" />
-              <AlertDescription>
-                After verifying your email, you'll be redirected to complete your premium subscription setup.
-              </AlertDescription>
-            </Alert>
-            <Button 
-              className="w-full" 
-              variant="outline" 
-              onClick={() => router.push('/login')}
-            >
-              Go to Login
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-indigo-900 py-10">
+        <div className="container mx-auto px-4">
+          <Card className="max-w-md mx-auto bg-white/10 backdrop-blur-md border-white/20">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-white">Check Your Email</CardTitle>
+              <CardDescription className="text-gray-300">
+                We've sent you an email verification link. Please verify your email before proceeding with the subscription.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Alert className="bg-white/10 border-indigo-400/20 text-gray-300 mb-4">
+                <Info className="h-4 w-4 text-indigo-400" />
+                <AlertDescription>
+                  After verifying your email, you'll be redirected to complete your premium subscription setup.
+                </AlertDescription>
+              </Alert>
+              <Button 
+                className="w-full bg-indigo-500 hover:bg-indigo-600 text-white" 
+                variant="outline" 
+                onClick={() => router.push('/login')}
+              >
+                Go to Login
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto py-10">
-      <Card className="max-w-md mx-auto">
-        <CardHeader>
-          <CardTitle>Sign Up for Premium Plan</CardTitle>
-          <CardDescription>
-            Create your account to get started with our premium features.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="John Doe"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-            </div>
-            <Alert>
-              <Info className="h-4 w-4" />
-              <AlertDescription>
-                You'll need to verify your email before completing the subscription process.
-              </AlertDescription>
-            </Alert>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Processing...' : 'Sign Up and Subscribe'}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-indigo-900 py-10">
+      <div className="container mx-auto px-4">
+        <Card className="max-w-md mx-auto bg-white/10 backdrop-blur-md border-white/20">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-white">Sign Up for Premium Plan</CardTitle>
+            <CardDescription className="text-gray-300">
+              Create your account to get started with our premium features.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-gray-200">Full Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="John Doe"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-gray-200">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-gray-200">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="bg-white/10 border-white/20 text-white"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword" className="text-gray-200">Confirm Password</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  className="bg-white/10 border-white/20 text-white"
+                />
+              </div>
+              <Alert className="bg-white/10 border-indigo-400/20 text-gray-300">
+                <Info className="h-4 w-4 text-indigo-400" />
+                <AlertDescription>
+                  You'll need to verify your email before completing the subscription process.
+                </AlertDescription>
+              </Alert>
+              <Button 
+                type="submit" 
+                className="w-full bg-indigo-500 hover:bg-indigo-600 text-white" 
+                disabled={isLoading}
+              >
+                {isLoading ? 'Processing...' : 'Sign Up and Subscribe'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

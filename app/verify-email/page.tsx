@@ -1,80 +1,63 @@
-'use client'
+"use client"
 
-import { Suspense } from 'react'
-import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { useAuth } from '@/contexts/AuthContext'
 
-function VerifyEmailPage() {
-  const [isVerified, setIsVerified] = useState(false)
-  const { user, refreshSession } = useAuth()
+export default function VerifyEmailPage() {
+  const [message, setMessage] = useState('Verifying your email...')
   const router = useRouter()
   const searchParams = useSearchParams()
-  const code = searchParams?.get('code')
+  const supabase = createClientComponentClient()
 
   useEffect(() => {
-    const checkVerification = async () => {
-      if (code) {
-        // If we have a code, redirect to login
-        router.push('/login')
-        return
-      }
+    const verifyEmail = async () => {
+      try {
+        const token = searchParams?.get('token')
+        const type = searchParams?.get('type')
 
-      if (user) {
-        await refreshSession()
-        if (user.email_confirmed_at) {
-          setIsVerified(true)
-          setTimeout(() => {
-            router.push('/dashboard')
-          }, 3000)
+        if (!token || !type) {
+          setMessage('Invalid verification link')
+          return
         }
+
+        const { error } = await supabase.auth.verifyOtp({
+          token_hash: token,
+          type: 'signup'
+        })
+
+        if (error) throw error
+        setMessage('Email verified successfully!')
+      } catch (error) {
+        console.error('Error:', error)
+        setMessage('Failed to verify email. Please try again.')
       }
     }
 
-    checkVerification()
-    const interval = setInterval(checkVerification, 5000)
-
-    return () => clearInterval(interval)
-  }, [user, refreshSession, router, code])
+    verifyEmail()
+  }, [searchParams])
 
   return (
-    <div className="container mx-auto py-10">
-      <Card className="max-w-md mx-auto">
+    <div className="container mx-auto flex items-center justify-center min-h-screen p-4">
+      <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Verify Your Email</CardTitle>
-          <CardDescription>
-            {isVerified
-              ? "Your email has been verified. You'll be redirected to the dashboard shortly."
-              : "Please check your email and click the verification link to complete your registration."}
-          </CardDescription>
+          <CardTitle>Email Verification</CardTitle>
         </CardHeader>
-        <CardContent>
-          {!isVerified && (
-            <Button onClick={() => router.push('/login')} className="w-full">
-              Go to Login
-            </Button>
-          )}
+        <CardContent className="space-y-4">
+          <p className="text-center">{message}</p>
+          <Button 
+            className="w-full" 
+            onClick={() => router.push('/login')}
+          >
+            Go to Login
+          </Button>
         </CardContent>
       </Card>
     </div>
   )
 }
-
-// Create a wrapper component with Suspense
-function VerifyEmailWrapper() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <VerifyEmailPage />
-    </Suspense>
-  )
-}
-
-export default VerifyEmailWrapper
-
-
 
 
 
