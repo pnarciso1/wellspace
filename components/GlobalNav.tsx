@@ -10,7 +10,8 @@ import {
   MessageSquare,
   Activity,
   UserCircle,
-  LogOut
+  LogOut,
+  Video
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
@@ -20,6 +21,7 @@ const links = [
   { name: 'Medical Records', href: '/medical-records', icon: FileText },
   { name: 'Health Profile', href: '/health-profile', icon: UserCircle },
   { name: 'Health Tracks', href: '/health-tracks', icon: Activity },
+  { name: 'Videos', href: '/videos', icon: Video },
   { name: 'AI Chat', href: '/ai-chat', icon: MessageSquare },
   { name: 'Community', href: '/community', icon: Users },
 ]

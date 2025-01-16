@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { GlobalNav } from '@/components/GlobalNav'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { Sidebar } from "@/components/sidebar"
 
 export default function AuthenticatedLayout({
   children,

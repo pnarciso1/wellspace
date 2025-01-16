@@ -7,11 +7,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
-import { Activity, Calendar, FileText, Heart, MessageSquare, Users, Trophy, CheckCircle } from 'lucide-react'
+import { Activity, Calendar, FileText, Heart, MessageSquare, Users, Trophy, CheckCircle, Video } from 'lucide-react'
 import Link from 'next/link'
 import type { Database } from '@/types/supabase'
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { formatDistanceToNow } from 'date-fns'
+import { useRouter } from 'next/navigation'
 
 type HealthGoal = Database['public']['Tables']['health_goals']['Row']
 type ActiveTrack = {
@@ -47,6 +48,7 @@ export default function Dashboard() {
   const [activeTracks, setActiveTracks] = useState<ActiveTrack[]>([])
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([])
   const supabase = createClientComponentClient()
+  const router = useRouter()
 
   useEffect(() => {
     loadProfileProgress()
@@ -211,18 +213,36 @@ export default function Dashboard() {
       </Card>
 
       {/* Quick Actions Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <Link href="/medical-records">
-          <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <CardContent className="flex items-center p-6">
-              <FileText className="h-8 w-8 text-blue-500 mr-4" />
-              <div>
-                <h3 className="font-semibold">Medical Records</h3>
-                <p className="text-sm text-gray-500">View and manage your records</p>
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <Card 
+          className="bg-white/10 backdrop-blur-md border-white/20 hover:border-indigo-500/50 transition-all cursor-pointer"
+          onClick={() => router.push('/medical-records')}
+        >
+          <CardContent className="p-6 flex items-center gap-4">
+            <div className="p-3 bg-indigo-500/10 rounded-lg">
+              <FileText className="w-6 h-6 text-indigo-500" />
+            </div>
+            <div>
+              <h3 className="font-semibold">Medical Records</h3>
+              <p className="text-sm text-gray-400">View your health data</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card 
+          className="bg-white/10 backdrop-blur-md border-white/20 hover:border-indigo-500/50 transition-all cursor-pointer"
+          onClick={() => router.push('/videos')}
+        >
+          <CardContent className="p-6 flex items-center gap-4">
+            <div className="p-3 bg-indigo-500/10 rounded-lg">
+              <Video className="w-6 h-6 text-indigo-500" />
+            </div>
+            <div>
+              <h3 className="font-semibold">Video Library</h3>
+              <p className="text-sm text-gray-400">Watch health & wellness videos</p>
+            </div>
+          </CardContent>
+        </Card>
 
         <Link href="/ai-chat">
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
