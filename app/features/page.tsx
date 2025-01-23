@@ -1,17 +1,29 @@
+"use client"
+
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { CheckCircle, Brain, FileText, Activity, Gift, BotIcon as Robot, Zap, Users, Shield, Mail, AtSign, Twitter } from 'lucide-react'
+import { CheckCircle, Brain, FileText, Activity, Gift, BotIcon as Robot, Zap, Users, Shield, Mail, AtSign, Twitter, Menu } from 'lucide-react'
+import { useState } from 'react'
 
 export default function FeaturesPage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
   return (
     <div className="min-h-screen bg-white">
-      <header className="bg-white shadow-md">
+      <header className="bg-white shadow-md relative z-50">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between py-6">
             <Link href="/" className="text-3xl font-bold text-indigo-600">Wellspace</Link>
-            <nav>
+            
+            {/* Mobile Menu Button */}
+            <button className="md:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              <Menu className="h-6 w-6 text-gray-600" />
+            </button>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden md:block">
               <ul className="flex space-x-6">
                 <li><Link href="/" className="text-gray-600 hover:text-indigo-600 transition-colors">Home</Link></li>
                 <li><Link href="/about" className="text-gray-600 hover:text-indigo-600 transition-colors">About</Link></li>
@@ -19,7 +31,9 @@ export default function FeaturesPage() {
                 <li><Link href="/contact" className="text-gray-600 hover:text-indigo-600 transition-colors">Contact</Link></li>
               </ul>
             </nav>
-            <div className="flex items-center space-x-4">
+
+            {/* Desktop Actions */}
+            <div className="hidden md:flex items-center space-x-4">
               <Input type="search" placeholder="Search..." className="max-w-sm" />
               <Link href="/login">
                 <Button variant="outline">Log In</Button>
@@ -28,6 +42,26 @@ export default function FeaturesPage() {
                 <Button>Sign Up</Button>
               </Link>
             </div>
+
+            {/* Mobile Menu */}
+            {isMenuOpen && (
+              <div className="absolute top-20 left-0 right-0 bg-white shadow-lg p-4 md:hidden z-50">
+                <nav className="flex flex-col space-y-4">
+                  <Link href="/" className="text-gray-600 hover:text-indigo-600 transition-colors" onClick={() => setIsMenuOpen(false)}>Home</Link>
+                  <Link href="/about" className="text-gray-600 hover:text-indigo-600 transition-colors" onClick={() => setIsMenuOpen(false)}>About</Link>
+                  <Link href="/features" className="text-indigo-600 font-semibold" onClick={() => setIsMenuOpen(false)}>Features</Link>
+                  <Link href="/contact" className="text-gray-600 hover:text-indigo-600 transition-colors" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+                  <div className="pt-4 border-t border-gray-200">
+                    <Link href="/login" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="outline" className="w-full mb-2">Log In</Button>
+                    </Link>
+                    <Link href="/signup" onClick={() => setIsMenuOpen(false)}>
+                      <Button className="w-full">Sign Up</Button>
+                    </Link>
+                  </div>
+                </nav>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -39,8 +73,10 @@ export default function FeaturesPage() {
           </div>
           
           <div className="relative z-10 container mx-auto px-4">
-            <h1 className="text-7xl font-bold text-white mb-6 tracking-tight">Wellspace Features</h1>
-            <p className="text-2xl text-gray-300 max-w-2xl mx-auto">
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-4 md:mb-6 tracking-tight">
+              Wellspace Features
+            </h1>
+            <p className="text-lg md:text-2xl text-gray-300 max-w-2xl mx-auto px-4 md:px-0">
               Discover the tools and features that make Wellspace your complete healthcare management solution.
             </p>
           </div>
@@ -61,9 +97,9 @@ export default function FeaturesPage() {
         </div>
 
         <div className="container mx-auto px-4">
-          <section className="mb-16">
-            <h2 className="text-3xl font-semibold mb-8">Free Plan Features</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <section className="mb-12 md:mb-16">
+            <h2 className="text-2xl md:text-3xl font-semibold mb-6 md:mb-8">Free Plan Features</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 px-4 md:px-8">
               <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <CardHeader>
                   <CardTitle className="flex items-center text-xl">
@@ -200,14 +236,14 @@ export default function FeaturesPage() {
             </div>
           </section>
 
-          <div className="text-center mt-24 mb-24">
-            <h2 className="text-3xl font-semibold text-gray-800 mb-6">Ready to Get Started?</h2>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+          <div className="text-center mt-16 md:mt-24 mb-16 md:mb-24 px-4 md:px-0">
+            <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-4 md:mb-6">Ready to Get Started?</h2>
+            <p className="text-lg md:text-xl text-gray-600 mb-6 md:mb-8 max-w-3xl mx-auto">
               Join Wellspace today and take control of your health journey with our innovative AI-powered platform.
             </p>
             <Button 
               size="lg" 
-              className="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-6 text-lg"
+              className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 md:px-8 py-4 md:py-6 text-base md:text-lg w-full md:w-auto"
               asChild
             >
               <Link href="/signup">Sign Up Now</Link>

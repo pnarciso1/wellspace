@@ -5,16 +5,26 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { Heart, Users, Zap, Award, Mail, AtSign, Twitter } from 'lucide-react'
+import { Heart, Users, Zap, Award, Mail, AtSign, Twitter, Menu } from 'lucide-react'
+import { useState } from 'react'
 
 export default function AboutPage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
   return (
     <div className="min-h-screen bg-white">
-      <header className="bg-white shadow-md">
+      <header className="bg-white shadow-md relative z-50">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between py-6">
             <Link href="/" className="text-3xl font-bold text-indigo-600">Wellspace</Link>
-            <nav>
+            
+            {/* Mobile Menu Button */}
+            <button className="md:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              <Menu className="h-6 w-6 text-gray-600" />
+            </button>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden md:block">
               <ul className="flex space-x-6">
                 <li><Link href="/" className="text-gray-600 hover:text-indigo-600 transition-colors">Home</Link></li>
                 <li><Link href="/about" className="text-indigo-600 font-semibold">About</Link></li>
@@ -22,7 +32,9 @@ export default function AboutPage() {
                 <li><Link href="/contact" className="text-gray-600 hover:text-indigo-600 transition-colors">Contact</Link></li>
               </ul>
             </nav>
-            <div className="flex items-center space-x-4">
+
+            {/* Desktop Actions */}
+            <div className="hidden md:flex items-center space-x-4">
               <Input type="search" placeholder="Search..." className="max-w-sm" />
               <Link href="/login">
                 <Button variant="outline">Log In</Button>
@@ -31,6 +43,26 @@ export default function AboutPage() {
                 <Button>Sign Up</Button>
               </Link>
             </div>
+
+            {/* Mobile Menu */}
+            {isMenuOpen && (
+              <div className="absolute top-20 left-0 right-0 bg-white shadow-lg p-4 md:hidden z-50">
+                <nav className="flex flex-col space-y-4">
+                  <Link href="/" className="text-gray-600 hover:text-indigo-600 transition-colors" onClick={() => setIsMenuOpen(false)}>Home</Link>
+                  <Link href="/about" className="text-indigo-600 font-semibold" onClick={() => setIsMenuOpen(false)}>About</Link>
+                  <Link href="/features" className="text-gray-600 hover:text-indigo-600 transition-colors" onClick={() => setIsMenuOpen(false)}>Features</Link>
+                  <Link href="/contact" className="text-gray-600 hover:text-indigo-600 transition-colors" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+                  <div className="pt-4 border-t border-gray-200">
+                    <Link href="/login" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="outline" className="w-full mb-2">Log In</Button>
+                    </Link>
+                    <Link href="/signup" onClick={() => setIsMenuOpen(false)}>
+                      <Button className="w-full">Sign Up</Button>
+                    </Link>
+                  </div>
+                </nav>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -42,8 +74,8 @@ export default function AboutPage() {
           </div>
           
           <div className="relative z-10 container mx-auto px-4">
-            <h1 className="text-7xl font-bold text-white mb-6 tracking-tight">About Wellspace</h1>
-            <p className="text-2xl text-gray-300 max-w-3xl mx-auto">
+            <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-4 md:mb-6 tracking-tight">About Wellspace</h1>
+            <p className="text-lg md:text-2xl text-gray-300 max-w-3xl mx-auto px-4 md:px-0">
               Wellspace by PeopleCare.ai is revolutionizing healthcare management through innovative AI-driven solutions. Our mission is to empower individuals to take control of their health journey with ease and confidence.
             </p>
           </div>
@@ -64,9 +96,9 @@ export default function AboutPage() {
         </div>
 
         <div className="container mx-auto px-4">
-          <section className="mb-16">
-            <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">Our Core Values</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <section className="mb-12 md:mb-16">
+            <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-6 md:mb-8 text-center px-4">Our Core Values</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 px-4 md:px-8">
               <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <CardHeader>
                   <CardTitle className="flex items-center text-2xl text-indigo-600">
@@ -114,10 +146,10 @@ export default function AboutPage() {
             </div>
           </section>
 
-          <section className="mb-16">
-            <h2 className="text-3xl font-semibold text-gray-800 mb-8 text-center">Our Story</h2>
+          <section className="mb-12 md:mb-16 px-4 md:px-8">
+            <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-6 md:mb-8 text-center">Our Story</h2>
             <Card className="hover:shadow-lg transition-all duration-300">
-              <CardContent className="p-8">
+              <CardContent className="p-4 md:p-8">
                 <p className="text-gray-600 mb-4">
                   Wellspace was born from a simple yet powerful idea: healthcare management should be accessible, intuitive, and personalized. Our team of healthcare professionals and tech innovators recognized the challenges individuals face in navigating the complex world of healthcare.
                 </p>
@@ -131,14 +163,14 @@ export default function AboutPage() {
             </Card>
           </section>
 
-          <section className="text-center mb-24">
-            <h2 className="text-3xl font-semibold text-gray-800 mb-8">Join Us on This Journey</h2>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+          <section className="text-center mb-16 md:mb-24 px-4 md:px-8">
+            <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-4 md:mb-8">Join Us on This Journey</h2>
+            <p className="text-lg md:text-xl text-gray-600 mb-6 md:mb-8 max-w-3xl mx-auto">
               Be part of the healthcare revolution. Experience the future of personalized health management with Wellspace.
             </p>
             <Button 
               size="lg" 
-              className="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-6 text-lg"
+              className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 md:px-8 py-4 md:py-6 text-base md:text-lg w-full md:w-auto"
               asChild
             >
               <Link href="/signup">Get Started Today</Link>
@@ -147,15 +179,16 @@ export default function AboutPage() {
         </div>
       </main>
 
-      <footer className="bg-gray-800 text-white py-12 mt-16">
+      <footer className="bg-gray-800 text-white py-8 md:py-12 mt-12 md:mt-16">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-between">
-            <div className="w-full md:w-1/3 mb-6 md:mb-0">
-              <h3 className="text-2xl font-bold mb-4">Wellspace</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+            <div className="text-center md:text-left">
+              <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">Wellspace</h3>
               <p className="text-gray-300">Simplifying healthcare for everyone.</p>
             </div>
-            <div className="w-full md:w-1/3 mb-6 md:mb-0">
-              <h4 className="text-xl font-semibold mb-4">Quick Links</h4>
+
+            <div className="text-center md:text-left">
+              <h4 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Quick Links</h4>
               <ul className="space-y-2">
                 <li><Link href="/" className="hover:text-indigo-300 transition-colors">Home</Link></li>
                 <li><Link href="/about" className="hover:text-indigo-300 transition-colors">About</Link></li>
@@ -164,27 +197,31 @@ export default function AboutPage() {
                 <li><Link href="/legal" className="hover:text-indigo-300 transition-colors">Privacy Policy</Link></li>
               </ul>
             </div>
-            <div className="w-full md:w-1/3">
-              <h4 className="text-xl font-semibold mb-4">Connect With Us</h4>
-              <p className="text-gray-300 mb-4">Follow us on social media for updates and health tips.</p>
-              <div className="space-y-3">
-                <a href="mailto:contactus@peoplecare.ai" className="flex items-center text-gray-300 hover:text-indigo-300 transition-colors">
+
+            <div className="text-center md:text-left">
+              <h4 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Connect With Us</h4>
+              <p className="text-gray-300 mb-3 md:mb-4">Follow us on social media for updates and health tips.</p>
+              <div className="space-y-2 md:space-y-3">
+                <a href="mailto:contactus@peoplecare.ai" className="flex items-center justify-center md:justify-start text-gray-300 hover:text-indigo-300 transition-colors">
                   <Mail className="h-5 w-5 mr-2" />
-                  contactus@peoplecare.ai
+                  <span>contactus@peoplecare.ai</span>
                 </a>
-                <a href="https://bsky.app/profile/peoplecare.bsky.social" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-300 hover:text-indigo-300 transition-colors">
+                <a href="https://bsky.app/profile/peoplecare.bsky.social" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center md:justify-start text-gray-300 hover:text-indigo-300 transition-colors">
                   <AtSign className="h-5 w-5 mr-2" />
-                  @peoplecare.bsky.social
+                  <span>@peoplecare.bsky.social</span>
                 </a>
-                <a href="https://twitter.com/peoplecarai" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-300 hover:text-indigo-300 transition-colors">
+                <a href="https://twitter.com/peoplecarai" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center md:justify-start text-gray-300 hover:text-indigo-300 transition-colors">
                   <Twitter className="h-5 w-5 mr-2" />
-                  @peoplecarai
+                  <span>@peoplecarai</span>
                 </a>
               </div>
             </div>
           </div>
-          <div className="mt-8 text-center">
-            <p>&copy; 2024 Wellspace by PeopleCare.ai. All rights reserved.</p>
+
+          <div className="mt-8 pt-8 border-t border-gray-700">
+            <p className="text-center text-sm md:text-base text-gray-400">
+              © 2024 Wellspace by PeopleCare.ai. All rights reserved.
+            </p>
           </div>
         </div>
       </footer>
