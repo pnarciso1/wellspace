@@ -21,6 +21,7 @@ import {
   Heart,
   LayoutDashboard,
   LayoutGrid,
+  LogOut,
   Mail,
   MapPin,
   Menu,
@@ -28,14 +29,13 @@ import {
   Phone,
   Plus,
   Star,
-  Trash2,
+  Trash,
   Trophy,
   Twitter,
   User,
   Users,
   Video,
-  XCircle,
-  type LucideIcon
+  XCircle
 } from 'lucide-react';
 
 /**
@@ -84,6 +84,7 @@ export const Icons = {
   FileText,
   LayoutDashboard,
   LayoutGrid,
+  LogOut,
   Mail,
   MapPin,
   Menu,
@@ -91,7 +92,7 @@ export const Icons = {
   Phone,
   Plus,
   Star,
-  Trash2,
+  Trash2: Trash,
   Trophy,
   Twitter,
   User,
@@ -130,4 +131,7 @@ export type IconComponent = React.ComponentType<React.ComponentProps<typeof Acti
  */
 export function getIcon(name: IconName): IconComponent {
   return Icons[name];
-} 
+}
+
+// Default export for compatibility
+export default Icons; 
