@@ -62,18 +62,20 @@ export default function AboutPage() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left">
-                <nav className="flex flex-col space-y-4">
-                  {navigationItems.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="text-sm font-medium transition-colors hover:text-foreground/80"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </nav>
+                <div>
+                  <nav className="flex flex-col space-y-4">
+                    {navigationItems.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="text-sm font-medium transition-colors hover:text-foreground/80"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </nav>
+                </div>
               </SheetContent>
             </Sheet>
 
