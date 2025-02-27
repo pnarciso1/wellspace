@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Plus as PlusIcon, ClipboardCheck, FileText } from 'lucide-react'
+import { Plus as PlusIcon, FileText, CheckSquare } from 'lucide-react'
 import { Toaster, toast } from 'sonner'
 import { DoctorVisitForm } from './components/doctor-visit-form'
 import { PatientInfoForm } from './components/patient-info-form'
@@ -17,7 +17,7 @@ import type { CategoryType } from './types'
 
 type Step = 'info' | 'symptoms' | 'quality' | 'summary'
 
-export function DoctorVisitClient() {
+export default function DoctorVisitClient() {
   const [step, setStep] = useState<Step>('info')
   const [recordId, setRecordId] = useState<string | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('all')
@@ -79,7 +79,7 @@ export function DoctorVisitClient() {
                   Quality of Life
                 </Button>
                 <Button onClick={() => setStep('summary')}>
-                  <ClipboardCheck className="h-4 w-4 mr-2" />
+                  <CheckSquare className="h-4 w-4 mr-2" />
                   View Summary
                 </Button>
               </div>
