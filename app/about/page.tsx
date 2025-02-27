@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { Heart, Users, Activity, MessageSquare, FileText, ChevronRight, Menu, MessagesSquare } from 'lucide-react'
+import { Heart, Users, Activity, MessageSquare, FileText, ChevronRight, Menu } from 'lucide-react'
 import Link from 'next/link'
 
 export default function AboutPage() {
@@ -30,7 +30,7 @@ export default function AboutPage() {
       description: "We continuously push the boundaries of what's possible in healthcare technology."
     },
     {
-      icon: <MessageSquare className="h-6 w-6" />,
+      icon: <span className="text-2xl">💬</span>,
       title: "Excellence",
       description: "We strive for the highest standards in all aspects of our service."
     }
