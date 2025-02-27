@@ -16,17 +16,34 @@ interface QualityOfLifeFormProps {
   onBack: () => void
 }
 
+interface QualityOfLifeFormData {
+  work_impact: string
+  household_impact: string
+  social_impact: string
+  exercise_impact: string
+  energy_level: string
+  sleep_quality: string
+  physical_comfort: string
+  mood_state: string
+  anxiety_level: string
+  stress_management: string
+  medication_effectiveness: string
+  side_effects_impact: string
+  treatment_satisfaction: string
+  notes: string
+}
+
 const IMPACT_LEVELS = [
   { value: '1', label: 'Minimal Impact', description: 'No significant effect on daily life' },
   { value: '2', label: 'Mild Impact', description: 'Occasionally affects daily activities' },
   { value: '3', label: 'Moderate Impact', description: 'Regularly affects daily activities' },
   { value: '4', label: 'Significant Impact', description: 'Frequently limits daily activities' },
   { value: '5', label: 'Severe Impact', description: 'Severely limits daily activities' }
-]
+] as const
 
 export function QualityOfLifeForm({ recordId, onComplete, onBack }: QualityOfLifeFormProps) {
   const [loading, setLoading] = useState(false)
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<QualityOfLifeFormData>({
     work_impact: '3',
     household_impact: '3',
     social_impact: '3',
@@ -78,6 +95,10 @@ export function QualityOfLifeForm({ recordId, onComplete, onBack }: QualityOfLif
     }
   }
 
+  const handleValueChange = (field: keyof QualityOfLifeFormData) => (value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
   return (
     <div className="space-y-8">
       <div className="flex items-center">
@@ -105,9 +126,7 @@ export function QualityOfLifeForm({ recordId, onComplete, onBack }: QualityOfLif
                   <Label>Work/School Impact</Label>
                   <RadioGroup
                     value={formData.work_impact}
-                    onValueChange={(value) => 
-                      setFormData(prev => ({ ...prev, work_impact: value }))
-                    }
+                    onValueChange={handleValueChange('work_impact')}
                     className="grid gap-2 mt-2"
                   >
                     {IMPACT_LEVELS.map((level) => (
@@ -128,9 +147,7 @@ export function QualityOfLifeForm({ recordId, onComplete, onBack }: QualityOfLif
                   <Label>Household Activities</Label>
                   <RadioGroup
                     value={formData.household_impact}
-                    onValueChange={(value) => 
-                      setFormData(prev => ({ ...prev, household_impact: value }))
-                    }
+                    onValueChange={handleValueChange('household_impact')}
                     className="grid gap-2 mt-2"
                   >
                     {IMPACT_LEVELS.map((level) => (
