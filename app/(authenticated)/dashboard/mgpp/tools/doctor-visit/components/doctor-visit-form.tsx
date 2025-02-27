@@ -152,8 +152,8 @@ export function DoctorVisitForm({ recordId, onSuccess, onCancel }: DoctorVisitFo
                   <Checkbox
                     id={`treatment-${option.value}`}
                     checked={treatments.includes(option.value as TreatmentType)}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
+                    onCheckedChange={(checked: boolean | 'indeterminate') => {
+                      if (checked === true) {
                         setTreatments(prev => [...prev, option.value as TreatmentType])
                       } else {
                         setTreatments(prev => prev.filter(t => t !== option.value))
