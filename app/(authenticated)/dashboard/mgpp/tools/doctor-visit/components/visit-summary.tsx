@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Printer } from 'lucide-react'
+import { ChevronLeft, Printer } from 'lucide-react'
 import { 
   SYMPTOM_DEFINITIONS,
   TREATMENT_OPTIONS
@@ -28,157 +28,139 @@ export function VisitSummary({ record, symptoms, qualityOfLife, onBack }: VisitS
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <Button variant="outline" onClick={onBack}>
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ChevronLeft className="h-4 w-4 mr-2" />
           Back to Symptoms
         </Button>
-        <Button onClick={handlePrint}>
+        <Button variant="outline" onClick={handlePrint}>
           <Printer className="h-4 w-4 mr-2" />
           Print Summary
         </Button>
       </div>
 
-      <Card className="print:shadow-none">
+      <Card>
         <CardHeader>
           <CardTitle>Visit Summary</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            <section>
-              <h3 className="text-lg font-semibold mb-4">Patient Information</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Name</p>
-                  <p>{record.first_name} {record.last_name}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Email</p>
-                  <p>{record.email}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Address</p>
-                  <p>{record.address}</p>
-                  <p>{record.state} {record.zip_code}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Birth Year</p>
-                  <p>{record.birth_year}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Years with MG</p>
-                  <p>{record.years_with_mg}</p>
-                </div>
+        <CardContent className="space-y-8">
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Patient Information</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm font-medium">Name</p>
+                <p className="text-sm text-muted-foreground">
+                  {record.first_name} {record.last_name}
+                </p>
               </div>
-            </section>
+              <div>
+                <p className="text-sm font-medium">Email</p>
+                <p className="text-sm text-muted-foreground">{record.email}</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium">Address</p>
+                <p className="text-sm text-muted-foreground">
+                  {record.address}
+                  {record.state && `, ${record.state}`}
+                  {record.zip_code && ` ${record.zip_code}`}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm font-medium">Birth Year</p>
+                <p className="text-sm text-muted-foreground">{record.birth_year}</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium">Years with MG</p>
+                <p className="text-sm text-muted-foreground">{record.years_with_mg}</p>
+              </div>
+            </div>
+          </div>
 
-            <section>
-              <h3 className="text-lg font-semibold mb-4">Symptoms</h3>
-              {symptoms.length > 0 ? (
-                <div className="space-y-4">
-                  {symptoms.map((symptom) => (
-                    <div key={symptom.id} className="border p-4 rounded-lg">
-                      <h4 className="font-medium">
-                        {SYMPTOM_DEFINITIONS[symptom.symptom_type].medical_term}
-                      </h4>
-                      <div className="mt-2 grid grid-cols-2 gap-4">
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Symptoms</h3>
+            <div className="space-y-4">
+              {symptoms.map((symptom) => (
+                <Card key={symptom.id}>
+                  <CardContent className="p-6">
+                    <div className="grid gap-4">
+                      <div>
+                        <h4 className="font-semibold">
+                          {SYMPTOM_DEFINITIONS[symptom.symptom_type].medical_term}
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          {SYMPTOM_DEFINITIONS[symptom.symptom_type].description}
+                        </p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-sm text-muted-foreground">Frequency</p>
-                          <p className="capitalize">{symptom.frequency.replace(/_/g, ' ')}</p>
+                          <p className="text-sm font-medium">Frequency</p>
+                          <p className="text-sm text-muted-foreground capitalize">
+                            {symptom.frequency.replace(/_/g, ' ')}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground">Intensity</p>
-                          <p>Level {symptom.intensity}</p>
+                          <p className="text-sm font-medium">Intensity</p>
+                          <p className="text-sm text-muted-foreground">
+                            Level {symptom.intensity}
+                          </p>
                         </div>
-                        {symptom.treatments && symptom.treatments.length > 0 && (
+                        {symptom.treatments.length > 0 && (
                           <div className="col-span-2">
-                            <p className="text-sm text-muted-foreground">Treatments</p>
-                            <p>{symptom.treatments.map(t => 
-                              TREATMENT_OPTIONS.find(opt => opt.value === t)?.label
-                            ).join(', ')}</p>
+                            <p className="text-sm font-medium">Treatments</p>
+                            <p className="text-sm text-muted-foreground">
+                              {symptom.treatments
+                                .map(t => TREATMENT_OPTIONS.find(opt => opt.value === t)?.label)
+                                .join(', ')}
+                            </p>
                           </div>
                         )}
                         {symptom.notes && (
                           <div className="col-span-2">
-                            <p className="text-sm text-muted-foreground">Notes</p>
-                            <p>{symptom.notes}</p>
+                            <p className="text-sm font-medium">Notes</p>
+                            <p className="text-sm text-muted-foreground">{symptom.notes}</p>
                           </div>
                         )}
                       </div>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-muted-foreground">No symptoms recorded</p>
-              )}
-            </section>
-
-            {qualityOfLife && (
-              <section>
-                <h3 className="text-lg font-semibold mb-4">Quality of Life Assessment</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Work Impact</p>
-                    <p>Level {qualityOfLife.work_impact}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Household Impact</p>
-                    <p>Level {qualityOfLife.household_impact}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Social Impact</p>
-                    <p>Level {qualityOfLife.social_impact}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Exercise Impact</p>
-                    <p>Level {qualityOfLife.exercise_impact}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Energy Level</p>
-                    <p>Level {qualityOfLife.energy_level}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Sleep Quality</p>
-                    <p>Level {qualityOfLife.sleep_quality}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Physical Comfort</p>
-                    <p>Level {qualityOfLife.physical_comfort}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Mood State</p>
-                    <p>Level {qualityOfLife.mood_state}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Anxiety Level</p>
-                    <p>Level {qualityOfLife.anxiety_level}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Stress Management</p>
-                    <p>Level {qualityOfLife.stress_management}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Medication Effectiveness</p>
-                    <p>Level {qualityOfLife.medication_effectiveness}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Side Effects Impact</p>
-                    <p>Level {qualityOfLife.side_effects_impact}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Treatment Satisfaction</p>
-                    <p>Level {qualityOfLife.treatment_satisfaction}</p>
-                  </div>
-                  {qualityOfLife.notes && (
-                    <div className="col-span-2">
-                      <p className="text-sm text-muted-foreground">Additional Notes</p>
-                      <p>{qualityOfLife.notes}</p>
-                    </div>
-                  )}
-                </div>
-              </section>
-            )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
+
+          {qualityOfLife && (
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Quality of Life Assessment</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium">Work Impact</p>
+                  <p className="text-sm text-muted-foreground">Level {qualityOfLife.work_impact}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Household Impact</p>
+                  <p className="text-sm text-muted-foreground">Level {qualityOfLife.household_impact}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Social Impact</p>
+                  <p className="text-sm text-muted-foreground">Level {qualityOfLife.social_impact}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Exercise Impact</p>
+                  <p className="text-sm text-muted-foreground">Level {qualityOfLife.exercise_impact}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Energy Level</p>
+                  <p className="text-sm text-muted-foreground">Level {qualityOfLife.energy_level}</p>
+                </div>
+                {qualityOfLife.notes && (
+                  <div className="col-span-2">
+                    <p className="text-sm font-medium">Additional Notes</p>
+                    <p className="text-sm text-muted-foreground">{qualityOfLife.notes}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
