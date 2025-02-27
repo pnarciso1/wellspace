@@ -31,59 +31,6 @@ export const TREATMENT_OPTIONS = [
   { value: 'none', label: 'None of the Above' }
 ] as const
 
-// Intensity scales for each symptom
-export const SYMPTOM_INTENSITY_SCALES = {
-  speech: [
-    { value: 'normal', label: 'Normal (1)' },
-    { value: 'intermittent', label: 'Intermittent slurring or nasal speech (2)' },
-    { value: 'moderate', label: 'Moderate slurring or nasal speech (3)' },
-    { value: 'constant', label: 'Constant slurring or nasal speech (4)' },
-    { value: 'difficult', label: 'Speech difficult to understand (5)' }
-  ],
-  vision: [
-    { value: 'normal', label: 'Normal vision (1)' },
-    { value: 'intermittent', label: 'Intermittent double vision (2)' },
-    { value: 'moderate', label: 'Moderate double vision (3)' },
-    { value: 'constant', label: 'Constant double vision (4)' },
-    { value: 'severe', label: 'Severe double vision affecting daily activities (5)' }
-  ],
-  breathing: [
-    { value: 'normal', label: 'Normal breathing (1)' },
-    { value: 'mild', label: 'Mild shortness of breath (2)' },
-    { value: 'moderate', label: 'Moderate difficulty breathing (3)' },
-    { value: 'constant', label: 'Constant difficulty breathing (4)' },
-    { value: 'severe', label: 'Severe difficulty breathing (5)' }
-  ],
-  swallowing: [
-    { value: 'normal', label: 'Normal swallowing (1)' },
-    { value: 'mild', label: 'Occasional difficulty (2)' },
-    { value: 'moderate', label: 'Regular difficulty (3)' },
-    { value: 'constant', label: 'Constant difficulty (4)' },
-    { value: 'severe', label: 'Severe difficulty swallowing (5)' }
-  ],
-  eyelid: [
-    { value: 'normal', label: 'Normal eyelid function (1)' },
-    { value: 'mild', label: 'Mild drooping (2)' },
-    { value: 'moderate', label: 'Moderate drooping (3)' },
-    { value: 'constant', label: 'Constant drooping (4)' },
-    { value: 'severe', label: 'Severe drooping blocking vision (5)' }
-  ],
-  expression: [
-    { value: 'normal', label: 'Normal facial expression (1)' },
-    { value: 'mild', label: 'Mild weakness (2)' },
-    { value: 'moderate', label: 'Moderate weakness (3)' },
-    { value: 'constant', label: 'Constant weakness (4)' },
-    { value: 'severe', label: 'Severe weakness (5)' }
-  ],
-  muscle_weakness: [
-    { value: 'normal', label: 'Normal strength (1)' },
-    { value: 'mild', label: 'Mild weakness (2)' },
-    { value: 'moderate', label: 'Moderate weakness (3)' },
-    { value: 'constant', label: 'Constant weakness (4)' },
-    { value: 'severe', label: 'Severe weakness (5)' }
-  ]
-} as const
-
 // Medical terminology definitions
 export const SYMPTOM_DEFINITIONS = {
   speech: {
@@ -131,11 +78,6 @@ export const SYMPTOM_DEFINITIONS = {
 } as const
 
 // Data structure interfaces
-export interface Treatment {
-  type: TreatmentType
-  notes?: string
-}
-
 export interface SymptomData {
   id: string
   created_at: string
@@ -145,7 +87,6 @@ export interface SymptomData {
   frequency: FrequencyType
   intensity: number
   treatments: TreatmentType[]
-  treatment_notes?: string | null
   notes: string | null
 }
 

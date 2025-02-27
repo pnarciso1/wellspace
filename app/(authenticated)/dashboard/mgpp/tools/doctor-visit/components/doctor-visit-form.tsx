@@ -12,7 +12,6 @@ import { toast } from 'sonner'
 import { 
   SYMPTOM_DEFINITIONS, 
   SYMPTOM_INTENSITY_SCALES,
-  SYMPTOM_CONTEXT_QUESTIONS,
   TREATMENT_OPTIONS 
 } from '../types'
 import type { 
