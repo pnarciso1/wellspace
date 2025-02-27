@@ -50,8 +50,6 @@ export function DoctorVisitForm({ recordId, onSuccess, onCancel }: DoctorVisitFo
         notes: notes || null
       }
 
-      console.log('Saving symptom data:', symptomData)
-
       const { data, error } = await supabase
         .from('doctor_visit_symptoms')
         .insert([symptomData])
@@ -89,7 +87,7 @@ export function DoctorVisitForm({ recordId, onSuccess, onCancel }: DoctorVisitFo
             <Label>Select Symptom Type</Label>
             <RadioGroup
               value={symptomType}
-              onValueChange={(value) => setSymptomType(value as SymptomType)}
+              onValueChange={(value: string) => setSymptomType(value as SymptomType)}
               className="grid grid-cols-2 gap-4"
             >
               {Object.entries(SYMPTOM_DEFINITIONS).map(([key, def]) => (
@@ -110,7 +108,7 @@ export function DoctorVisitForm({ recordId, onSuccess, onCancel }: DoctorVisitFo
             <Label>Frequency</Label>
             <RadioGroup
               value={frequency}
-              onValueChange={(value) => setFrequency(value as FrequencyType)}
+              onValueChange={(value: string) => setFrequency(value as FrequencyType)}
               className="grid gap-2"
             >
               <div className="flex items-center space-x-2">
@@ -132,7 +130,7 @@ export function DoctorVisitForm({ recordId, onSuccess, onCancel }: DoctorVisitFo
             <Label>Intensity (1-5)</Label>
             <RadioGroup
               value={intensity.toString()}
-              onValueChange={(value) => setIntensity(parseInt(value))}
+              onValueChange={(value: string) => setIntensity(parseInt(value))}
               className="grid gap-2"
             >
               {[1, 2, 3, 4, 5].map((level) => (
