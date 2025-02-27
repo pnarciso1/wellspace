@@ -1,35 +1,52 @@
-"use client"
+'use client'
 
-import { Component, ReactNode } from "react"
+import { Component, ErrorInfo, ReactNode } from 'react'
+import { Button } from "@/components/ui/button"
 
 interface Props {
-  children: ReactNode
-  fallback: (props: { resetErrorBoundary: () => void }) => ReactNode
-  onReset?: () => void
+  children?: ReactNode
 }
 
 interface State {
   hasError: boolean
+  error?: Error
 }
 
-export class ErrorBoundary extends Component<Props, State> {
+class ErrorBoundary extends Component<Props, State> {
   public state: State = {
     hasError: false
   }
 
-  public static getDerivedStateFromError(): State {
-    return { hasError: true }
+  public static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error }
+  }
+
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('Uncaught error:', error, errorInfo)
   }
 
   public render() {
     if (this.state.hasError) {
-      return this.props.fallback({ resetErrorBoundary: () => this.resetErrorBoundary() })
+      return (
+        <div className="flex flex-col items-center justify-center p-4">
+          <h2 className="text-lg font-semibold">Something went wrong</h2>
+          <p className="text-muted-foreground mb-4">
+            Please try again or contact support if the problem persists.
+          </p>
+          <Button
+            onClick={() => {
+              this.setState({ hasError: false })
+              window.location.reload()
+            }}
+          >
+            Try Again
+          </Button>
+        </div>
+      )
     }
 
     return this.props.children
   }
+}
 
-  private resetErrorBoundary() {
-    this.setState({ hasError: false })
-  }
-} 
+export default ErrorBoundary

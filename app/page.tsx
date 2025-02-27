@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { CheckCircle, Brain, FileText, Activity, Gift, BotIcon as Robot, Users, Mail, AtSign, Twitter, Heart, Trophy, Wallet, Video, Menu } from 'lucide-react'
+import { CheckCircle, MessageSquare, FileText, Activity, Users, Mail, Heart, Video, Menu, Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils"
 
 const features = [
   {
-    icon: Brain,
+    icon: MessageSquare,
     title: "Meet Charlie, your AI Health Navigator",
     description: "Get personalized assistance to navigate complex healthcare decisions with AI support."
   },
@@ -33,12 +33,12 @@ const features = [
     description: "Follow personalized health improvement plans and track your progress over time."
   },
   {
-    icon: Gift,
+    icon: Star,
     title: "Rewards System",
     description: "Earn tokens that can be converted into cash for healthy behaviors and engaging with the community."
   },
   {
-    icon: Robot,
+    icon: MessageSquare,
     title: "AI Task Agents",
     description: "Have your AI Task Agent complete essential healthcare tasks like finding doctors, reviewing medical bills, and recommending insurance plans."
   },
@@ -318,14 +318,6 @@ export default function HomePage() {
                   <Mail className="h-5 w-5 mr-2" />
                   <span>contactus@peoplecare.ai</span>
                 </Link>
-                <Link href="https://bsky.app/profile/peoplecare.bsky.social" className="flex items-center text-gray-400 hover:text-indigo-400">
-                  <AtSign className="h-5 w-5 mr-2" />
-                  <span>@peoplecare.bsky.social</span>
-                </Link>
-                <Link href="https://twitter.com/peoplecarai" className="flex items-center text-gray-400 hover:text-indigo-400">
-                  <Twitter className="h-5 w-5 mr-2" />
-                  <span>@peoplecarai</span>
-                </Link>
               </div>
             </div>
           </div>
@@ -339,19 +331,3 @@ export default function HomePage() {
     </div>
   )
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

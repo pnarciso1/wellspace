@@ -1,137 +1,108 @@
-"use client"
+'use client'
 
-import { useEffect, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useParams, useRouter } from 'next/navigation'
+import { useState, useEffect } from "react"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { Video } from "@/types"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import { ChevronLeft } from "lucide-react"
 import { VideoPlayer } from "@/components/video/video-player"
-import { useAuth } from "@/contexts/AuthContext"
+import { useToast } from "@/components/ui/use-toast"
 
 export default function VideoPage() {
-  const params = useParams() as { videoId: string }
+  const params = useParams()
   const router = useRouter()
+  const { toast } = useToast()
+  const supabase = createClientComponentClient()
+  
   const [video, setVideo] = useState<Video | null>(null)
   const [loading, setLoading] = useState(true)
-  const [savedProgress, setSavedProgress] = useState<number>(0)
-  const supabase = createClientComponentClient()
-  const { user } = useAuth()
 
-  // Fetch video and progress
   useEffect(() => {
-    async function fetchVideoAndProgress() {
+    async function loadVideo() {
+      if (!params?.videoId) {
+        toast({
+          title: "Error",
+          description: "No video ID provided",
+          variant: "destructive"
+        })
+        router.push('/videos')
+        return
+      }
+
       try {
-        setLoading(true)
-        
-        // Fetch video details
-        const { data: videoData, error: videoError } = await supabase
+        const { data, error } = await supabase
           .from('videos')
           .select('*')
           .eq('id', params.videoId)
           .single()
 
-        if (videoError) throw videoError
-        setVideo(videoData)
+        if (error) throw error
 
-        // Fetch progress if user is authenticated
-        if (user) {
-          const { data: progressData } = await supabase
-            .from('video_progress')
-            .select('progress')
-            .eq('video_id', params.videoId)
-            .eq('user_id', user.id)
-            .single()
-
-          if (progressData) {
-            setSavedProgress(progressData.progress)
-          }
-        }
+        setVideo(data)
       } catch (error) {
-        console.error('Error:', error)
+        toast({
+          title: "Error",
+          description: "Failed to load video",
+          variant: "destructive"
+        })
+        router.push('/videos')
       } finally {
         setLoading(false)
       }
     }
 
-    fetchVideoAndProgress()
-  }, [params.videoId, user])
-
-  const handleProgress = async (progress: number) => {
-    if (!user) return
-
-    try {
-      const { error } = await supabase
-        .from('video_progress')
-        .upsert(
-          {
-            user_id: user.id,
-            video_id: params.videoId,
-            progress,
-            completed: progress >= 90,
-            last_watched: new Date().toISOString()
-          },
-          {
-            onConflict: 'user_id,video_id',
-            ignoreDuplicates: false
-          }
-        )
-
-      if (error) throw error
-      setSavedProgress(progress)
-    } catch (error) {
-      console.error('Failed to save progress:', error)
-    }
-  }
+    loadVideo()
+  }, [params?.videoId, router, supabase, toast])
 
   if (loading) {
-    return <div>Loading...</div>
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div>Loading...</div>
+      </div>
+    )
   }
 
   if (!video) {
-    return <div>Video not found</div>
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div>Video not found</div>
+      </div>
+    )
   }
 
-  console.log('Video data:', {
-    id: video.id,
-    youtube_id: video.youtube_id,
-    title: video.title
-  });
+  if (!video.youtube_id) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div>Invalid video ID</div>
+      </div>
+    )
+  }
 
   return (
-    <div className="container mx-auto p-8">
-      <Button 
-        variant="ghost" 
+    <div className="container mx-auto px-4 py-8">
+      <Button
+        variant="ghost"
         className="mb-4"
-        onClick={() => router.back()}
+        onClick={() => router.push('/videos')}
       >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Library
+        <ChevronLeft className="mr-2 h-4 w-4" />
+        Back to Videos
       </Button>
 
-      <VideoPlayer 
-        youtubeId={video.youtube_id}
-        onProgress={handleProgress}
-        initialProgress={savedProgress}
-      />
+      <div className="space-y-4">
+        <h1 className="text-2xl font-bold">{video.title}</h1>
+        
+        <VideoPlayer
+          youtubeId={video.youtube_id}
+          initialProgress={0}
+        />
 
-      <div className="mt-4 flex items-center gap-2">
-        <div className="w-full bg-gray-700 h-2 rounded-full">
-          <div 
-            className="bg-indigo-500 h-full rounded-full transition-all"
-            style={{ width: `${savedProgress}%` }}
-          />
+        <div className="prose max-w-none">
+          <h2 className="text-xl font-semibold mt-6 mb-2">Description</h2>
+          <p className="text-muted-foreground">{video.description}</p>
         </div>
-        <span className="text-sm text-gray-400">
-          {Math.round(savedProgress)}%
-        </span>
       </div>
-
-      <h1 className="text-2xl font-bold mb-2">{video.title}</h1>
-      <p className="text-gray-400 mb-4">{video.description}</p>
-      <span className="inline-block bg-white/10 px-3 py-1 rounded-full text-sm">
-        {video.category}
-      </span>
     </div>
   )
-} 
+}

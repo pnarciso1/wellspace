@@ -1,40 +1,51 @@
-"use client"
+'use client'
 
-import { useEffect, useState } from "react"
-import { VideoCard } from "./video-card"
-import { VideoCategory, Video } from "@/types"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { VideoCard, Video } from './video-card'
+import { useRouter } from 'next/navigation'
 
 interface VideoGridProps {
-  category: VideoCategory | null
+  category: string | null
   onError: (error: Error) => void
 }
 
 export function VideoGrid({ category, onError }: VideoGridProps) {
-  const router = useRouter()
   const [videos, setVideos] = useState<Video[]>([])
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
   const supabase = createClientComponentClient()
 
   useEffect(() => {
     async function fetchVideos() {
       try {
-        setLoading(true)
-        let query = supabase.from('videos').select('*')
-        
+        let query = supabase
+          .from('videos')
+          .select('*')
+          .order('created_at', { ascending: false })
+
         if (category) {
           query = query.eq('category', category)
         }
 
-        const { data, error } = await query.order('created_at', { ascending: false })
-        
+        const { data, error } = await query
+
         if (error) throw error
-        
-        setVideos(data || [])
+
+        // Transform the data to match Video interface
+        const formattedVideos = data.map((video: any) => ({
+          id: video.id,
+          title: video.title,
+          description: video.description,
+          // Use the correct thumbnail field from your database
+          thumbnailUrl: `https://img.youtube.com/vi/${video.youtube_id}/maxresdefault.jpg`,
+          category: video.category
+        }))
+
+        setVideos(formattedVideos)
       } catch (error) {
+        console.error('Error fetching videos:', error)
         onError(error as Error)
-        throw error // This will trigger the ErrorBoundary
       } finally {
         setLoading(false)
       }
@@ -49,38 +60,31 @@ export function VideoGrid({ category, onError }: VideoGridProps) {
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="bg-white/10 backdrop-blur-md border-white/20 rounded-lg overflow-hidden">
-            {/* Thumbnail skeleton */}
-            <div className="relative aspect-video bg-white/5 animate-pulse" />
-            
-            {/* Content skeleton */}
-            <div className="p-4 space-y-3">
-              {/* Title skeleton */}
-              <div className="h-6 bg-white/5 animate-pulse rounded" />
-              
-              {/* Description skeleton */}
-              <div className="space-y-2">
-                <div className="h-4 bg-white/5 animate-pulse rounded w-3/4" />
-                <div className="h-4 bg-white/5 animate-pulse rounded w-1/2" />
-              </div>
-              
-              {/* Category skeleton */}
-              <div className="h-4 bg-white/5 animate-pulse rounded w-24" />
-            </div>
-          </div>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {[1, 2, 3].map((n) => (
+          <div
+            key={n}
+            className="aspect-video bg-gray-200 rounded-lg animate-pulse"
+          />
         ))}
       </div>
     )
   }
 
+  if (videos.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500">No videos found</p>
+      </div>
+    )
+  }
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {videos.map((video) => (
-        <VideoCard 
-          key={video.id} 
-          video={video} 
+        <VideoCard
+          key={video.id}
+          video={video}
           onSelect={handleVideoSelect}
         />
       ))}

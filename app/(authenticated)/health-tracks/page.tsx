@@ -1,35 +1,28 @@
 'use client'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import GoalTracker from '@/app/(authenticated)/health-tracks/components/GoalTracker'
+import { GoalTracker } from '@/app/(authenticated)/health-tracks/components/GoalTracker'
 import ActiveTracks from '@/app/(authenticated)/health-tracks/components/ActiveTracks'
 import TrackLibrary from '@/app/(authenticated)/health-tracks/components/TrackLibrary'
 
 export default function HealthTracksPage() {
   return (
-    <div className="container mx-auto p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Health Tracks</h1>
-        <p className="text-gray-500">Track your health goals and join wellness challenges</p>
-      </div>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Health Tracks</h1>
 
-      <Tabs defaultValue="goals" className="space-y-8" onValueChange={(value) => {
-        if (value === "active") {
-          // Refresh active tracks
-        }
-      }}>
+      <Tabs defaultValue="active" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="goals">My Goals</TabsTrigger>
           <TabsTrigger value="active">Active Tracks</TabsTrigger>
+          <TabsTrigger value="goals">Goals</TabsTrigger>
           <TabsTrigger value="library">Track Library</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="goals">
-          <GoalTracker />
-        </TabsContent>
-
         <TabsContent value="active">
           <ActiveTracks />
+        </TabsContent>
+
+        <TabsContent value="goals">
+          <GoalTracker />
         </TabsContent>
 
         <TabsContent value="library">
@@ -39,4 +32,3 @@ export default function HealthTracksPage() {
     </div>
   )
 }
-
