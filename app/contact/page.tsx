@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Mail, Phone, MapPinIcon, AtSign, Twitter, Menu } from 'lucide-react'
+import { Icons } from '@/lib/icons'
 import { useState } from 'react'
 
 const EmailButton = () => {
@@ -14,7 +14,7 @@ const EmailButton = () => {
 
   return (
     <Button onClick={handleEmailClick} className="w-full md:w-auto">
-      <Mail className="mr-2 h-4 w-4" /> Email Us
+      <Icons.Mail className="mr-2 h-4 w-4" /> Email Us
     </Button>
   )
 }
@@ -38,7 +38,7 @@ export default function ContactPage() {
             
             {/* Mobile Menu Button */}
             <button className="md:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              <Menu className="h-6 w-6 text-gray-600" />
+              <Icons.Menu className="h-6 w-6 text-gray-600" />
             </button>
 
             {/* Desktop Navigation */}
@@ -123,11 +123,11 @@ export default function ContactPage() {
                 <p className="text-gray-600">We're here to help and answer any question you might have. We look forward to hearing from you!</p>
                 <EmailButton />
                 <div className="flex items-center space-x-2 text-gray-600">
-                  <Phone className="h-5 w-5" />
+                  <Icons.Phone className="h-5 w-5" />
                   <span>301-310-2112</span>
                 </div>
                 <div className="flex items-start space-x-2 text-gray-600">
-                  <MapPinIcon className="h-5 w-5 mt-1" />
+                  <Icons.MapPin className="h-5 w-5 mt-1" />
                   <p>
                     131 Continental Dr Suite 305<br />
                     Newark, DE, 19713<br />
@@ -145,12 +145,12 @@ export default function ContactPage() {
               <CardContent className="space-y-4 p-4 md:p-6">
                 <p className="text-gray-600">Follow us on social media for the latest updates, health tips, and community stories.</p>
                 <div className="space-y-3">
-                  <SocialLink href="https://bsky.app/profile/peoplecare.bsky.social" icon={<AtSign className="h-5 w-5" />} label="BlueSky: @peoplecare.bsky.social" />
-                  <SocialLink href="https://truthsocial.com/@peoplecareai" icon={<AtSign className="h-5 w-5" />} label="Truth Social: @peoplecareai" />
-                  <SocialLink href="https://www.reddit.com/user/peoplecareai" icon={<AtSign className="h-5 w-5" />} label="Reddit: u/peoplecareai" />
-                  <SocialLink href="https://twitter.com/peoplecarai" icon={<AtSign className="h-5 w-5" />} label="X: @peoplecarai" />
-                  <SocialLink href="https://www.tiktok.com/@peoplecareai" icon={<AtSign className="h-5 w-5" />} label="TikTok: @peoplecareai" />
-                  <SocialLink href="https://www.instagram.com/peoplecare.ai" icon={<AtSign className="h-5 w-5" />} label="Instagram: @peoplecare.ai" />
+                  <SocialLink href="https://bsky.app/profile/peoplecare.bsky.social" icon={<Icons.AtSign className="h-5 w-5" />} label="BlueSky: @peoplecare.bsky.social" />
+                  <SocialLink href="https://truthsocial.com/@peoplecareai" icon={<Icons.AtSign className="h-5 w-5" />} label="Truth Social: @peoplecareai" />
+                  <SocialLink href="https://www.reddit.com/user/peoplecareai" icon={<Icons.AtSign className="h-5 w-5" />} label="Reddit: u/peoplecareai" />
+                  <SocialLink href="https://twitter.com/peoplecarai" icon={<Icons.AtSign className="h-5 w-5" />} label="X: @peoplecarai" />
+                  <SocialLink href="https://www.tiktok.com/@peoplecareai" icon={<Icons.AtSign className="h-5 w-5" />} label="TikTok: @peoplecareai" />
+                  <SocialLink href="https://www.instagram.com/peoplecare.ai" icon={<Icons.AtSign className="h-5 w-5" />} label="Instagram: @peoplecare.ai" />
                 </div>
               </CardContent>
             </Card>
@@ -213,15 +213,15 @@ export default function ContactPage() {
               <p className="text-gray-300 mb-4">Follow us on social media for updates and health tips.</p>
               <div className="space-y-3">
                 <a href="mailto:contactus@peoplecare.ai" className="flex items-center text-gray-300 hover:text-indigo-300 transition-colors">
-                  <Mail className="h-5 w-5 mr-2" />
+                  <Icons.Mail className="h-5 w-5 mr-2" />
                   contactus@peoplecare.ai
                 </a>
                 <a href="https://bsky.app/profile/peoplecare.bsky.social" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-300 hover:text-indigo-300 transition-colors">
-                  <AtSign className="h-5 w-5 mr-2" />
+                  <Icons.AtSign className="h-5 w-5 mr-2" />
                   @peoplecare.bsky.social
                 </a>
                 <a href="https://twitter.com/peoplecarai" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-300 hover:text-indigo-300 transition-colors">
-                  <Twitter className="h-5 w-5 mr-2" />
+                  <Icons.Twitter className="h-5 w-5 mr-2" />
                   @peoplecarai
                 </a>
               </div>
@@ -238,10 +238,3 @@ export default function ContactPage() {
     </div>
   )
 }
-
-
-
-
-
-
-

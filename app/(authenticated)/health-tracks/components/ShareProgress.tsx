@@ -1,4 +1,4 @@
-import { MessageSquare } from 'lucide-react'
+import { Icons } from '@/lib/icons'
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 import type { ActiveTrack } from "@/app/(authenticated)/health-tracks/components/types"
@@ -37,7 +37,7 @@ export function ShareProgress({ track }: ShareProgressProps) {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
-          <MessageSquare className="h-4 w-4 mr-2" />
+          <Icons.MessageSquare className="h-4 w-4 mr-2" />
           Share Progress
         </Button>
       </DialogTrigger>

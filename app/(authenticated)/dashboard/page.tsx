@@ -3,13 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
-import {
-  Heart,
-  FileText,
-  Video,
-  Activity,
-  MessageSquare
-} from 'lucide-react'
+import { Icons } from '@/lib/icons'
 
 export default function Dashboard() {
   return (
@@ -18,7 +12,7 @@ export default function Dashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Heart className="h-5 w-5" />
+              <Icons.Heart className="h-5 w-5" />
               Health Profile
             </CardTitle>
           </CardHeader>
@@ -35,7 +29,7 @@ export default function Dashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FileText className="h-5 w-5" />
+              <Icons.FileText className="h-5 w-5" />
               Medical Records
             </CardTitle>
           </CardHeader>
@@ -52,7 +46,7 @@ export default function Dashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Video className="h-5 w-5" />
+              <Icons.Video className="h-5 w-5" />
               Videos
             </CardTitle>
           </CardHeader>
@@ -69,7 +63,7 @@ export default function Dashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5" />
+              <Icons.Activity className="h-5 w-5" />
               Health Tracks
             </CardTitle>
           </CardHeader>
@@ -86,7 +80,7 @@ export default function Dashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5" />
+              <Icons.MessageSquare className="h-5 w-5" />
               Community
             </CardTitle>
           </CardHeader>
@@ -137,7 +131,7 @@ export default function Dashboard() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5" />
+              <Icons.Activity className="h-5 w-5" />
               Myasthenia Gravis Patient Program
             </CardTitle>
           </CardHeader>

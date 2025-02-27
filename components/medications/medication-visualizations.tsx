@@ -17,7 +17,7 @@ import {
 } from 'date-fns'
 import type { Medication } from '@/types/medications'
 import { Badge } from "@/components/ui/badge"
-import { Calendar } from 'lucide-react'
+import { Icons } from "@/lib/icons"
 
 interface MedicationVisualizationsProps {
   medications: Medication[]
@@ -106,13 +106,18 @@ export function MedicationVisualizations({ medications }: MedicationVisualizatio
       <TabsContent value="calendar">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Medication Adherence</CardTitle>
+            <CardTitle>
+              <div className="flex items-center gap-2">
+                <Icons.Calendar className="h-5 w-5" />
+                Medication Adherence
+              </div>
+            </CardTitle>
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => setSelectedMonth(subMonths(selectedMonth, 1))}
                 className="p-2 hover:bg-gray-100 rounded"
               >
-                ←
+                <Icons.ChevronLeft className="h-4 w-4" />
               </button>
               <span className="font-medium">
                 {format(selectedMonth, 'MMMM yyyy')}
@@ -121,7 +126,7 @@ export function MedicationVisualizations({ medications }: MedicationVisualizatio
                 onClick={() => setSelectedMonth(addMonths(selectedMonth, 1))}
                 className="p-2 hover:bg-gray-100 rounded"
               >
-                →
+                <Icons.ChevronRight className="h-4 w-4" />
               </button>
             </div>
           </CardHeader>

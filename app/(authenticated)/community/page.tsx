@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { MessageSquare, Users } from 'lucide-react'
+import { Icons } from '@/lib/icons'
 import Link from 'next/link'
 
 export default function Community() {
@@ -52,7 +52,7 @@ export default function Community() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <Users className="mr-2" />
+            <Icons.Users className="mr-2" />
             Connect with Our Online Communities
           </CardTitle>
         </CardHeader>
@@ -64,7 +64,7 @@ export default function Community() {
             {socialMediaLinks.map((link, index) => (
               <Button key={index} variant="outline" asChild className="w-full justify-start">
                 <Link href={link.url} target="_blank" rel="noopener noreferrer">
-                  <MessageSquare className="mr-2 h-4 w-4" />
+                  <Icons.MessageSquare className="mr-2 h-4 w-4" />
                   <span className="mr-2">{link.platform}:</span>
                   <span className="text-blue-500">{link.handle}</span>
                 </Link>

@@ -5,7 +5,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
-import { Edit2, Trash2 } from 'lucide-react'
+import { Icons } from "@/lib/icons"
 import type { Medication } from '@/types/medications'
 
 interface MedicationListProps {
@@ -134,7 +134,7 @@ export function MedicationList({ onEdit, onMedicationsLoaded }: MedicationListPr
                   size="sm"
                   onClick={() => onEdit(medication)}
                 >
-                  <Edit2 className="h-4 w-4" />
+                  <Icons.Edit className="h-4 w-4" />
                 </Button>
                 <Button
                   variant="outline"
@@ -142,7 +142,7 @@ export function MedicationList({ onEdit, onMedicationsLoaded }: MedicationListPr
                   onClick={() => handleDelete(medication.id)}
                   className="text-destructive hover:text-destructive"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Icons.Trash className="h-4 w-4" />
                 </Button>
               </div>
             </div>

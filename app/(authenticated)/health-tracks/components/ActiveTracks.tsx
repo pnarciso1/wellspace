@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
-import { CheckCircle, XCircle, Trophy } from 'lucide-react'
+import { Icons } from '@/lib/icons'
 import { useToast } from "@/components/ui/use-toast"
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
@@ -113,7 +113,7 @@ export default function ActiveTracks() {
             })}
           {nextDayTasks.milestone && (
             <Alert className="bg-blue-50 border-blue-200">
-              <Trophy className="h-5 w-5 text-blue-500" />
+              <Icons.Trophy className="h-5 w-5 text-blue-500" />
               <AlertTitle>{nextDayTasks.milestone.title}</AlertTitle>
               <AlertDescription>{nextDayTasks.milestone.message}</AlertDescription>
             </Alert>
@@ -266,7 +266,7 @@ export default function ActiveTracks() {
                               >
                                 {track.progress.completed_tasks.includes(taskId) ? (
                                   <>
-                                    <CheckCircle className="h-5 w-5 mr-2" />
+                                    <Icons.CheckCircle className="h-5 w-5 mr-2" />
                                     Completed
                                   </>
                                 ) : (
@@ -283,7 +283,7 @@ export default function ActiveTracks() {
 
                 {track.module.tasks[track.current_day]?.milestone && (
                   <Alert className="bg-blue-50 border-blue-200">
-                    <Trophy className="h-5 w-5 text-blue-500" />
+                    <Icons.Trophy className="h-5 w-5 text-blue-500" />
                     <AlertTitle>{track.module.tasks[track.current_day]?.milestone?.title}</AlertTitle>
                     <AlertDescription>
                       {track.module.tasks[track.current_day]?.milestone?.message}

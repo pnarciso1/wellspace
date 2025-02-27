@@ -1,11 +1,11 @@
 'use client'
 
 import * as React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Plus as PlusIcon, FileText } from 'lucide-react'
+import { Icons } from '@/lib/icons'
 import { Toaster, toast } from 'sonner'
 import { DoctorVisitForm } from './components/doctor-visit-form'
 import { PatientInfoForm } from './components/patient-info-form'
@@ -35,18 +35,72 @@ export default function DoctorVisitClient() {
   const [symptoms, setSymptoms] = useState<any[]>([])
   const [qualityOfLife, setQualityOfLife] = useState<any>(null)
   const [record, setRecord] = useState<any>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const supabase = createClientComponentClient()
 
+  // Load quality of life data when recordId changes
+  useEffect(() => {
+    if (recordId) {
+      loadQualityOfLifeData();
+    }
+  }, [recordId]);
+
+  const loadQualityOfLifeData = async () => {
+    if (!recordId) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('doctor_visit_quality_of_life')
+        .select('*')
+        .eq('record_id', recordId)
+        .single();
+      
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error loading quality of life data:', error);
+        return;
+      }
+      
+      if (data) {
+        setQualityOfLife(data);
+      }
+    } catch (error) {
+      console.error('Error loading quality of life data:', error);
+    }
+  };
+
   const handleInfoSubmit = async (data: PatientInfo) => {
     try {
+      setIsSubmitting(true)
+      console.log('Submitting patient info:', data)
+      
+      // Get the current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      if (userError) {
+        throw userError
+      }
+      
+      if (!user) {
+        toast.error('You must be logged in to submit information')
+        return
+      }
+      
+      // Add user_id to the data
+      const recordData = {
+        ...data,
+        user_id: user.id
+      }
+      
       const { data: record, error } = await supabase
         .from('doctor_visit_records')
-        .insert([data])
+        .insert([recordData])
         .select()
         .single()
 
-      if (error) throw error
+      if (error) {
+        console.error('Supabase error:', error)
+        throw error
+      }
 
       setRecordId(record.id)
       setRecord(record)
@@ -55,6 +109,8 @@ export default function DoctorVisitClient() {
     } catch (error) {
       console.error('Error saving patient info:', error)
       toast.error('Failed to save patient information')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -63,7 +119,9 @@ export default function DoctorVisitClient() {
     toast.success('Symptom recorded')
   }
 
-  const handleQualitySubmit = () => {
+  const handleQualitySubmit = async () => {
+    // Reload quality of life data before moving to summary
+    await loadQualityOfLifeData();
     setStep('summary')
   }
 
@@ -71,7 +129,9 @@ export default function DoctorVisitClient() {
     switch (step) {
       case 'info':
         return (
-          <PatientInfoForm onSubmit={handleInfoSubmit} />
+          <PatientInfoForm 
+            onSubmit={handleInfoSubmit} 
+          />
         )
       case 'symptoms':
         return (
@@ -86,7 +146,7 @@ export default function DoctorVisitClient() {
                   variant="outline"
                   onClick={() => setStep('quality')}
                 >
-                  <FileText className="h-4 w-4 mr-2" />
+                  <Icons.FileText className="h-4 w-4 mr-2" />
                   Quality of Life
                 </Button>
                 <Button onClick={() => setStep('summary')}>
@@ -101,46 +161,11 @@ export default function DoctorVisitClient() {
                 visits={symptoms}
                 selectedCategory={selectedCategory}
               />
-
-              <div className="space-y-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Add Symptom</CardTitle>
-                    <CardDescription>
-                      Record a new symptom and its details
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button
-                      className="w-full"
-                      onClick={() => {
-                        const dialog = document.getElementById('symptom-dialog') as HTMLDialogElement
-                        if (dialog) dialog.showModal()
-                      }}
-                    >
-                      <PlusIcon className="h-4 w-4 mr-2" />
-                      New Symptom
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <dialog id="symptom-dialog" className="modal">
-                  <div className="modal-box max-w-3xl">
-                    <DoctorVisitForm
-                      recordId={recordId!}
-                      onSuccess={(symptom) => {
-                        handleSymptomSubmit(symptom)
-                        const dialog = document.getElementById('symptom-dialog') as HTMLDialogElement
-                        if (dialog) dialog.close()
-                      }}
-                      onCancel={() => {
-                        const dialog = document.getElementById('symptom-dialog') as HTMLDialogElement
-                        if (dialog) dialog.close()
-                      }}
-                    />
-                  </div>
-                </dialog>
-              </div>
+              <DoctorVisitForm
+                recordId={recordId!}
+                onSuccess={handleSymptomSubmit}
+                onCancel={() => {}}
+              />
             </div>
           </div>
         )
@@ -161,15 +186,14 @@ export default function DoctorVisitClient() {
             onBack={() => setStep('symptoms')}
           />
         )
-      default:
-        return null
     }
   }
 
   return (
-    <div className="container py-8">
-      {renderStep()}
+    <div className="container mx-auto px-4 py-8">
       <Toaster />
+      <h1 className="text-3xl font-bold mb-6">Doctor Visit Preparation</h1>
+      {renderStep()}
     </div>
   )
 }

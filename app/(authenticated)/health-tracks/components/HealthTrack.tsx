@@ -2,7 +2,7 @@
 
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card"
 import type { ActiveTrack } from "@/app/(authenticated)/health-tracks/components/types"
-import { MessageSquare } from 'lucide-react'
+import { Icons } from "@/lib/icons"
 import { Button } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
 
@@ -42,7 +42,7 @@ export function HealthTrack({ track, onShare }: HealthTrackProps) {
         <CardTitle className="flex justify-between items-center">
           <span>{track.module.title}</span>
           <Button variant="outline" size="sm" onClick={handleShare}>
-            <MessageSquare className="h-4 w-4 mr-2" />
+            <Icons.MessageSquare className="h-4 w-4 mr-2" />
             Share Progress
           </Button>
         </CardTitle>

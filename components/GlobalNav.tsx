@@ -3,27 +3,18 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import {
-  LayoutDashboard,
-  FileText,
-  Users,
-  MessageSquare,
-  Activity,
-  UserCircle,
-  LogOut,
-  Video
-} from 'lucide-react'
+import { Icons } from '@/lib/icons'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 
 const links = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Medical Records', href: '/medical-records', icon: FileText },
-  { name: 'Health Profile', href: '/health-profile', icon: UserCircle },
-  { name: 'Health Tracks', href: '/health-tracks', icon: Activity },
-  { name: 'Videos', href: '/videos', icon: Video },
-  { name: 'AI Chat', href: '/ai-chat', icon: MessageSquare },
-  { name: 'Community', href: '/community', icon: Users },
+  { name: 'Dashboard', href: '/dashboard', icon: Icons.LayoutDashboard },
+  { name: 'Medical Records', href: '/medical-records', icon: Icons.FileText },
+  { name: 'Health Profile', href: '/health-profile', icon: Icons.User },
+  { name: 'Health Tracks', href: '/health-tracks', icon: Icons.Activity },
+  { name: 'Videos', href: '/videos', icon: Icons.Video },
+  { name: 'AI Chat', href: '/ai-chat', icon: Icons.MessageSquare },
+  { name: 'Community', href: '/community', icon: Icons.Users },
 ]
 
 export function GlobalNav() {
@@ -69,7 +60,7 @@ export function GlobalNav() {
           className="w-full flex items-center gap-2 text-gray-500 hover:text-gray-900"
           onClick={handleSignOut}
         >
-          <LogOut className="h-4 w-4" />
+          <Icons.LogOut className="h-4 w-4" />
           Sign Out
         </Button>
       </div>
