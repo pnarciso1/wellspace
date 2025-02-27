@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, Printer } from 'lucide-react'
+import { ChevronLeft, PrinterIcon } from 'lucide-react'
 import { 
   SYMPTOM_DEFINITIONS,
   TREATMENT_OPTIONS
@@ -34,7 +34,7 @@ export function VisitSummary({ record, symptoms, qualityOfLife, onBack }: VisitS
           Back to Symptoms
         </Button>
         <Button variant="outline" onClick={handlePrint}>
-          <Printer className="h-4 w-4 mr-2" />
+          <PrinterIcon className="h-4 w-4 mr-2" />
           Print Summary
         </Button>
       </div>
