@@ -10,8 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 import { toast } from 'sonner'
 import { 
-  SYMPTOM_DEFINITIONS, 
-  SYMPTOM_INTENSITY_SCALES,
+  SYMPTOM_DEFINITIONS,
   TREATMENT_OPTIONS 
 } from '../types'
 import type { 
