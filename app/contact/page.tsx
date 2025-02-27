@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Mail, Phone, MapPin, AtSign, Twitter, Menu } from 'lucide-react'
+import { Mail, Phone, MapPinIcon, AtSign, Twitter, Menu } from 'lucide-react'
 import { useState } from 'react'
 
 const EmailButton = () => {
@@ -127,7 +127,7 @@ export default function ContactPage() {
                   <span>301-310-2112</span>
                 </div>
                 <div className="flex items-start space-x-2 text-gray-600">
-                  <MapPin className="h-5 w-5 mt-1" />
+                  <MapPinIcon className="h-5 w-5 mt-1" />
                   <p>
                     131 Continental Dr Suite 305<br />
                     Newark, DE, 19713<br />
