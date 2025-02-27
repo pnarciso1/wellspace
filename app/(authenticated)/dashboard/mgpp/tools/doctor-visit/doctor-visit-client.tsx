@@ -17,6 +17,17 @@ import type { CategoryType } from './types'
 
 type Step = 'info' | 'symptoms' | 'quality' | 'summary'
 
+interface PatientInfo {
+  first_name: string
+  last_name: string
+  email: string
+  address: string
+  state: string
+  zip_code: string
+  birth_year: string
+  years_with_mg: string
+}
+
 export default function DoctorVisitClient() {
   const [step, setStep] = useState<Step>('info')
   const [recordId, setRecordId] = useState<string | null>(null)
@@ -27,7 +38,7 @@ export default function DoctorVisitClient() {
 
   const supabase = createClientComponentClient()
 
-  const handleInfoSubmit = async (data: any) => {
+  const handleInfoSubmit = async (data: PatientInfo) => {
     try {
       const { data: record, error } = await supabase
         .from('doctor_visit_records')
