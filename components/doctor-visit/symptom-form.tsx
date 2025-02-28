@@ -17,43 +17,43 @@ interface SymptomFormProps {
 }
 
 const symptomInfo = {
-  DYSARTHRIA: {
+  speech: {
     title: 'Speech Difficulties (Dysarthria)',
     description: 'Problems with speaking or slurred speech',
     timePatterns: ['Morning speech issues', 'Worsens throughout day', 'Evening difficulties'],
     triggers: ['Extended conversations', 'Stress', 'Fatigue']
   },
-  DYSPHAGIA: {
+  swallowing: {
     title: 'Swallowing Problems (Dysphagia)',
     description: 'Difficulty swallowing or choking sensation',
     timePatterns: ['During meals', 'With certain foods', 'When tired'],
     triggers: ['Specific foods', 'Quick eating', 'Stress']
   },
-  DYSPNEA: {
+  breathing: {
     title: 'Breathing Difficulties (Dyspnea)',
     description: 'Shortness of breath or breathing problems',
     timePatterns: ['During activity', 'At rest', 'While lying down'],
     triggers: ['Physical activity', 'Stress', 'Environmental factors']
   },
-  DIPLOPIA: {
+  vision: {
     title: 'Double Vision (Diplopia)',
     description: 'Seeing double or blurred vision',
     timePatterns: ['Morning vision issues', 'After reading', 'Evening worsening'],
     triggers: ['Reading', 'Screen time', 'Fatigue']
   },
-  PTOSIS: {
+  eyelid: {
     title: 'Drooping Eyelids (Ptosis)',
     description: 'Drooping of one or both eyelids',
     timePatterns: ['Morning drooping', 'Worsens through day', 'Evening heaviness'],
     triggers: ['Fatigue', 'Reading', 'Bright light']
   },
-  FLAT_AFFECT: {
+  expression: {
     title: 'Reduced Facial Expression',
     description: 'Decreased facial muscle movement or expression',
     timePatterns: ['Constant', 'Varies with fatigue', 'Social situations'],
     triggers: ['Extended conversations', 'Fatigue', 'Emotional situations']
   },
-  MYASTHENIA: {
+  muscle_weakness: {
     title: 'Muscle Weakness',
     description: 'General muscle weakness or fatigue',
     timePatterns: ['Morning weakness', 'Activity-related', 'Evening worsening'],
@@ -62,7 +62,7 @@ const symptomInfo = {
 } as const
 
 export function SymptomForm({ onUpdate, currentData }: SymptomFormProps) {
-  const symptoms = Object.keys(symptomInfo) as SymptomType[]
+  const symptoms: SymptomType[] = ['speech', 'swallowing', 'breathing', 'vision', 'eyelid', 'expression', 'muscle_weakness']
 
   const handleSymptomChange = (type: SymptomType, field: string, value: any) => {
     const currentSymptom = currentData[type] || {}
