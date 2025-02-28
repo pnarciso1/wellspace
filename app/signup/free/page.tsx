@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useToast } from "@/components/ui/use-toast"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Info } from "lucide-react"
+import { Icons } from "@/lib/icons"
 
 export default function SignUpFreePage() {
   const [email, setEmail] = useState('')
@@ -96,7 +96,7 @@ export default function SignUpFreePage() {
                 />
               </div>
               <Alert className="bg-white/10 border-indigo-400/20 text-gray-300">
-                <Info className="h-4 w-4 text-indigo-400" />
+                <Icons.AlertCircle className="h-4 w-4 text-indigo-400" />
                 <AlertDescription>
                   You'll need to verify your email before accessing your account.
                 </AlertDescription>
