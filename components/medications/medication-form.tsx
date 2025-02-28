@@ -34,7 +34,7 @@ export function MedicationForm({ onSuccess }: MedicationFormProps) {
 
       // First check MGPP enrollment and access
       const { data: enrollment, error: enrollmentError } = await supabase
-        .from('mgpp_enrollments')
+        .from('mgpp_enrollments' as any)
         .select('*')
         .eq('user_id', user.id)
         .single()
@@ -49,7 +49,7 @@ export function MedicationForm({ onSuccess }: MedicationFormProps) {
 
       // Then get or create health record
       const { data: healthRecord, error: healthRecordError } = await supabase
-        .from('health_records')
+        .from('health_records' as any)
         .select('id')
         .eq('user_id', user.id)
         .single()
@@ -62,8 +62,8 @@ export function MedicationForm({ onSuccess }: MedicationFormProps) {
       if (!healthRecord) {
         // Create new health record
         const { data: newHealthRecord, error: createError } = await supabase
-          .from('health_records')
-          .insert([{ user_id: user.id }])
+          .from('health_records' as any)
+          .insert([{ user_id: user.id }] as any)
           .select()
           .single()
 
@@ -96,7 +96,7 @@ export function MedicationForm({ onSuccess }: MedicationFormProps) {
       const { healthRecordId } = validation
 
       const { error: insertError } = await supabase
-        .from('medications')
+        .from('medications' as any)
         .insert([{
           health_record_id: healthRecordId,
           drug_name,
@@ -106,7 +106,7 @@ export function MedicationForm({ onSuccess }: MedicationFormProps) {
           start_date: new Date().toISOString(),
           still_using: true,
           status: 'active'
-        }])
+        }] as any)
 
       if (insertError) throw insertError
 
