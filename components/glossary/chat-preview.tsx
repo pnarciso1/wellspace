@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Bot, User, MessageCircle, ArrowRight } from 'lucide-react'
+import { Icons } from '@/lib/icons'
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 
@@ -24,7 +24,7 @@ export function ChatPreview() {
   return (
     <div className="mt-6 rounded-xl border border-primary/20 overflow-hidden">
       <div className="bg-primary/10 p-4 flex items-center gap-3">
-        <Bot className="h-6 w-6 text-primary" />
+        <Icons.User className="h-6 w-6 text-primary" />
         <h3 className="font-semibold text-primary">Meet Charlie, Your AI Health Navigator</h3>
       </div>
       
@@ -54,12 +54,12 @@ export function ChatPreview() {
             {activeQuestion ? (
               <div className="space-y-4">
                 <div className="flex gap-3">
-                  <User className="h-6 w-6 text-primary" />
+                  <Icons.User className="h-6 w-6 text-primary" />
                   <p className="text-sm">{activeQuestion}</p>
                 </div>
                 {showResponse && (
                   <div className="flex gap-3 animate-fadeIn">
-                    <Bot className="h-6 w-6 text-primary" />
+                    <Icons.User className="h-6 w-6 text-primary" />
                     <div className="text-sm">
                       <p className="text-primary font-medium mb-1">Let me help you understand that!</p>
                       <p className="text-gray-600">Click "Chat with Charlie" to start a real conversation and get detailed explanations about any medical term.</p>
@@ -77,7 +77,7 @@ export function ChatPreview() {
               <Button asChild variant="default" className="gap-2">
                 <Link href="/ai-chat">
                   Chat with Charlie
-                  <ArrowRight className="h-4 w-4" />
+                  <Icons.ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
             </div>
