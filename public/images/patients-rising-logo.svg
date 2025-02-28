@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <rect width="200" height="200" fill="white"/>
+  <text x="100" y="80" font-family="Arial" font-size="20" text-anchor="middle" fill="#2D4B6D">PATIENTS</text>
+  <text x="100" y="110" font-family="Arial" font-size="20" text-anchor="middle" fill="#2D4B6D">RISING</text>
+  <path d="M100,120 L100,160" stroke="#F7941D" stroke-width="8" stroke-linecap="round"/>
+  <path d="M100,140 L100,160 L120,140" stroke="#F7941D" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg> 
