@@ -66,12 +66,19 @@ export const Icons = {
       <path d="m14 11 4-4 4 4" />
     </svg>
   ),
+  // Lowercase versions for backward compatibility
   heart: Heart,
   activity: Activity,
   check: Check,
   user: User,
   dashboard: LayoutDashboard,
   grid: LayoutGrid,
+  
+  // Uppercase versions for components that use them
+  Heart: Heart,
+  Activity: Activity,
+  Check: Check,
+  User: User,
   AlertCircle,
   ArrowRight,
   At: AtSign,
@@ -95,7 +102,6 @@ export const Icons = {
   Trash2: Trash,
   Trophy,
   Twitter,
-  User,
   Users,
   Video,
   XCircle
