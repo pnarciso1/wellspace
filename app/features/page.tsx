@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { CheckCircle, Brain, FileText, Activity, Gift, BotIcon as Robot, Zap, Users, Shield, Mail, AtSign, Twitter, Menu } from 'lucide-react'
+import { CheckCircle, AlertCircle, FileText, Activity, Star, User, Activity as ActivityIcon, Users, Lock, Mail, Mail as EmailIcon, MessageSquare, Menu } from 'lucide-react'
 import { useState } from 'react'
 
 export default function FeaturesPage() {
@@ -103,7 +103,7 @@ export default function FeaturesPage() {
               <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <CardHeader>
                   <CardTitle className="flex items-center text-xl">
-                    <Brain className="mr-2 text-indigo-500" />
+                    <AlertCircle className="mr-2 text-indigo-500" />
                     AI Health Navigator
                   </CardTitle>
                 </CardHeader>
@@ -153,7 +153,7 @@ export default function FeaturesPage() {
               <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <CardHeader>
                   <CardTitle className="flex items-center text-xl">
-                    <Robot className="mr-2 text-indigo-500" />
+                    <User className="mr-2 text-indigo-500" />
                     AI Task Agents
                   </CardTitle>
                 </CardHeader>
@@ -164,7 +164,7 @@ export default function FeaturesPage() {
               <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <CardHeader>
                   <CardTitle className="flex items-center text-xl">
-                    <Gift className="mr-2 text-indigo-500" />
+                    <Star className="mr-2 text-indigo-500" />
                     Rewards to Cash Conversion
                   </CardTitle>
                 </CardHeader>
@@ -192,7 +192,7 @@ export default function FeaturesPage() {
               <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <CardHeader>
                   <CardTitle className="flex items-center text-xl">
-                    <Zap className="mr-2 text-indigo-500" />
+                    <ActivityIcon className="mr-2 text-indigo-500" />
                     Custom AI Navigators
                   </CardTitle>
                 </CardHeader>
@@ -225,7 +225,7 @@ export default function FeaturesPage() {
               <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <CardHeader>
                   <CardTitle className="flex items-center text-xl">
-                    <Shield className="mr-2 text-indigo-500" />
+                    <Lock className="mr-2 text-indigo-500" />
                     Advanced Security
                   </CardTitle>
                 </CardHeader>
@@ -275,15 +275,15 @@ export default function FeaturesPage() {
               <p className="text-gray-300 mb-4">Follow us on social media for updates and health tips.</p>
               <div className="space-y-3">
                 <a href="mailto:contactus@peoplecare.ai" className="flex items-center text-gray-300 hover:text-indigo-300 transition-colors">
-                  <Mail className="h-5 w-5 mr-2" />
+                  <EmailIcon className="h-5 w-5 mr-2" />
                   contactus@peoplecare.ai
                 </a>
                 <a href="https://bsky.app/profile/peoplecare.bsky.social" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-300 hover:text-indigo-300 transition-colors">
-                  <AtSign className="h-5 w-5 mr-2" />
+                  <Users className="h-5 w-5 mr-2" />
                   @peoplecare.bsky.social
                 </a>
                 <a href="https://twitter.com/peoplecarai" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-300 hover:text-indigo-300 transition-colors">
-                  <Twitter className="h-5 w-5 mr-2" />
+                  <MessageSquare className="h-5 w-5 mr-2" />
                   @peoplecarai
                 </a>
               </div>

@@ -101,6 +101,7 @@ export const Icons = {
   Plus,
   Star,
   Trash2: Trash,
+  Trash,
   Trophy,
   Twitter,
   Users,

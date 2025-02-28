@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Mail, AtSign, Twitter, Menu } from 'lucide-react'
+import { Mail, Mail as EmailIcon, MessageSquare, Menu } from 'lucide-react'
 import { useState } from 'react'
 
 export default function LegalPage() {
@@ -227,10 +227,10 @@ export default function LegalPage() {
                   <span>contactus@peoplecare.ai</span>
                 </a>
                 <a href="https://bsky.app/profile/peoplecare.bsky.social" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-300 hover:text-indigo-300 transition-colors">
-                  <AtSign className="h-5 w-5 mr-2"/> @peoplecare.bsky.social
+                  <EmailIcon className="h-5 w-5 mr-2"/> @peoplecare.bsky.social
                 </a>
                 <a href="https://twitter.com/peoplecarai" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-300 hover:text-indigo-300 transition-colors">
-                  <Twitter className="h-5 w-5 mr-2"/> @peoplecarai
+                  <MessageSquare className="h-5 w-5 mr-2"/> @peoplecarai
                 </a>
               </div>
             </div>

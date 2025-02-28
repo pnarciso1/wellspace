@@ -145,12 +145,12 @@ export default function ContactPage() {
               <CardContent className="space-y-4 p-4 md:p-6">
                 <p className="text-gray-600">Follow us on social media for the latest updates, health tips, and community stories.</p>
                 <div className="space-y-3">
-                  <SocialLink href="https://bsky.app/profile/peoplecare.bsky.social" icon={<Icons.AtSign className="h-5 w-5" />} label="BlueSky: @peoplecare.bsky.social" />
-                  <SocialLink href="https://truthsocial.com/@peoplecareai" icon={<Icons.AtSign className="h-5 w-5" />} label="Truth Social: @peoplecareai" />
-                  <SocialLink href="https://www.reddit.com/user/peoplecareai" icon={<Icons.AtSign className="h-5 w-5" />} label="Reddit: u/peoplecareai" />
-                  <SocialLink href="https://twitter.com/peoplecarai" icon={<Icons.AtSign className="h-5 w-5" />} label="X: @peoplecarai" />
-                  <SocialLink href="https://www.tiktok.com/@peoplecareai" icon={<Icons.AtSign className="h-5 w-5" />} label="TikTok: @peoplecareai" />
-                  <SocialLink href="https://www.instagram.com/peoplecare.ai" icon={<Icons.AtSign className="h-5 w-5" />} label="Instagram: @peoplecare.ai" />
+                  <SocialLink href="https://bsky.app/profile/peoplecare.bsky.social" icon={<Icons.Mail className="h-5 w-5" />} label="BlueSky: @peoplecare.bsky.social" />
+                  <SocialLink href="https://truthsocial.com/@peoplecareai" icon={<Icons.Mail className="h-5 w-5" />} label="Truth Social: @peoplecareai" />
+                  <SocialLink href="https://www.reddit.com/user/peoplecareai" icon={<Icons.Mail className="h-5 w-5" />} label="Reddit: u/peoplecareai" />
+                  <SocialLink href="https://twitter.com/peoplecarai" icon={<Icons.Mail className="h-5 w-5" />} label="X: @peoplecarai" />
+                  <SocialLink href="https://www.tiktok.com/@peoplecareai" icon={<Icons.Mail className="h-5 w-5" />} label="TikTok: @peoplecareai" />
+                  <SocialLink href="https://www.instagram.com/peoplecare.ai" icon={<Icons.Mail className="h-5 w-5" />} label="Instagram: @peoplecare.ai" />
                 </div>
               </CardContent>
             </Card>
@@ -217,11 +217,11 @@ export default function ContactPage() {
                   contactus@peoplecare.ai
                 </a>
                 <a href="https://bsky.app/profile/peoplecare.bsky.social" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-300 hover:text-indigo-300 transition-colors">
-                  <Icons.AtSign className="h-5 w-5 mr-2" />
+                  <Icons.Mail className="h-5 w-5 mr-2" />
                   @peoplecare.bsky.social
                 </a>
                 <a href="https://twitter.com/peoplecarai" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-300 hover:text-indigo-300 transition-colors">
-                  <Icons.Twitter className="h-5 w-5 mr-2" />
+                  <Icons.Mail className="h-5 w-5 mr-2" />
                   @peoplecarai
                 </a>
               </div>
