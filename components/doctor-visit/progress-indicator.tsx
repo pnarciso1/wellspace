@@ -1,6 +1,6 @@
 'use client'
 
-import { Check, CircleDot } from 'lucide-react'
+import { Check, AlertCircle } from 'lucide-react'
 
 interface ProgressIndicatorProps {
   currentStep: 'personal_info' | 'symptoms' | 'daily_living' | 'quality_of_life' | 'completed'
@@ -61,7 +61,7 @@ export function ProgressIndicator({ currentStep }: ProgressIndicatorProps) {
                     {status === 'completed' ? (
                       <Check className="w-5 h-5 text-white" />
                     ) : status === 'current' ? (
-                      <CircleDot className="w-5 h-5 text-primary" />
+                      <AlertCircle className="w-5 h-5 text-primary" />
                     ) : (
                       <div className="w-2 h-2 rounded-full bg-gray-300" />
                     )}
