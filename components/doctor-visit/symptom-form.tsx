@@ -166,11 +166,11 @@ export function SymptomForm({ onUpdate, currentData }: SymptomFormProps) {
                       <Checkbox
                         id={`${type}-pattern-${index}`}
                         checked={data.time_patterns && typeof data.time_patterns === 'object' ? 
-                          // @ts-ignore - We know this might not be type-safe but it's how the data is structured
+                          // @ts-expect-error - We know this might not be type-safe but it's how the data is structured
                           data.time_patterns[pattern] : false}
                         onCheckedChange={(checked: boolean) => {
                           const patterns = { ...(data.time_patterns || {}) }
-                          // @ts-ignore - We know this might not be type-safe but it's how the data is structured
+                          // @ts-expect-error - We know this might not be type-safe but it's how the data is structured
                           patterns[pattern] = checked
                           handleSymptomChange(type, 'time_patterns', patterns)
                         }}
