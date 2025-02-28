@@ -82,6 +82,7 @@ export const Icons = {
   AlertCircle,
   ArrowRight,
   At: AtSign,
+  AtSign,
   Calendar,
   CheckCircle,
   ChevronLeft,
