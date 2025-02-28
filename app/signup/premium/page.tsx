@@ -10,7 +10,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { useAuth } from '@/contexts/AuthContext'
 import { loadStripe } from '@stripe/stripe-js'
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Info } from 'lucide-react'
+import { Icons } from "@/lib/icons"
 
 if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
   throw new Error('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not set')
@@ -103,7 +103,7 @@ export default function PremiumSignUp() {
             </CardHeader>
             <CardContent>
               <Alert className="bg-white/10 border-indigo-400/20 text-gray-300 mb-4">
-                <Info className="h-4 w-4 text-indigo-400" />
+                <Icons.AlertCircle className="h-4 w-4 text-indigo-400" />
                 <AlertDescription>
                   After verifying your email, you'll be redirected to complete your premium subscription setup.
                 </AlertDescription>
@@ -181,7 +181,7 @@ export default function PremiumSignUp() {
                 />
               </div>
               <Alert className="bg-white/10 border-indigo-400/20 text-gray-300">
-                <Info className="h-4 w-4 text-indigo-400" />
+                <Icons.AlertCircle className="h-4 w-4 text-indigo-400" />
                 <AlertDescription>
                   You'll need to verify your email before completing the subscription process.
                 </AlertDescription>
