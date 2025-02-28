@@ -38,7 +38,7 @@ interface VisitFormData {
 
 const defaultSymptomState: SymptomDetails = {
   isPresent: false,
-  intensity: "",  // Remove default value
+  intensity: "1",  // Set a default value for intensity
   treatments: [],
   context: [],
   rhythm: [],
@@ -70,20 +70,15 @@ export function DoctorVisitForm({ onSuccess }: DoctorVisitFormProps) {
   ) => {
     console.log(`Updating ${symptom} ${field}:`, value); // Debug log
     setFormData(prev => {
-      const updatedData = {
-        ...prev,
-        [symptom]: {
-          ...prev[symptom],
-          ...(field === 'triggerDescription'
-            ? {
-                triggers: {
-                  ...prev[symptom].triggers,
-                  description: value
-                }
-              }
-            : { [field]: value })
-        }
-      };
+      // Create a deep copy to ensure state updates properly
+      const updatedData = JSON.parse(JSON.stringify(prev));
+      
+      if (field === 'triggerDescription') {
+        updatedData[symptom].triggers.description = value;
+      } else {
+        updatedData[symptom][field] = value;
+      }
+      
       console.log('Updated form data:', updatedData[symptom]); // Debug log
       return updatedData;
     });
@@ -100,7 +95,8 @@ export function DoctorVisitForm({ onSuccess }: DoctorVisitFormProps) {
         
       // Validate required fields
       const invalidSymptoms = selectedSymptoms.filter(([_, details]) => {
-        return !details.frequency || !details.intensity
+        // Check if frequency exists and intensity is not empty
+        return !details.frequency || !details.intensity || details.intensity === "";
       })
 
       if (invalidSymptoms.length > 0) {
@@ -128,7 +124,7 @@ export function DoctorVisitForm({ onSuccess }: DoctorVisitFormProps) {
         .filter(([_, details]) => details.isPresent)
         .map(([type, details]) => {
           console.log(`Submitting symptom ${type}:`, {
-            intensity: parseInt(details.intensity),
+            intensity: details.intensity ? parseInt(details.intensity) : 1,
             frequency: details.frequency,
             treatments: details.treatments
           });
@@ -137,7 +133,7 @@ export function DoctorVisitForm({ onSuccess }: DoctorVisitFormProps) {
             symptom_type: type,
             is_present: true,
             frequency: details.frequency || null,
-            intensity: parseInt(details.intensity),
+            intensity: details.intensity ? parseInt(details.intensity) : 1,
             treatments: JSON.stringify(details.treatments),
             context: JSON.stringify(details.context),
             time_patterns: JSON.stringify(details.rhythm),

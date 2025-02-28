@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { ChevronLeft } from 'lucide-react'
+import { Textarea } from "@/components/ui/textarea"
+import { Icons } from '@/lib/icons'
 import { toast } from 'sonner'
 
 interface QualityOfLifeFormProps {
@@ -99,106 +100,178 @@ export function QualityOfLifeForm({ recordId, onComplete, onBack }: QualityOfLif
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
+  const renderRadioGroup = (field: keyof QualityOfLifeFormData, label: string, icon: React.ReactNode) => (
+    <div className="border rounded-md p-4 bg-card shadow-sm">
+      <Label className="text-base font-medium flex items-center mb-3">
+        {icon}
+        {label}
+      </Label>
+      <RadioGroup
+        value={formData[field]}
+        onValueChange={handleValueChange(field)}
+        className="grid gap-2"
+      >
+        {IMPACT_LEVELS.map((level) => (
+          <div 
+            key={level.value} 
+            className={`flex items-start space-x-2 border rounded-md p-3 hover:bg-muted/50 transition-colors ${
+              formData[field] === level.value ? 'bg-primary/5 border-primary/30 shadow-sm' : ''
+            }`}
+          >
+            <RadioGroupItem value={level.value} id={`${field}-${level.value}`} className="mt-1" />
+            <Label htmlFor={`${field}-${level.value}`} className="cursor-pointer">
+              <span className="font-medium">{level.label}</span>
+              <span className="block text-sm text-muted-foreground mt-1">
+                {level.description}
+              </span>
+            </Label>
+          </div>
+        ))}
+      </RadioGroup>
+    </div>
+  )
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="flex items-center">
-        <Button variant="outline" onClick={onBack}>
-          <ChevronLeft className="h-4 w-4 mr-2" />
+        <Button variant="outline" onClick={onBack} className="shadow-sm">
+          <Icons.ChevronLeft className="h-4 w-4 mr-2" />
           Back to Symptoms
         </Button>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Quality of Life Assessment</CardTitle>
-          <CardDescription>
-            Please rate how your condition affects different aspects of your daily life
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="space-y-4">
-              <div>
-                <Label className="text-lg font-semibold">Impact on Daily Activities</Label>
-              </div>
-              <div className="grid gap-6">
-                <div>
-                  <Label>Work/School Impact</Label>
-                  <RadioGroup
-                    value={formData.work_impact}
-                    onValueChange={handleValueChange('work_impact')}
-                    className="grid gap-2 mt-2"
-                  >
-                    {IMPACT_LEVELS.map((level) => (
-                      <div key={level.value} className="flex items-center space-x-2">
-                        <RadioGroupItem value={level.value} id={`work-${level.value}`} />
-                        <Label htmlFor={`work-${level.value}`} className="font-normal">
-                          {level.label}
-                          <span className="block text-sm text-muted-foreground">
-                            {level.description}
-                          </span>
-                        </Label>
-                      </div>
-                    ))}
-                  </RadioGroup>
-                </div>
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="space-y-6">
+          <Card className="shadow-md border-muted/60">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-xl flex items-center">
+                <Icons.Activity className="h-5 w-5 mr-2 text-primary" />
+                Daily Activities Impact
+              </CardTitle>
+              <CardDescription>
+                How does your condition affect your ability to perform daily activities?
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-6 pt-0">
+              {renderRadioGroup('work_impact', 'Work/School Impact', 
+                <Icons.FileText className="h-4 w-4 mr-2 text-muted-foreground" />
+              )}
+              {renderRadioGroup('household_impact', 'Household Activities', 
+                <Icons.User className="h-4 w-4 mr-2 text-muted-foreground" />
+              )}
+              {renderRadioGroup('social_impact', 'Social Activities', 
+                <Icons.Users className="h-4 w-4 mr-2 text-muted-foreground" />
+              )}
+              {renderRadioGroup('exercise_impact', 'Exercise & Physical Activities', 
+                <Icons.Activity className="h-4 w-4 mr-2 text-muted-foreground" />
+              )}
+            </CardContent>
+          </Card>
 
-                <div>
-                  <Label>Household Activities</Label>
-                  <RadioGroup
-                    value={formData.household_impact}
-                    onValueChange={handleValueChange('household_impact')}
-                    className="grid gap-2 mt-2"
-                  >
-                    {IMPACT_LEVELS.map((level) => (
-                      <div key={level.value} className="flex items-center space-x-2">
-                        <RadioGroupItem value={level.value} id={`household-${level.value}`} />
-                        <Label htmlFor={`household-${level.value}`} className="font-normal">
-                          {level.label}
-                          <span className="block text-sm text-muted-foreground">
-                            {level.description}
-                          </span>
-                        </Label>
-                      </div>
-                    ))}
-                  </RadioGroup>
-                </div>
+          <Card className="shadow-md border-muted/60">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-xl flex items-center">
+                <Icons.Heart className="h-5 w-5 mr-2 text-primary" />
+                Physical & Emotional Wellbeing
+              </CardTitle>
+              <CardDescription>
+                How does your condition affect your physical and emotional state?
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-6 pt-0">
+              {renderRadioGroup('energy_level', 'Energy Level', 
+                <Icons.Activity className="h-4 w-4 mr-2 text-muted-foreground" />
+              )}
+              {renderRadioGroup('sleep_quality', 'Sleep Quality', 
+                <Icons.Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+              )}
+              {renderRadioGroup('physical_comfort', 'Physical Comfort', 
+                <Icons.Check className="h-4 w-4 mr-2 text-muted-foreground" />
+              )}
+              {renderRadioGroup('mood_state', 'Mood State', 
+                <Icons.Star className="h-4 w-4 mr-2 text-muted-foreground" />
+              )}
+              {renderRadioGroup('anxiety_level', 'Anxiety Level', 
+                <Icons.AlertCircle className="h-4 w-4 mr-2 text-muted-foreground" />
+              )}
+              {renderRadioGroup('stress_management', 'Stress Management', 
+                <Icons.Menu className="h-4 w-4 mr-2 text-muted-foreground" />
+              )}
+            </CardContent>
+          </Card>
 
-                {/* Add similar RadioGroup components for other aspects */}
-                {/* ... */}
+          <Card className="shadow-md border-muted/60">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-xl flex items-center">
+                <Icons.CheckCircle className="h-5 w-5 mr-2 text-primary" />
+                Treatment Experience
+              </CardTitle>
+              <CardDescription>
+                How effective is your current treatment and how does it affect you?
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-6 pt-0">
+              {renderRadioGroup('medication_effectiveness', 'Medication Effectiveness', 
+                <Icons.CheckCircle className="h-4 w-4 mr-2 text-muted-foreground" />
+              )}
+              {renderRadioGroup('side_effects_impact', 'Side Effects Impact', 
+                <Icons.XCircle className="h-4 w-4 mr-2 text-muted-foreground" />
+              )}
+              {renderRadioGroup('treatment_satisfaction', 'Overall Treatment Satisfaction', 
+                <Icons.Trophy className="h-4 w-4 mr-2 text-muted-foreground" />
+              )}
+            </CardContent>
+          </Card>
 
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="notes">Additional Notes</Label>
-              <textarea
-                id="notes"
-                className="w-full min-h-[100px] p-2 border rounded"
+          <Card className="shadow-md border-muted/60">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-xl flex items-center">
+                <Icons.FileText className="h-5 w-5 mr-2 text-primary" />
+                Additional Notes
+              </CardTitle>
+              <CardDescription>
+                Any other information you'd like to share about your quality of life
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <Textarea
                 value={formData.notes}
                 onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
                 placeholder="Any additional comments about your quality of life..."
+                className="min-h-[150px] resize-y"
               />
-            </div>
+            </CardContent>
+          </Card>
+        </div>
 
-            <div className="flex justify-end space-x-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onBack}
-              >
-                Back
-              </Button>
-              <Button
-                type="submit"
-                disabled={loading}
-              >
-                {loading ? 'Saving...' : 'Save Assessment'}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+        <div className="flex justify-end space-x-4 pt-4 border-t">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onBack}
+            className="min-w-[100px]"
+          >
+            Back
+          </Button>
+          <Button
+            type="submit"
+            disabled={loading}
+            className="min-w-[150px] shadow-sm"
+          >
+            {loading ? (
+              <>
+                <Icons.Menu className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Icons.Check className="mr-2 h-4 w-4" />
+                Save Assessment
+              </>
+            )}
+          </Button>
+        </div>
+      </form>
     </div>
   )
 }

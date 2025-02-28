@@ -77,72 +77,74 @@ export function SymptomForm({ onUpdate, currentData }: SymptomFormProps) {
     const info = symptomInfo[type]
     
     return (
-      <Card key={type} className="mb-6">
-        <CardHeader>
+      <Card key={type} className="mb-6 shadow-sm border-muted/60 hover:border-muted transition-colors">
+        <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
-            <CardTitle>{info.title}</CardTitle>
+            <CardTitle className="text-lg font-medium">{info.title}</CardTitle>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <InfoCircledIcon className="h-4 w-4 text-muted-foreground" />
+                  <InfoCircledIcon className="h-4 w-4 text-muted-foreground hover:text-primary transition-colors" />
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent className="max-w-[250px]">
                   <p>{info.description}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-5 pt-0">
           {/* Initial presence question */}
-          <div>
-            <Label>Do you currently experience this symptom?</Label>
+          <div className="bg-muted/20 p-3 rounded-md">
+            <Label className="font-medium mb-2 block">Do you currently experience this symptom?</Label>
             <RadioGroup
               value={data.is_present?.toString()}
               onValueChange={(value: string) => {
                 handleSymptomChange(type, 'is_present', value === 'true')
               }}
+              className="flex gap-4"
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="true" id={`${type}-yes`} />
-                <Label htmlFor={`${type}-yes`}>Yes</Label>
+                <Label htmlFor={`${type}-yes`} className="cursor-pointer">Yes</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="false" id={`${type}-no`} />
-                <Label htmlFor={`${type}-no`}>No</Label>
+                <Label htmlFor={`${type}-no`} className="cursor-pointer">No</Label>
               </div>
             </RadioGroup>
           </div>
 
           {/* Show additional questions only if symptom is present */}
           {data.is_present && (
-            <>
+            <div className="space-y-5 border-t pt-4 mt-4">
               {/* Frequency */}
               <div>
-                <Label>How often do you experience this symptom?</Label>
+                <Label className="font-medium mb-2 block">How often do you experience this symptom?</Label>
                 <RadioGroup
                   value={data.frequency}
                   onValueChange={(value: string) => handleSymptomChange(type, 'frequency', value)}
+                  className="space-y-2"
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="SOMETIMES" id={`${type}-freq-sometimes`} />
-                    <Label htmlFor={`${type}-freq-sometimes`}>Sometimes, but not daily</Label>
+                    <Label htmlFor={`${type}-freq-sometimes`} className="cursor-pointer">Sometimes, but not daily</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="DAILY" id={`${type}-freq-daily`} />
-                    <Label htmlFor={`${type}-freq-daily`}>Daily, but not constant</Label>
+                    <Label htmlFor={`${type}-freq-daily`} className="cursor-pointer">Daily, but not constant</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="CONSTANT" id={`${type}-freq-constant`} />
-                    <Label htmlFor={`${type}-freq-constant`}>Constant</Label>
+                    <Label htmlFor={`${type}-freq-constant`} className="cursor-pointer">Constant</Label>
                   </div>
                 </RadioGroup>
               </div>
 
               {/* Intensity */}
               <div>
-                <Label>How severe is this symptom? (1-5)</Label>
-                <div className="flex items-center gap-2">
+                <Label className="font-medium mb-2 block">How severe is this symptom? (1-5)</Label>
+                <div className="flex items-center gap-3">
                   <Input
                     type="number"
                     min={1}
@@ -159,10 +161,10 @@ export function SymptomForm({ onUpdate, currentData }: SymptomFormProps) {
 
               {/* Time Patterns */}
               <div>
-                <Label className="mb-2 block">When does this symptom typically occur?</Label>
-                <div className="grid gap-2">
+                <Label className="font-medium mb-3 block">When does this symptom typically occur?</Label>
+                <div className="grid gap-2.5">
                   {info.timePatterns.map((pattern, index) => (
-                    <div key={index} className="flex items-center space-x-2">
+                    <div key={index} className="flex items-center space-x-2 hover:bg-muted/20 p-1.5 rounded-md transition-colors">
                       <Checkbox
                         id={`${type}-pattern-${index}`}
                         checked={data.time_patterns && typeof data.time_patterns === 'object' ? 
@@ -175,7 +177,7 @@ export function SymptomForm({ onUpdate, currentData }: SymptomFormProps) {
                           handleSymptomChange(type, 'time_patterns', patterns)
                         }}
                       />
-                      <Label htmlFor={`${type}-pattern-${index}`}>{pattern}</Label>
+                      <Label htmlFor={`${type}-pattern-${index}`} className="cursor-pointer">{pattern}</Label>
                     </div>
                   ))}
                 </div>
@@ -183,10 +185,10 @@ export function SymptomForm({ onUpdate, currentData }: SymptomFormProps) {
 
               {/* Triggers */}
               <div>
-                <Label className="mb-2 block">What triggers or worsens this symptom?</Label>
-                <div className="grid gap-2">
+                <Label className="font-medium mb-3 block">What triggers or worsens this symptom?</Label>
+                <div className="grid gap-2.5">
                   {info.triggers.map((trigger, index) => (
-                    <div key={index} className="flex items-center space-x-2">
+                    <div key={index} className="flex items-center space-x-2 hover:bg-muted/20 p-1.5 rounded-md transition-colors">
                       <Checkbox
                         id={`${type}-trigger-${index}`}
                         checked={data.triggers?.includes(trigger) || false}
@@ -201,7 +203,7 @@ export function SymptomForm({ onUpdate, currentData }: SymptomFormProps) {
                           handleSymptomChange(type, 'triggers', triggers)
                         }}
                       />
-                      <Label htmlFor={`${type}-trigger-${index}`}>{trigger}</Label>
+                      <Label htmlFor={`${type}-trigger-${index}`} className="cursor-pointer">{trigger}</Label>
                     </div>
                   ))}
                 </div>
@@ -209,14 +211,15 @@ export function SymptomForm({ onUpdate, currentData }: SymptomFormProps) {
 
               {/* Notes */}
               <div>
-                <Label>Additional notes about this symptom</Label>
+                <Label className="font-medium mb-2 block">Additional notes about this symptom</Label>
                 <Textarea
                   value={data.notes || ''}
                   onChange={(e) => handleSymptomChange(type, 'notes', e.target.value)}
                   placeholder="Describe any specific patterns, concerns, or additional information..."
+                  className="min-h-[100px] resize-y"
                 />
               </div>
-            </>
+            </div>
           )}
         </CardContent>
       </Card>
@@ -224,7 +227,8 @@ export function SymptomForm({ onUpdate, currentData }: SymptomFormProps) {
   }
 
   return (
-    <div>
+    <div className="space-y-6">
+      <h2 className="text-xl font-semibold mb-4">Symptom Details</h2>
       {symptoms.map(symptom => renderSymptomQuestions(symptom))}
     </div>
   )
