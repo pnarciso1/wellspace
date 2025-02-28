@@ -23,9 +23,9 @@ export function VisitTimeline({ events, onRangeChange }: TimelineProps) {
     const start = subMonths(end, timeRange)
     
     const filtered = events.filter(event => {
-      const eventDate = new Date(event.date)
+      const eventDate = new Date(event.created_at)
       return isWithinInterval(eventDate, { start, end })
-    }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
 
     setFilteredEvents(filtered)
     setStartDate(start)
@@ -38,13 +38,13 @@ export function VisitTimeline({ events, onRangeChange }: TimelineProps) {
 
   const getEventColor = (type: SymptomType | undefined) => {
     switch (type) {
-      case 'DYSARTHRIA': return 'bg-blue-500'
-      case 'DYSPHAGIA': return 'bg-green-500'
-      case 'DYSPNEA': return 'bg-red-500'
-      case 'DIPLOPIA': return 'bg-purple-500'
-      case 'PTOSIS': return 'bg-yellow-500'
-      case 'FLAT_AFFECT': return 'bg-pink-500'
-      case 'MYASTHENIA': return 'bg-orange-500'
+      case 'speech': return 'bg-blue-500'
+      case 'swallowing': return 'bg-green-500'
+      case 'breathing': return 'bg-red-500'
+      case 'vision': return 'bg-purple-500'
+      case 'eyelid': return 'bg-yellow-500'
+      case 'expression': return 'bg-pink-500'
+      case 'muscle_weakness': return 'bg-orange-500'
       default: return 'bg-gray-500'
     }
   }
@@ -109,19 +109,12 @@ export function VisitTimeline({ events, onRangeChange }: TimelineProps) {
               
               <div className="flex flex-col">
                 <span className="text-sm text-muted-foreground">
-                  {format(new Date(event.date), 'MMM d, yyyy')}
+                  {format(new Date(event.created_at), 'MMM d, yyyy')}
                 </span>
-                <span className="font-medium">{event.title}</span>
-                {event.description && (
-                  <span className="text-sm text-muted-foreground mt-1">
-                    {event.description}
-                  </span>
-                )}
-                {event.intensity && (
-                  <span className="text-sm text-muted-foreground">
-                    Intensity: {event.intensity}/5
-                  </span>
-                )}
+                <span className="font-medium">{event.symptom_type}</span>
+                <p className="text-sm text-muted-foreground">
+                  {`Intensity: ${event.intensity}, Frequency: ${event.frequency}`}
+                </p>
               </div>
             </div>
           ))}
