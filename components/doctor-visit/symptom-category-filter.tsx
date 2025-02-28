@@ -18,43 +18,43 @@ export function SymptomCategoryFilter({
 }: SymptomCategoryFilterProps) {
   const categories: SymptomCategory[] = [
     {
-      id: 'DYSARTHRIA',
+      id: 'speech',
       label: 'Speech',
       description: 'Difficulty speaking or slurred speech',
       relatedTerms: ['speech', 'voice', 'articulation']
     },
     {
-      id: 'DYSPHAGIA',
+      id: 'swallowing',
       label: 'Swallowing',
       description: 'Difficulty swallowing or choking',
       relatedTerms: ['swallow', 'choke', 'eating']
     },
     {
-      id: 'DYSPNEA',
+      id: 'breathing',
       label: 'Breathing',
       description: 'Shortness of breath or difficulty breathing',
       relatedTerms: ['breath', 'respiratory', 'air']
     },
     {
-      id: 'DIPLOPIA',
+      id: 'vision',
       label: 'Vision',
       description: 'Double vision or blurred vision',
       relatedTerms: ['vision', 'sight', 'eyes']
     },
     {
-      id: 'PTOSIS',
+      id: 'eyelid',
       label: 'Eyelid',
       description: 'Drooping eyelids',
       relatedTerms: ['eyelid', 'droop', 'eyes']
     },
     {
-      id: 'FLAT_AFFECT',
+      id: 'expression',
       label: 'Expression',
       description: 'Reduced facial expressions',
       relatedTerms: ['face', 'expression', 'smile']
     },
     {
-      id: 'MYASTHENIA',
+      id: 'muscle_weakness',
       label: 'Muscle Weakness',
       description: 'General muscle weakness',
       relatedTerms: ['weakness', 'fatigue', 'strength']
