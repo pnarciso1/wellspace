@@ -5,6 +5,21 @@ import { useState } from 'react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { VisitTimelineEvent, SymptomType } from '@/types/doctor-visit'
+import { CategoryType } from '@/app/(authenticated)/dashboard/mgpp/tools/doctor-visit/types'
+
+// Define the SymptomData type to match VisitTimelineEvent
+type SymptomData = {
+  id: string
+  symptom_type: SymptomType
+  display_name?: string
+  frequency: string
+  intensity: number
+  treatments: string[]
+  context: string[]
+  time_patterns: string[]
+  notes?: string
+  created_at: string
+}
 
 type TimeGroup = {
   label: string
