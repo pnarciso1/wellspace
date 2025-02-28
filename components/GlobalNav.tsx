@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 
 const links = [
-  { name: 'Dashboard', href: '/dashboard', icon: Icons.LayoutDashboard },
+  { name: 'Dashboard', href: '/dashboard', icon: Icons.dashboard },
   { name: 'Medical Records', href: '/medical-records', icon: Icons.FileText },
   { name: 'Health Profile', href: '/health-profile', icon: Icons.User },
   { name: 'Health Tracks', href: '/health-tracks', icon: Icons.Activity },

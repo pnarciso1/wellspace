@@ -13,7 +13,7 @@ export function CategoryFilter({ selectedCategory, onCategoryChange }: CategoryF
     <div className="mb-8">
       <Select
         value={selectedCategory || "all"}
-        onValueChange={(value) => onCategoryChange(value === "all" ? null : value as VideoCategory)}
+        onValueChange={(value: string) => onCategoryChange(value === "all" ? null : value as VideoCategory)}
       >
         <SelectTrigger className="w-[200px]">
           <SelectValue placeholder="All Categories" />

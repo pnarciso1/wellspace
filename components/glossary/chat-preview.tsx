@@ -77,7 +77,7 @@ export function ChatPreview() {
               <Button asChild variant="default" className="gap-2">
                 <Link href="/ai-chat">
                   Chat with Charlie
-                  <Icons.ArrowRight className="h-4 w-4" />
+                  <Icons.ChevronRight className="h-4 w-4" />
                 </Link>
               </Button>
             </div>

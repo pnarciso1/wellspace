@@ -8,8 +8,6 @@ import React from 'react';
 import {
   Activity,
   AlertCircle,
-  ArrowRight,
-  AtSign,
   Calendar,
   Check,
   CheckCircle,
@@ -19,11 +17,8 @@ import {
   Edit,
   FileText,
   Heart,
-  LayoutDashboard,
-  LayoutGrid,
   LogOut,
   Mail,
-  MapPin,
   Menu,
   MessageSquare,
   Phone,
@@ -31,7 +26,6 @@ import {
   Star,
   Trash,
   Trophy,
-  Twitter,
   User,
   Users,
   Video,
@@ -71,8 +65,42 @@ export const Icons = {
   activity: Activity,
   check: Check,
   user: User,
-  dashboard: LayoutDashboard,
-  grid: LayoutGrid,
+  dashboard: () => (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="7" height="9" x="3" y="3" rx="1" />
+      <rect width="7" height="5" x="14" y="3" rx="1" />
+      <rect width="7" height="9" x="14" y="12" rx="1" />
+      <rect width="7" height="5" x="3" y="16" rx="1" />
+    </svg>
+  ),
+  grid: () => (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="7" height="7" x="3" y="3" rx="1" />
+      <rect width="7" height="7" x="14" y="3" rx="1" />
+      <rect width="7" height="7" x="14" y="14" rx="1" />
+      <rect width="7" height="7" x="3" y="14" rx="1" />
+    </svg>
+  ),
   
   // Uppercase versions for components that use them
   Heart: Heart,
@@ -80,9 +108,6 @@ export const Icons = {
   Check: Check,
   User: User,
   AlertCircle,
-  ArrowRight,
-  At: AtSign,
-  AtSign,
   Calendar,
   CheckCircle,
   ChevronLeft,
@@ -90,11 +115,8 @@ export const Icons = {
   Download,
   Edit,
   FileText,
-  LayoutDashboard,
-  LayoutGrid,
   LogOut,
   Mail,
-  MapPin,
   Menu,
   MessageSquare,
   Phone,
@@ -103,7 +125,6 @@ export const Icons = {
   Trash2: Trash,
   Trash,
   Trophy,
-  Twitter,
   Users,
   Video,
   XCircle

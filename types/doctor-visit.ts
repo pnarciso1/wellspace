@@ -1,10 +1,63 @@
 import { Database } from '@/types/supabase'
 
-// Database types
-export type DbDoctorVisitRecord = Database['public']['Tables']['doctor_visit_records']['Row']
-export type DbDoctorVisitSymptom = Database['public']['Tables']['doctor_visit_symptoms']['Row']
-export type DbDoctorVisitImpact = Database['public']['Tables']['doctor_visit_impact']['Row']
-export type DbDoctorVisitHistory = Database['public']['Tables']['doctor_visit_history']['Row']
+// Mock database types since they don't exist in the Database type
+export interface DbDoctorVisitRecord {
+  id: string;
+  user_id: string;
+  visit_date: string;
+  doctor_name: string;
+  visit_reason: string;
+  diagnosis: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DbDoctorVisitSymptom {
+  id: string;
+  record_id: string;
+  symptom_type: string;
+  is_present: boolean;
+  frequency?: string;
+  intensity?: number;
+  treatments: string[];
+  context: string[];
+  triggers: string[];
+  time_patterns: Record<string, boolean>;
+  affected_areas: string[];
+  notes?: string;
+  symptom_start_date?: string;
+  symptom_changes: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DbDoctorVisitImpact {
+  id: string;
+  record_id: string;
+  daily_activities: Record<string, string>;
+  work_impact?: string;
+  social_impact?: string;
+  emotional_impact?: string;
+  overall_wellbeing?: number;
+  fatigue_level?: number;
+  stress_level?: number;
+  sleep_quality?: number;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DbDoctorVisitHistory {
+  id: string;
+  record_id: string;
+  visit_type: string;
+  primary_concerns: string[];
+  medication_changes: Record<string, string[]>;
+  treatment_plan?: string;
+  next_visit_date?: string;
+  notes?: string;
+  created_at: string;
+}
 
 export type SymptomType = 
   | 'speech'

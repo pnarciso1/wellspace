@@ -13,6 +13,9 @@ import {
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
 
+// Use type assertion to access Radix UI components
+const Root = (LabelPrimitive as any).Root
+
 const Form = FormProvider
 
 type FormFieldContextValue<
@@ -85,8 +88,8 @@ const FormItem = React.forwardRef<
 FormItem.displayName = "FormItem"
 
 const FormLabel = React.forwardRef<
-  React.ElementRef<typeof LabelPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
+  React.ElementRef<typeof Root>,
+  React.ComponentPropsWithoutRef<typeof Root>
 >(({ className, ...props }, ref) => {
   const { error, formItemId } = useFormField()
 

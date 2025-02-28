@@ -235,7 +235,7 @@ export default function HealthProfilePage() {
                 <Label htmlFor="blood_type">Blood Type</Label>
                 <Select
                   value={profile.blood_type || ''}
-                  onValueChange={value => handleChange('blood_type', value)}
+                  onValueChange={(value: string) => handleChange('blood_type', value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select blood type" />
@@ -353,7 +353,7 @@ export default function HealthProfilePage() {
                 <Label htmlFor="exercise_frequency">Exercise Frequency</Label>
                 <Select
                   value={profile.exercise_frequency || ''}
-                  onValueChange={value => handleChange('exercise_frequency', value)}
+                  onValueChange={(value: string) => handleChange('exercise_frequency', value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select frequency" />
@@ -369,7 +369,7 @@ export default function HealthProfilePage() {
                 <Label htmlFor="sleep_hours">Average Sleep</Label>
                 <Select
                   value={profile.sleep_hours || ''}
-                  onValueChange={value => handleChange('sleep_hours', value)}
+                  onValueChange={(value: string) => handleChange('sleep_hours', value)}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select hours" />

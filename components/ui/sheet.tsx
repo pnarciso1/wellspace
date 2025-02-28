@@ -1,25 +1,35 @@
 "use client"
 
 import * as React from "react"
-import * as Dialog from "@radix-ui/react-dialog"
+import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { cva, type VariantProps } from "class-variance-authority"
 import { Icons } from "@/lib/icons"
 
 import { cn } from "@/lib/utils"
 
-const Sheet = Dialog.Root
+// Use type assertion to access Radix UI components
+const Root = (DialogPrimitive as any).Root
+const Trigger = (DialogPrimitive as any).Trigger
+const Close = (DialogPrimitive as any).Close
+const Portal = (DialogPrimitive as any).Portal
+const Overlay = (DialogPrimitive as any).Overlay
+const Content = (DialogPrimitive as any).Content
+const Title = (DialogPrimitive as any).Title
+const Description = (DialogPrimitive as any).Description
 
-const SheetTrigger = Dialog.Trigger
+const Sheet = Root
 
-const SheetClose = Dialog.Close
+const SheetTrigger = Trigger
 
-const SheetPortal = Dialog.Portal
+const SheetClose = Close
+
+const SheetPortal = Portal
 
 const SheetOverlay = React.forwardRef<
-  React.ElementRef<typeof Dialog.Overlay>,
-  React.ComponentPropsWithoutRef<typeof Dialog.Overlay>
+  React.ElementRef<typeof Overlay>,
+  React.ComponentPropsWithoutRef<typeof Overlay>
 >(({ className, ...props }, ref) => (
-  <Dialog.Overlay
+  <Overlay
     className={cn(
       "fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
       className
@@ -28,7 +38,7 @@ const SheetOverlay = React.forwardRef<
     ref={ref}
   />
 ))
-SheetOverlay.displayName = Dialog.Overlay.displayName
+SheetOverlay.displayName = Overlay.displayName
 
 const sheetVariants = cva(
   "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
@@ -50,31 +60,31 @@ const sheetVariants = cva(
 )
 
 interface SheetContentProps
-  extends React.ComponentPropsWithoutRef<typeof Dialog.Content>,
+  extends React.ComponentPropsWithoutRef<typeof Content>,
     VariantProps<typeof sheetVariants> {
   children?: React.ReactNode;
 }
 
 const SheetContent = React.forwardRef<
-  React.ElementRef<typeof Dialog.Content>,
+  React.ElementRef<typeof Content>,
   SheetContentProps
 >(({ side = "right", className, children, ...props }, ref) => (
   <SheetPortal>
     <SheetOverlay />
-    <Dialog.Content
+    <Content
       ref={ref}
       className={cn(sheetVariants({ side }), className)}
       {...props}
     >
       {children}
-      <Dialog.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+      <Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
         <Icons.XCircle className="h-4 w-4" />
         <span className="sr-only">Close</span>
-      </Dialog.Close>
-    </Dialog.Content>
+      </Close>
+    </Content>
   </SheetPortal>
 ))
-SheetContent.displayName = Dialog.Content.displayName
+SheetContent.displayName = Content.displayName
 
 const SheetHeader = ({
   className,
@@ -105,28 +115,28 @@ const SheetFooter = ({
 SheetFooter.displayName = "SheetFooter"
 
 const SheetTitle = React.forwardRef<
-  React.ElementRef<typeof Dialog.Title>,
-  React.ComponentPropsWithoutRef<typeof Dialog.Title>
+  React.ElementRef<typeof Title>,
+  React.ComponentPropsWithoutRef<typeof Title>
 >(({ className, ...props }, ref) => (
-  <Dialog.Title
+  <Title
     ref={ref}
     className={cn("text-lg font-semibold text-foreground", className)}
     {...props}
   />
 ))
-SheetTitle.displayName = Dialog.Title.displayName
+SheetTitle.displayName = Title.displayName
 
 const SheetDescription = React.forwardRef<
-  React.ElementRef<typeof Dialog.Description>,
-  React.ComponentPropsWithoutRef<typeof Dialog.Description>
+  React.ElementRef<typeof Description>,
+  React.ComponentPropsWithoutRef<typeof Description>
 >(({ className, ...props }, ref) => (
-  <Dialog.Description
+  <Description
     ref={ref}
     className={cn("text-sm text-muted-foreground", className)}
     {...props}
   />
 ))
-SheetDescription.displayName = Dialog.Description.displayName
+SheetDescription.displayName = Description.displayName
 
 export {
   Sheet,

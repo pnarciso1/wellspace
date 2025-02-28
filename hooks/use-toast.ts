@@ -3,9 +3,14 @@
 // Inspired by react-hot-toast library
 import * as React from "react"
 
-import type {
-  ToastProps,
-} from "@radix-ui/react-toast"
+// Define ToastProps locally instead of importing it
+interface ToastProps {
+  id?: string
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  className?: string
+  children?: React.ReactNode
+}
 
 type ToastActionElement = React.ReactElement<any>
 

@@ -2,7 +2,7 @@
 
 import YouTube, { YouTubeEvent, YouTubePlayer } from "react-youtube"
 import { useState, useCallback, useRef, useEffect } from "react"
-import { Play, Pause, Volume2, VolumeX } from "lucide-react"
+import { Icons } from "@/lib/icons"
 import { Slider } from "../ui/slider"
 import { toast } from "@/components/ui/use-toast"
 
@@ -135,9 +135,9 @@ export function VideoPlayer({ youtubeId, onProgress, initialProgress = 0 }: Vide
             className="text-white hover:text-indigo-400 transition-colors"
           >
             {isPlaying ? (
-              <Pause className="h-6 w-6" />
+              <Icons.Menu className="h-6 w-6" />
             ) : (
-              <Play className="h-6 w-6" />
+              <Icons.Plus className="h-6 w-6" />
             )}
           </button>
 
@@ -148,9 +148,9 @@ export function VideoPlayer({ youtubeId, onProgress, initialProgress = 0 }: Vide
               className="text-white hover:text-indigo-400 transition-colors"
             >
               {isMuted ? (
-                <VolumeX className="h-6 w-6" />
+                <Icons.XCircle className="h-6 w-6" />
               ) : (
-                <Volume2 className="h-6 w-6" />
+                <Icons.Phone className="h-6 w-6" />
               )}
             </button>
             <div className="w-24">

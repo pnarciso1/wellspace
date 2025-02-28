@@ -127,7 +127,7 @@ export default function ContactPage() {
                   <span>301-310-2112</span>
                 </div>
                 <div className="flex items-start space-x-2 text-gray-600">
-                  <Icons.MapPin className="h-5 w-5 mt-1" />
+                  <Icons.Mail className="h-5 w-5 mt-1" />
                   <p>
                     131 Continental Dr Suite 305<br />
                     Newark, DE, 19713<br />
