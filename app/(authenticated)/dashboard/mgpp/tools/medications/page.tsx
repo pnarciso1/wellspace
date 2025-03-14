@@ -4,13 +4,14 @@ import { useState } from 'react'
 import { format } from 'date-fns'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Plus, Download, FileText } from 'lucide-react'
+import { Plus, Download, FileText, ChevronRight } from 'lucide-react'
 import { MedicationList } from "@/components/medications/medication-list"
 import { MedicationForm } from "@/components/medications/medication-form"
 import { MedicationTimeline } from "@/components/medications/medication-timeline"
 import { generateMedicationPDF } from "@/components/medications/medication-export"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/components/ui/use-toast"
+import Link from 'next/link'
 import type { Medication } from "@/types/medications"
 
 export default function MedicationsPage() {
@@ -75,6 +76,12 @@ export default function MedicationsPage() {
           <Button onClick={() => setShowForm(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Add Medication
+          </Button>
+          <Button asChild>
+            <Link href="/dashboard/mgpp">
+              Back to Tools
+              <ChevronRight className="ml-2 h-4 w-4" />
+            </Link>
           </Button>
         </div>
       </div>
