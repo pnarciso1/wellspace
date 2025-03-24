@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -13,18 +13,37 @@ import {
   SYMPTOM_DEFINITIONS,
   TREATMENT_OPTIONS 
 } from '../types'
-import { Icons } from '@/lib/icons'
+import { format } from "date-fns"
+import { Input } from "@/components/ui/input"
+import { Menu, Calendar, Activity, CheckCircle, Heart, AlertCircle, FileText, Plus } from 'lucide-react'
 import type { 
   SymptomType, 
   FrequencyType,
   SymptomData,
-  TreatmentType
+  TreatmentType,
+  TimeOfDay,
+  DoctorVisitRecord,
+  QualityOfLife
 } from '../types'
+import { ClinicalOverview } from './clinical-overview'
 
 interface DoctorVisitFormProps {
   recordId: string
-  onSuccess: (symptom: SymptomData) => void
+  onSuccess: (symptom: SymptomFormData) => void
   onCancel: () => void
+}
+
+interface SymptomFormData {
+  record_id: string;
+  symptom_type: SymptomType;
+  frequency: FrequencyType;
+  intensity: number;
+  treatments: TreatmentType[];
+  context: string[];
+  time_patterns: TimeOfDay[];
+  triggers: { hasTrigggers: boolean; description?: string };
+  notes: string;
+  created_at: string;
 }
 
 export function DoctorVisitForm({ recordId, onSuccess, onCancel }: DoctorVisitFormProps) {
@@ -33,67 +52,126 @@ export function DoctorVisitForm({ recordId, onSuccess, onCancel }: DoctorVisitFo
   const [frequency, setFrequency] = useState<FrequencyType>('sometimes')
   const [intensity, setIntensity] = useState<number>(1)
   const [treatments, setTreatments] = useState<TreatmentType[]>([])
+  const [context, setContext] = useState<string[]>([])
+  const [timePatterns, setTimePatterns] = useState<TimeOfDay[]>([])
+  const [triggers, setTriggers] = useState<{ hasTrigggers: boolean; description?: string }>({
+    hasTrigggers: false
+  })
   const [notes, setNotes] = useState('')
+  const [showClinicalOverview, setShowClinicalOverview] = useState(false)
+  const [record, setRecord] = useState<DoctorVisitRecord | null>(null)
+  const [symptoms, setSymptoms] = useState<SymptomData[]>([])
+  const [qualityOfLife, setQualityOfLife] = useState<QualityOfLife | null>(null)
+  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0])
 
   const supabase = createClientComponentClient()
+
+  useEffect(() => {
+    async function fetchData() {
+      // Fetch record
+      const { data: recordData, error: recordError } = await supabase
+        .from('doctor_visit_records')
+        .select('*')
+        .eq('id', recordId)
+        .single()
+
+      if (recordError) {
+        console.error('Error fetching record:', recordError)
+        return
+      }
+
+      setRecord(recordData)
+
+      // Fetch symptoms
+      const { data: symptomsData, error: symptomsError } = await supabase
+        .from('doctor_visit_symptoms')
+        .select('*')
+        .eq('record_id', recordId)
+        .order('created_at', { ascending: true })
+
+      if (symptomsError) {
+        console.error('Error fetching symptoms:', symptomsError)
+        return
+      }
+
+      setSymptoms(symptomsData)
+
+      // Fetch quality of life assessment
+      const { data: qolData, error: qolError } = await supabase
+        .from('doctor_visit_quality_of_life')
+        .select('*')
+        .eq('record_id', recordId)
+        .single()
+
+      if (qolError && qolError.code !== 'PGRST116') { // Ignore not found error
+        console.error('Error fetching quality of life:', qolError)
+        return
+      }
+
+      setQualityOfLife(qolData)
+    }
+
+    fetchData()
+  }, [recordId, supabase])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      if (!frequency) {
-        throw new Error('Please select a frequency');
-      }
-
-      const symptomData = {
+      const symptomData: SymptomFormData = {
         record_id: recordId,
         symptom_type: symptomType,
-        frequency: frequency,
-        intensity: intensity || 1,
-        treatments: treatments,
-        notes: notes || null
+        frequency,
+        intensity,
+        treatments,
+        context,
+        time_patterns: timePatterns,
+        triggers,
+        notes,
+        created_at: new Date(date).toISOString()
       }
 
       console.log('Submitting symptom data:', symptomData);
-
-      const { data, error } = await supabase
-        .from('doctor_visit_symptoms')
-        .insert([symptomData])
-        .select()
-        .single()
-
-      if (error) {
-        console.error('Supabase error:', error)
-        throw new Error(error.message)
-      }
-
-      if (!data) {
-        throw new Error('No data returned from insert')
-      }
-
-      toast.success('Symptom recorded successfully')
-      onSuccess(data)
       
+      // Pass the data to parent component
+      onSuccess(symptomData)
+      
+      // Reset form
       setSymptomType('speech')
       setFrequency('sometimes')
       setIntensity(1)
       setTreatments([])
+      setContext([])
+      setTimePatterns([])
+      setTriggers({ hasTrigggers: false })
       setNotes('')
+      setDate(new Date().toISOString().split('T')[0])
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to save symptom'
-      console.error('Error saving symptom:', message)
+      console.error('Error preparing symptom data:', message)
       toast.error(message)
     } finally {
       setLoading(false)
     }
   }
 
+  if (showClinicalOverview && record) {
+    return (
+      <ClinicalOverview
+        record={record}
+        symptoms={symptoms}
+        qualityOfLife={qualityOfLife}
+        onBack={() => setShowClinicalOverview(false)}
+      />
+    )
+  }
+
   return (
     <Card className="shadow-md border-muted/60">
       <CardHeader className="bg-muted/30 pb-3">
         <CardTitle className="flex items-center text-lg">
-          <Icons.Plus className="h-5 w-5 mr-2 text-primary" />
+          <Plus className="h-5 w-5 mr-2 text-primary" />
           Record Symptom
         </CardTitle>
       </CardHeader>
@@ -101,12 +179,15 @@ export function DoctorVisitForm({ recordId, onSuccess, onCancel }: DoctorVisitFo
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <Label className="text-base font-medium flex items-center">
-              <Icons.Menu className="h-4 w-4 mr-2 text-muted-foreground" />
+              <Menu className="h-4 w-4 mr-2 text-muted-foreground" />
               Select Symptom Type
             </Label>
             <RadioGroup
               value={symptomType}
-              onValueChange={(value: string) => setSymptomType(value as SymptomType)}
+              onValueChange={(value: string) => {
+                setSymptomType(value as SymptomType)
+                setContext([]) // Reset context when symptom type changes
+              }}
               className="grid grid-cols-1 sm:grid-cols-2 gap-4"
             >
               {Object.entries(SYMPTOM_DEFINITIONS).map(([key, def]) => (
@@ -130,7 +211,7 @@ export function DoctorVisitForm({ recordId, onSuccess, onCancel }: DoctorVisitFo
 
           <div className="space-y-4">
             <Label className="text-base font-medium flex items-center">
-              <Icons.Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+              <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
               Frequency
             </Label>
             <RadioGroup
@@ -167,7 +248,7 @@ export function DoctorVisitForm({ recordId, onSuccess, onCancel }: DoctorVisitFo
 
           <div className="space-y-4">
             <Label className="text-base font-medium flex items-center">
-              <Icons.Activity className="h-4 w-4 mr-2 text-muted-foreground" />
+              <Activity className="h-4 w-4 mr-2 text-muted-foreground" />
               Intensity (1-5)
             </Label>
             <RadioGroup
@@ -193,7 +274,71 @@ export function DoctorVisitForm({ recordId, onSuccess, onCancel }: DoctorVisitFo
 
           <div className="space-y-4">
             <Label className="text-base font-medium flex items-center">
-              <Icons.Heart className="h-4 w-4 mr-2 text-muted-foreground" />
+              <CheckCircle className="h-4 w-4 mr-2 text-muted-foreground" />
+              Context: Please check any that apply
+            </Label>
+            <div className="grid gap-3">
+              {SYMPTOM_DEFINITIONS[symptomType].context_questions.map((question, index) => (
+                <div 
+                  key={index} 
+                  className={`flex items-center space-x-2 border rounded-md p-3 hover:bg-muted/50 transition-colors ${
+                    context.includes(question) ? 'bg-primary/5 border-primary/30 shadow-sm' : ''
+                  }`}
+                >
+                  <Checkbox
+                    id={`context-${index}`}
+                    checked={context.includes(question)}
+                    onCheckedChange={(checked: boolean | 'indeterminate') => {
+                      if (checked === true) {
+                        setContext(prev => [...prev, question])
+                      } else {
+                        setContext(prev => prev.filter(c => c !== question))
+                      }
+                    }}
+                  />
+                  <Label htmlFor={`context-${index}`} className="cursor-pointer">{question}</Label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <Label className="text-base font-medium flex items-center">
+              <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+              Time Patterns: When is this symptom most noticeable?
+            </Label>
+            <div className="grid gap-3">
+              {[
+                { value: 'morning', label: 'Beginning of my day' },
+                { value: 'afternoon', label: 'Middle of my day' },
+                { value: 'evening', label: 'End of my day' }
+              ].map((time) => (
+                <div 
+                  key={time.value} 
+                  className={`flex items-center space-x-2 border rounded-md p-3 hover:bg-muted/50 transition-colors ${
+                    timePatterns.includes(time.value as TimeOfDay) ? 'bg-primary/5 border-primary/30 shadow-sm' : ''
+                  }`}
+                >
+                  <Checkbox
+                    id={`time-${time.value}`}
+                    checked={timePatterns.includes(time.value as TimeOfDay)}
+                    onCheckedChange={(checked: boolean | 'indeterminate') => {
+                      if (checked === true) {
+                        setTimePatterns(prev => [...prev, time.value as TimeOfDay])
+                      } else {
+                        setTimePatterns(prev => prev.filter(t => t !== time.value))
+                      }
+                    }}
+                  />
+                  <Label htmlFor={`time-${time.value}`} className="cursor-pointer">{time.label}</Label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <Label className="text-base font-medium flex items-center">
+              <Heart className="h-4 w-4 mr-2 text-muted-foreground" />
               Current Treatments (select all that apply)
             </Label>
             <div className="grid gap-3">
@@ -223,7 +368,42 @@ export function DoctorVisitForm({ recordId, onSuccess, onCancel }: DoctorVisitFo
 
           <div className="space-y-4">
             <Label className="text-base font-medium flex items-center">
-              <Icons.FileText className="h-4 w-4 mr-2 text-muted-foreground" />
+              <AlertCircle className="h-4 w-4 mr-2 text-muted-foreground" />
+              Triggers
+            </Label>
+            <RadioGroup
+              value={triggers.hasTrigggers ? "yes" : "no"}
+              onValueChange={(value: string) => {
+                setTriggers(prev => ({
+                  ...prev,
+                  hasTrigggers: value === "yes",
+                  description: value === "no" ? undefined : prev.description
+                }))
+              }}
+              className="grid gap-3"
+            >
+              <div className="flex items-center space-x-2 border rounded-md p-3">
+                <RadioGroupItem value="yes" id="triggers-yes" />
+                <Label htmlFor="triggers-yes">This symptom has specific triggers or aggravating factors</Label>
+              </div>
+              <div className="flex items-center space-x-2 border rounded-md p-3">
+                <RadioGroupItem value="no" id="triggers-no" />
+                <Label htmlFor="triggers-no">No specific triggers identified</Label>
+              </div>
+            </RadioGroup>
+            {triggers.hasTrigggers && (
+              <textarea
+                className="w-full p-3 border rounded-md min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/50"
+                value={triggers.description || ''}
+                onChange={(e) => setTriggers(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Please describe what triggers or aggravates this symptom..."
+              />
+            )}
+          </div>
+
+          <div className="space-y-4">
+            <Label className="text-base font-medium flex items-center">
+              <FileText className="h-4 w-4 mr-2 text-muted-foreground" />
               Additional Notes
             </Label>
             <textarea
@@ -232,6 +412,18 @@ export function DoctorVisitForm({ recordId, onSuccess, onCancel }: DoctorVisitFo
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Any additional details about this symptom..."
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Date of Symptom</Label>
+            <div className="flex items-center space-x-2">
+              <Input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="w-full"
+              />
+            </div>
           </div>
 
           <div className="flex justify-end space-x-4 pt-4 border-t mt-6">
@@ -248,17 +440,7 @@ export function DoctorVisitForm({ recordId, onSuccess, onCancel }: DoctorVisitFo
               disabled={loading}
               className="min-w-[120px] shadow-sm"
             >
-              {loading ? (
-                <>
-                  <Icons.Menu className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <Icons.Check className="mr-2 h-4 w-4" />
-                  Save Symptom
-                </>
-              )}
+              {loading ? "Saving..." : "Save Symptom"}
             </Button>
           </div>
         </form>

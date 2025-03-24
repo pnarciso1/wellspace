@@ -5,23 +5,15 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
 import { cn } from "@/lib/utils"
 
-// Use type assertion to access Radix UI components
-const Provider = (TooltipPrimitive as any).Provider
-const Root = (TooltipPrimitive as any).Root
-const Trigger = (TooltipPrimitive as any).Trigger
-const Content = (TooltipPrimitive as any).Content
+export const TooltipProvider = TooltipPrimitive.Provider
+export const Tooltip = TooltipPrimitive.Root
+export const TooltipTrigger = TooltipPrimitive.Trigger
 
-const TooltipProvider = Provider
-
-const Tooltip = Root
-
-const TooltipTrigger = Trigger
-
-const TooltipContent = React.forwardRef<
-  React.ElementRef<typeof Content>,
-  React.ComponentPropsWithoutRef<typeof Content>
+export const TooltipContent = React.forwardRef<
+  React.ElementRef<typeof TooltipPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
 >(({ className, sideOffset = 4, ...props }, ref) => (
-  <Content
+  <TooltipPrimitive.Content
     ref={ref}
     sideOffset={sideOffset}
     className={cn(
@@ -31,6 +23,4 @@ const TooltipContent = React.forwardRef<
     {...props}
   />
 ))
-TooltipContent.displayName = Content.displayName
-
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
+TooltipContent.displayName = "TooltipContent"

@@ -7,10 +7,10 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/components/ui/use-toast"
 import Link from 'next/link'
-import type { GlossaryTerm, GlossaryCategory } from '@/types/glossary'
+import type { GlossaryTerm, GlossaryCategory } from './types/glossary'
 import { MessageSquare, Activity, ChevronRight } from 'lucide-react'
-import { ChatPreview } from '@/components/glossary/chat-preview'
-import { CategoryFilter } from '@/components/glossary/category-filter'
+import { ChatPreview } from "@/app/components/glossary/chat-preview"
+import { CategoryFilter } from "@/app/components/glossary/category-filter"
 
 export default function GlossaryPage() {
   const [terms, setTerms] = useState<GlossaryTerm[]>([])

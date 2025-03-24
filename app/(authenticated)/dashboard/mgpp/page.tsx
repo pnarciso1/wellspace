@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { default as NextLink } from 'next/link'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -191,10 +191,11 @@ export default function MGPPPage() {
               </div>
               <p className="text-gray-500 mb-4">{step.description}</p>
               {step.status !== 'locked' && (
-                <Button asChild>
-                  <Link href={step.link}>
-                    {step.status === 'completed' ? 'Review' : 'Begin'}
-                  </Link>
+                <Button 
+                  className="w-full" 
+                  onClick={() => router.push(step.link)}
+                >
+                  {step.status === 'completed' ? 'Review' : 'Begin'}
                 </Button>
               )}
             </CardContent>

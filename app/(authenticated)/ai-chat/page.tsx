@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle } from 'lucide-react'
+import { Icons } from "@/lib/icons"
 
 export default function AIChat() {
   return (
@@ -21,7 +21,7 @@ export default function AIChat() {
             With access to a vast database of medical knowledge, Charlie can provide you with quick, informative responses to help you navigate your health journey. Remember, while Charlie is a powerful tool, it's always best to consult with a healthcare professional for personalized medical advice.
           </p>
           <Alert className="mb-4">
-            <AlertCircle className="h-4 w-4" />
+            <Icons.AlertCircle className="h-4 w-4" />
             <AlertDescription>
               Charlie is a Generative AI assistant. While it strives to provide accurate and helpful information, please review and verify any important details with a qualified healthcare provider.
             </AlertDescription>

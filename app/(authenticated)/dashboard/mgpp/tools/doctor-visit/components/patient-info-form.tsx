@@ -17,6 +17,7 @@ export interface PatientInfoFormProps {
     birth_year: string
     years_with_mg: string
   }) => void
+  onCancel: () => void
 }
 
 export function PatientInfoForm({ onSubmit }: PatientInfoFormProps) {

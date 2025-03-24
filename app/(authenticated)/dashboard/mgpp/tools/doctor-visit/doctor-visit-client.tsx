@@ -13,7 +13,17 @@ import { QualityOfLifeForm } from './components/quality-of-life-form'
 import { VisitSummary } from './components/visit-summary'
 import { SymptomCategoryFilter } from './components/symptom-category-filter'
 import { DoctorVisitTimeline } from './components/doctor-visit-timeline'
-import type { CategoryType } from './types'
+import type { 
+  CategoryType,
+  QualityOfLife,
+  SymptomType,
+  FrequencyType,
+  TreatmentType,
+  TimeOfDay
+} from './types'
+import { useRouter } from 'next/navigation'
+import { ClinicalOverview } from './components/clinical-overview'
+import { DoctorVisitInstructions } from './components/doctor-visit-instructions'
 
 type Step = 'info' | 'symptoms' | 'quality' | 'summary'
 
@@ -28,6 +38,30 @@ interface PatientInfo {
   years_with_mg: string
 }
 
+interface PatientInfoFormProps {
+  onSubmit: (data: PatientInfo) => Promise<void>
+  onCancel: () => void
+}
+
+interface QualityOfLifeFormProps {
+  recordId: string
+  onComplete: (data: QualityOfLife) => void
+  onBack: () => void
+}
+
+interface SymptomFormData {
+  record_id: string;
+  symptom_type: SymptomType;
+  frequency: FrequencyType;
+  intensity: number;
+  treatments: TreatmentType[];
+  context: string[];
+  time_patterns: TimeOfDay[];
+  triggers: { hasTrigggers: boolean; description?: string };
+  notes: string;
+  created_at: string;
+}
+
 export default function DoctorVisitClient() {
   const [step, setStep] = useState<Step>('info')
   const [recordId, setRecordId] = useState<string | null>(null)
@@ -36,24 +70,71 @@ export default function DoctorVisitClient() {
   const [qualityOfLife, setQualityOfLife] = useState<any>(null)
   const [record, setRecord] = useState<any>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showClinicalOverview, setShowClinicalOverview] = useState(false)
+  const [showInstructions, setShowInstructions] = useState(true)
 
   const supabase = createClientComponentClient()
+  const router = useRouter()
 
-  // Load quality of life data when recordId changes
+  // Load user's most recent record on component mount
   useEffect(() => {
-    if (recordId) {
-      loadQualityOfLifeData();
-    }
-  }, [recordId]);
+    loadMostRecentRecord();
+  }, []);
 
-  const loadQualityOfLifeData = async () => {
-    if (!recordId) return;
+  const loadMostRecentRecord = async () => {
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      if (userError) throw userError
+      
+      if (!user) {
+        console.error('No user found')
+        return
+      }
+
+      // Get the most recent record for this user
+      const { data: recentRecord, error: recordError } = await supabase
+        .from('doctor_visit_records')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single()
+
+      if (recordError) {
+        if (recordError.code === 'PGRST116') { // No record found
+          setStep('info') // Start with info form
+          return
+        }
+        throw recordError
+      }
+
+      if (recentRecord) {
+        setRecordId(recentRecord.id)
+        setRecord(recentRecord)
+        setStep('symptoms') // Go directly to symptoms page
+        
+        // Load associated data
+        await Promise.all([
+          loadQualityOfLifeData(recentRecord.id),
+          loadSymptomHistory(recentRecord.id)
+        ])
+      }
+    } catch (error) {
+      console.error('Error loading recent record:', error)
+      toast.error('Failed to load your previous visit data')
+    }
+  }
+
+  // Update loadQualityOfLifeData to accept recordId parameter
+  const loadQualityOfLifeData = async (targetRecordId?: string) => {
+    const rid = targetRecordId || recordId
+    if (!rid) return;
     
     try {
       const { data, error } = await supabase
         .from('doctor_visit_quality_of_life')
         .select('*')
-        .eq('record_id', recordId)
+        .eq('record_id', rid)
         .single();
       
       if (error && error.code !== 'PGRST116') {
@@ -66,6 +147,34 @@ export default function DoctorVisitClient() {
       }
     } catch (error) {
       console.error('Error loading quality of life data:', error);
+    }
+  };
+
+  // Update loadSymptomHistory to accept recordId parameter
+  const loadSymptomHistory = async (targetRecordId?: string) => {
+    const rid = targetRecordId || recordId
+    if (!rid) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('doctor_visit_symptoms')
+        .select('*')
+        .eq('record_id', rid)
+        .order('created_at', { ascending: true });
+      
+      if (error) {
+        console.error('Error loading symptom history:', error);
+        toast.error('Failed to load symptom history');
+        return;
+      }
+      
+      if (data) {
+        setSymptoms(data);
+        console.log('Loaded symptom history:', data);
+      }
+    } catch (error) {
+      console.error('Error loading symptom history:', error);
+      toast.error('Failed to load symptom history');
     }
   };
 
@@ -114,16 +223,34 @@ export default function DoctorVisitClient() {
     }
   }
 
-  const handleSymptomSubmit = (symptom: any) => {
-    console.log('Symptom submitted:', symptom);
-    const processedSymptom = { ...symptom };
-    
-    if (typeof processedSymptom.intensity === 'string') {
-      processedSymptom.intensity = parseInt(processedSymptom.intensity) || 1;
+  const handleSymptomSubmit = async (symptomData: SymptomFormData) => {
+    try {
+      console.log('Saving symptom with data:', symptomData);
+
+      // Save the new symptom to the database
+      const { data, error } = await supabase
+        .from('doctor_visit_symptoms')
+        .insert([symptomData])
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error saving symptom:', error);
+        toast.error('Failed to save symptom');
+        return;
+      }
+
+      if (!data) {
+        throw new Error('No data returned from insert');
+      }
+      
+      // Reload the full history after successful save
+      await loadSymptomHistory();
+      toast.success('Symptom recorded successfully');
+    } catch (error) {
+      console.error('Error in symptom submission:', error);
+      toast.error('Failed to record symptom');
     }
-    
-    setSymptoms(prev => [...prev, processedSymptom]);
-    toast.success('Symptom recorded');
   }
 
   const handleQualitySubmit = async () => {
@@ -146,6 +273,7 @@ export default function DoctorVisitClient() {
             <CardContent>
               <PatientInfoForm 
                 onSubmit={handleInfoSubmit} 
+                onCancel={() => router.back()}
               />
             </CardContent>
           </Card>
@@ -222,7 +350,10 @@ export default function DoctorVisitClient() {
             <CardContent>
               <QualityOfLifeForm
                 recordId={recordId!}
-                onComplete={handleQualitySubmit}
+                onComplete={(data) => {
+                  setQualityOfLife(data)
+                  setStep('summary')
+                }}
                 onBack={() => setStep('symptoms')}
               />
             </CardContent>
@@ -230,34 +361,69 @@ export default function DoctorVisitClient() {
         )
       case 'summary':
         return (
-          <Card className="max-w-4xl mx-auto shadow-md">
-            <CardHeader>
-              <CardTitle className="text-2xl">Visit Summary</CardTitle>
-              <CardDescription>
-                Review the information you've provided for your doctor visit.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <VisitSummary
-                record={record}
-                symptoms={symptoms}
-                qualityOfLife={qualityOfLife}
-                onBack={() => setStep('symptoms')}
-              />
-            </CardContent>
-          </Card>
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold">Visit Summary</h2>
+              <div className="space-x-4">
+                <Button variant="outline" onClick={() => setStep('symptoms')}>
+                  <Icons.ChevronLeft className="h-4 w-4 mr-2" />
+                  Back to Symptoms
+                </Button>
+                <Button onClick={() => setShowClinicalOverview(true)}>
+                  <Icons.FileText className="h-4 w-4 mr-2" />
+                  View Clinical Overview
+                </Button>
+              </div>
+            </div>
+            <VisitSummary
+              record={record}
+              symptoms={symptoms}
+              qualityOfLife={qualityOfLife}
+              onBack={() => setStep('symptoms')}
+            />
+          </div>
         )
+      default:
+        return null
     }
+  }
+
+  if (showInstructions) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <DoctorVisitInstructions 
+          onGetStarted={() => setShowInstructions(false)} 
+        />
+      </div>
+    )
+  }
+
+  if (showClinicalOverview && record) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <ClinicalOverview
+          record={record}
+          symptoms={symptoms}
+          qualityOfLife={qualityOfLife}
+          onBack={() => setShowClinicalOverview(false)}
+        />
+      </div>
+    )
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* @ts-ignore - Toaster component has correct types but TypeScript is having issues */}
       <Toaster />
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Doctor Visit Preparation</h1>
-        <p className="text-muted-foreground">
-          Prepare for your doctor visit by recording your symptoms and health information.
-        </p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Doctor Visit Preparation</h1>
+            <p className="text-muted-foreground">
+              Prepare for your doctor visit by recording your symptoms and health information.
+            </p>
+          </div>
+        </div>
         
         <div className="flex items-center mt-6 border-b pb-4">
           <div className="flex space-x-2">

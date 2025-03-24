@@ -3,7 +3,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Icons } from '@/lib/icons'
-import Link from 'next/link'
 
 export default function Community() {
   const socialMediaLinks = [
@@ -62,13 +61,19 @@ export default function Community() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {socialMediaLinks.map((link, index) => (
-              <Button key={index} variant="outline" asChild className="w-full justify-start">
-                <Link href={link.url} target="_blank" rel="noopener noreferrer">
+              <a
+                key={index}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block no-underline"
+              >
+                <Button variant="outline" className="w-full justify-start">
                   <Icons.MessageSquare className="mr-2 h-4 w-4" />
                   <span className="mr-2">{link.platform}:</span>
                   <span className="text-blue-500">{link.handle}</span>
-                </Link>
-              </Button>
+                </Button>
+              </a>
             ))}
           </div>
         </CardContent>

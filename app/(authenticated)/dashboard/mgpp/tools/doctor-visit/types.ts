@@ -22,6 +22,11 @@ export type TreatmentType =
   | 'lifestyle_changes'
   | 'none'
 
+export type TimeOfDay = 
+  | 'morning'
+  | 'afternoon'
+  | 'evening'
+
 // Treatment definitions
 export const TREATMENT_OPTIONS = [
   { value: 'medication', label: 'Medication' },
@@ -31,49 +36,98 @@ export const TREATMENT_OPTIONS = [
   { value: 'none', label: 'None of the Above' }
 ] as const
 
-// Medical terminology definitions
+// Medical terminology definitions with contextual questions
 export const SYMPTOM_DEFINITIONS = {
   speech: {
     medical_term: 'DYSARTHRIA',
     description: 'Difficulty speaking',
     etymology: 'DYS = difficulty + ARTHRIA = to speak',
-    example: 'Slurred or nasal speech'
+    example: 'Slurred or nasal speech',
+    context_questions: [
+      'My speech becomes unclear or slurred',
+      'Others have difficulty understanding me',
+      'I need to repeat myself often',
+      'My voice becomes nasal',
+      'Speaking requires extra effort'
+    ]
   },
   vision: {
     medical_term: 'DIPLOPIA',
     description: 'Double vision',
     etymology: 'DI = double + OPIA = vision',
-    example: 'Seeing two images of a single object'
+    example: 'Seeing two images of a single object',
+    context_questions: [
+      'I see double images',
+      'My vision is blurry',
+      'Reading is difficult',
+      'Watching screens is challenging',
+      'My vision worsens with fatigue'
+    ]
   },
   breathing: {
     medical_term: 'DYSPNEA',
     description: 'Difficulty breathing',
     etymology: 'DYS = difficulty + PNEA = breathing',
-    example: 'Shortness of breath'
+    example: 'Shortness of breath',
+    context_questions: [
+      'I feel short of breath',
+      'Breathing requires more effort',
+      'I need to sit up to breathe better',
+      'Physical activity makes breathing harder',
+      'I experience breathlessness at rest'
+    ]
   },
   swallowing: {
     medical_term: 'DYSPHAGIA',
     description: 'Difficulty swallowing',
     etymology: 'DYS = difficulty + PHAGIA = to eat/swallow',
-    example: 'Food or liquids going down the wrong way'
+    example: 'Food or liquids going down the wrong way',
+    context_questions: [
+      'I have difficulty swallowing food',
+      'Liquids go down the wrong way',
+      'I cough or choke while eating',
+      'Food gets stuck in my throat',
+      'Eating takes longer than usual'
+    ]
   },
   eyelid: {
     medical_term: 'PTOSIS',
     description: 'Drooping eyelid',
     etymology: 'PTOSIS = falling/drooping',
-    example: 'Upper eyelid drooping over the eye'
+    example: 'Upper eyelid drooping over the eye',
+    context_questions: [
+      'My eyelid(s) droop',
+      'I need to tilt my head back to see',
+      'My eyelids feel heavy',
+      'The drooping worsens throughout the day',
+      'Both eyes are affected'
+    ]
   },
   expression: {
     medical_term: 'FACIAL WEAKNESS',
     description: 'Reduced facial muscle strength',
     etymology: 'Weakness of facial muscles',
-    example: 'Difficulty smiling or making expressions'
+    example: 'Difficulty smiling or making expressions',
+    context_questions: [
+      'I have difficulty smiling',
+      'My face feels stiff',
+      'Expressing emotions is difficult',
+      'One side is more affected',
+      'Others notice my reduced expressions'
+    ]
   },
   muscle_weakness: {
     medical_term: 'GENERALIZED WEAKNESS',
     description: 'Overall muscle weakness',
     etymology: 'Reduced muscle strength',
-    example: 'Difficulty with physical activities'
+    example: 'Difficulty with physical activities',
+    context_questions: [
+      'I experience general fatigue',
+      'Certain muscle groups are weaker',
+      'Activities require more effort',
+      'Weakness increases with activity',
+      'I need frequent rest periods'
+    ]
   }
 } as const
 
@@ -87,6 +141,12 @@ export interface SymptomData {
   frequency: FrequencyType
   intensity: number
   treatments: TreatmentType[]
+  context: string[]
+  time_patterns: TimeOfDay[]
+  triggers: {
+    hasTrigggers: boolean
+    description?: string
+  }
   notes: string | null
 }
 

@@ -7,6 +7,16 @@ const nextConfig = {
       'img.youtube.com',
       'i.ytimg.com'
     ],
+  },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': '.',
+      '@/types': './types',
+      '@/components': './components',
+      '@/lib': './lib'
+    }
+    return config
   }
 }
 
