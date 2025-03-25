@@ -52,8 +52,8 @@ export function SymptomChart({ data, type }: SymptomChartProps) {
   return (
     <div className="h-[200px] mb-4">
       <div style={{ width: '100%', height: '100%' }}>
-        {/* @ts-ignore - Known type incompatibility with recharts components */}
-        <ChartWrapper type="symptom" data={data} />
+        {/* @ts-expect-error - Known type incompatibility with chart components */}
+        <ChartWrapper data={data} type="symptom" />
       </div>
     </div>
   )
@@ -63,8 +63,8 @@ export function TreatmentChart({ data }: TreatmentChartProps) {
   return (
     <div className="h-[200px] mb-4">
       <div style={{ width: '100%', height: '100%' }}>
-        {/* @ts-ignore - Known type incompatibility with recharts components */}
-        <ChartWrapper type="treatment" data={data} />
+        {/* @ts-expect-error - Known type incompatibility with chart components */}
+        <ChartWrapper data={data} type="treatment" />
       </div>
     </div>
   )
@@ -74,8 +74,8 @@ export function QualityOfLifeChart({ data }: QualityOfLifeChartProps) {
   return (
     <div className="h-[200px] mb-4">
       <div style={{ width: '100%', height: '100%' }}>
-        {/* @ts-ignore - Known type incompatibility with recharts components */}
-        <ChartWrapper type="qol" data={data} />
+        {/* @ts-expect-error - Known type incompatibility with chart components */}
+        <ChartWrapper data={data} type="qol" />
       </div>
     </div>
   )

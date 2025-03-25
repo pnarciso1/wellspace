@@ -151,7 +151,7 @@ export function QualityOfLifeForm({ recordId, onComplete, onBack }: QualityOfLif
     <div className="space-y-6">
       <div className="flex items-center">
         <Button variant="outline" onClick={onBack} className="shadow-sm">
-          {/* @ts-ignore - Icon component from lucide-react has incorrect types */}
+          {/* @ts-expect-error - Icon component from lucide-react has incorrect types */}
           <ChevronLeft className="h-4 w-4 mr-2" />
           Back to Symptoms
         </Button>
@@ -162,7 +162,7 @@ export function QualityOfLifeForm({ recordId, onComplete, onBack }: QualityOfLif
           <Card className="shadow-md border-muted/60">
             <CardHeader className="pb-3">
               <CardTitle className="text-xl flex items-center">
-                {/* @ts-ignore - Icon component from lucide-react has incorrect types */}
+                {/* @ts-expect-error - Icon component from lucide-react has incorrect types */}
                 <Activity className="h-5 w-5 mr-2 text-primary" />
                 Daily Activities Impact
               </CardTitle>
@@ -172,19 +172,19 @@ export function QualityOfLifeForm({ recordId, onComplete, onBack }: QualityOfLif
             </CardHeader>
             <CardContent className="grid gap-6 pt-0">
               {renderRadioGroup('work_impact', 'Work/School Impact', 
-                // @ts-ignore - Icon component from lucide-react has incorrect types
+                // @ts-expect-error - Icon component from lucide-react has incorrect types
                 <FileText className="h-4 w-4 mr-2 text-muted-foreground" />
               )}
               {renderRadioGroup('household_impact', 'Household Activities', 
-                // @ts-ignore - Icon component from lucide-react has incorrect types
+                // @ts-expect-error - Icon component from lucide-react has incorrect types
                 <User className="h-4 w-4 mr-2 text-muted-foreground" />
               )}
               {renderRadioGroup('social_impact', 'Social Activities', 
-                // @ts-ignore - Icon component from lucide-react has incorrect types
+                // @ts-expect-error - Icon component from lucide-react has incorrect types
                 <Users className="h-4 w-4 mr-2 text-muted-foreground" />
               )}
               {renderRadioGroup('exercise_impact', 'Exercise & Physical Activities', 
-                // @ts-ignore - Icon component from lucide-react has incorrect types
+                // @ts-expect-error - Icon component from lucide-react has incorrect types
                 <Activity className="h-4 w-4 mr-2 text-muted-foreground" />
               )}
             </CardContent>
@@ -193,7 +193,7 @@ export function QualityOfLifeForm({ recordId, onComplete, onBack }: QualityOfLif
           <Card className="shadow-md border-muted/60">
             <CardHeader className="pb-3">
               <CardTitle className="text-xl flex items-center">
-                {/* @ts-ignore - Icon component from lucide-react has incorrect types */}
+                {/* @ts-expect-error - Icon component from lucide-react has incorrect types */}
                 <Heart className="h-5 w-5 mr-2 text-primary" />
                 Physical & Emotional Wellbeing
               </CardTitle>
@@ -203,27 +203,27 @@ export function QualityOfLifeForm({ recordId, onComplete, onBack }: QualityOfLif
             </CardHeader>
             <CardContent className="grid gap-6 pt-0">
               {renderRadioGroup('energy_level', 'Energy Level', 
-                // @ts-ignore - Icon component from lucide-react has incorrect types
+                // @ts-expect-error - Icon component from lucide-react has incorrect types
                 <Activity className="h-4 w-4 mr-2 text-muted-foreground" />
               )}
               {renderRadioGroup('sleep_quality', 'Sleep Quality', 
-                // @ts-ignore - Icon component from lucide-react has incorrect types
+                // @ts-expect-error - Icon component from lucide-react has incorrect types
                 <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
               )}
               {renderRadioGroup('physical_comfort', 'Physical Comfort', 
-                // @ts-ignore - Icon component from lucide-react has incorrect types
+                // @ts-expect-error - Icon component from lucide-react has incorrect types
                 <Check className="h-4 w-4 mr-2 text-muted-foreground" />
               )}
               {renderRadioGroup('mood_state', 'Mood State', 
-                // @ts-ignore - Icon component from lucide-react has incorrect types
+                // @ts-expect-error - Icon component from lucide-react has incorrect types
                 <Star className="h-4 w-4 mr-2 text-muted-foreground" />
               )}
               {renderRadioGroup('anxiety_level', 'Anxiety Level', 
-                // @ts-ignore - Icon component from lucide-react has incorrect types
+                // @ts-expect-error - Icon component from lucide-react has incorrect types
                 <AlertCircle className="h-4 w-4 mr-2 text-muted-foreground" />
               )}
               {renderRadioGroup('stress_management', 'Stress Management', 
-                // @ts-ignore - Icon component from lucide-react has incorrect types
+                // @ts-expect-error - Icon component from lucide-react has incorrect types
                 <Menu className="h-4 w-4 mr-2 text-muted-foreground" />
               )}
             </CardContent>
@@ -232,7 +232,7 @@ export function QualityOfLifeForm({ recordId, onComplete, onBack }: QualityOfLif
           <Card className="shadow-md border-muted/60">
             <CardHeader className="pb-3">
               <CardTitle className="text-xl flex items-center">
-                {/* @ts-ignore - Icon component from lucide-react has incorrect types */}
+                {/* @ts-expect-error - Icon component from lucide-react has incorrect types */}
                 <CheckCircle className="h-5 w-5 mr-2 text-primary" />
                 Treatment Experience
               </CardTitle>
@@ -242,15 +242,15 @@ export function QualityOfLifeForm({ recordId, onComplete, onBack }: QualityOfLif
             </CardHeader>
             <CardContent className="grid gap-6 pt-0">
               {renderRadioGroup('medication_effectiveness', 'Medication Effectiveness', 
-                // @ts-ignore - Icon component from lucide-react has incorrect types
+                // @ts-expect-error - Icon component from lucide-react has incorrect types
                 <CheckCircle className="h-4 w-4 mr-2 text-muted-foreground" />
               )}
               {renderRadioGroup('side_effects_impact', 'Side Effects Impact', 
-                // @ts-ignore - Icon component from lucide-react has incorrect types
+                // @ts-expect-error - Icon component from lucide-react has incorrect types
                 <XCircle className="h-4 w-4 mr-2 text-muted-foreground" />
               )}
               {renderRadioGroup('treatment_satisfaction', 'Overall Treatment Satisfaction', 
-                // @ts-ignore - Icon component from lucide-react has incorrect types
+                // @ts-expect-error - Icon component from lucide-react has incorrect types
                 <Trophy className="h-4 w-4 mr-2 text-muted-foreground" />
               )}
             </CardContent>
@@ -259,7 +259,7 @@ export function QualityOfLifeForm({ recordId, onComplete, onBack }: QualityOfLif
           <Card className="shadow-md border-muted/60">
             <CardHeader className="pb-3">
               <CardTitle className="text-xl flex items-center">
-                {/* @ts-ignore - Icon component from lucide-react has incorrect types */}
+                {/* @ts-expect-error - Icon component from lucide-react has incorrect types */}
                 <FileText className="h-5 w-5 mr-2 text-primary" />
                 Additional Notes
               </CardTitle>
@@ -294,13 +294,13 @@ export function QualityOfLifeForm({ recordId, onComplete, onBack }: QualityOfLif
           >
             {loading ? (
               <>
-                {/* @ts-ignore - Icon component from lucide-react has incorrect types */}
+                {/* @ts-expect-error - Icon component from lucide-react has incorrect types */}
                 <Menu className="mr-2 h-4 w-4 animate-spin" />
                 Saving...
               </>
             ) : (
               <>
-                {/* @ts-ignore - Icon component from lucide-react has incorrect types */}
+                {/* @ts-expect-error - Icon component from lucide-react has incorrect types */}
                 <Check className="mr-2 h-4 w-4" />
                 Save Assessment
               </>

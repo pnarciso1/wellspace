@@ -413,7 +413,6 @@ export default function DoctorVisitClient() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* @ts-ignore - Toaster component has correct types but TypeScript is having issues */}
       <Toaster />
       <div className="mb-8">
         <div className="flex justify-between items-center">
