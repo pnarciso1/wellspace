@@ -31,7 +31,7 @@ interface ChartWrapperProps {
   data: any;
 }
 
-export default function ChartWrapper({ type, data }: ChartWrapperProps) {
+export default function ChartWrapper({ data, type }: ChartWrapperProps) {
   switch (type) {
     case 'symptom':
       const transformedData = [
@@ -51,8 +51,7 @@ export default function ChartWrapper({ type, data }: ChartWrapperProps) {
         }
       ];
       return (
-        <ResponsiveContainer width="100%" height={200}>
-          {/* @ts-expect-error - Known type incompatibility with chart components */}
+        <div style={{ width: '100%', height: '200px' }}>
           <ResponsiveLine
             data={transformedData}
             margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
@@ -120,28 +119,19 @@ export default function ChartWrapper({ type, data }: ChartWrapperProps) {
               }
             ]}
           />
-        </ResponsiveContainer>
+        </div>
       )
     case 'treatment':
       return (
         <ResponsiveContainer width="100%" height={200}>
-          {/* @ts-expect-error - Known type incompatibility with recharts components */}
           <BarChart data={data}>
-            {/* @ts-expect-error - Known type incompatibility with recharts components */}
             <CartesianGrid strokeDasharray="3 3" />
-            {/* @ts-expect-error - Known type incompatibility with recharts components */}
             <XAxis dataKey="name" />
-            {/* @ts-expect-error - Known type incompatibility with recharts components */}
             <YAxis yAxisId="left" orientation="left" />
-            {/* @ts-expect-error - Known type incompatibility with recharts components */}
             <YAxis yAxisId="right" orientation="right" />
-            {/* @ts-expect-error - Known type incompatibility with recharts components */}
             <Tooltip />
-            {/* @ts-expect-error - Known type incompatibility with recharts components */}
             <Legend />
-            {/* @ts-expect-error - Known type incompatibility with recharts components */}
             <Bar yAxisId="left" dataKey="count" fill="#8884d8" name="Usage Count" />
-            {/* @ts-expect-error - Known type incompatibility with recharts components */}
             <Bar yAxisId="right" dataKey="avgIntensity" fill="#82ca9d" name="Avg. Intensity" />
           </BarChart>
         </ResponsiveContainer>
@@ -149,19 +139,12 @@ export default function ChartWrapper({ type, data }: ChartWrapperProps) {
     case 'qol':
       return (
         <ResponsiveContainer width="100%" height={200}>
-          {/* @ts-expect-error - Known type incompatibility with recharts components */}
           <BarChart data={data}>
-            {/* @ts-expect-error - Known type incompatibility with recharts components */}
             <CartesianGrid strokeDasharray="3 3" />
-            {/* @ts-expect-error - Known type incompatibility with recharts components */}
             <XAxis dataKey="name" />
-            {/* @ts-expect-error - Known type incompatibility with recharts components */}
             <YAxis />
-            {/* @ts-expect-error - Known type incompatibility with recharts components */}
             <Tooltip />
-            {/* @ts-expect-error - Known type incompatibility with recharts components */}
             <Legend />
-            {/* @ts-expect-error - Known type incompatibility with recharts components */}
             <Bar dataKey="impact" fill="#8884d8" name="Impact Level" />
           </BarChart>
         </ResponsiveContainer>
