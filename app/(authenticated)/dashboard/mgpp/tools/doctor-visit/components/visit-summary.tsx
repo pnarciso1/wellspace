@@ -30,7 +30,6 @@ export function VisitSummary({ record, symptoms, qualityOfLife, onBack }: VisitS
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <Button variant="outline" onClick={onBack}>
-          {/* @ts-expect-error - Icon component from lucide-react has incorrect types */}
           <ChevronLeft className="h-4 w-4 mr-2" />
           Back to Symptoms
         </Button>
