@@ -51,7 +51,6 @@ export default function ChartWrapper({ type, data }: ChartWrapperProps) {
         }
       ];
       return (
-        // @ts-expect-error - Known type incompatibility with chart components
         <ResponsiveContainer width="100%" height={200}>
           {/* @ts-expect-error - Known type incompatibility with chart components */}
           <ResponsiveLine
@@ -125,7 +124,6 @@ export default function ChartWrapper({ type, data }: ChartWrapperProps) {
       )
     case 'treatment':
       return (
-        // @ts-expect-error - Known type incompatibility with recharts components
         <ResponsiveContainer width="100%" height={200}>
           {/* @ts-expect-error - Known type incompatibility with recharts components */}
           <BarChart data={data}>
@@ -150,7 +148,6 @@ export default function ChartWrapper({ type, data }: ChartWrapperProps) {
       )
     case 'qol':
       return (
-        // @ts-expect-error - Known type incompatibility with recharts components
         <ResponsiveContainer width="100%" height={200}>
           {/* @ts-expect-error - Known type incompatibility with recharts components */}
           <BarChart data={data}>
