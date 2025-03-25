@@ -8,5 +8,8 @@
     "github": {
       "enabled": true,
       "silent": true
-    }
+    },
+    "buildCommand": "next build",
+    "devCommand": "next dev",
+    "framework": "nextjs"
   }
