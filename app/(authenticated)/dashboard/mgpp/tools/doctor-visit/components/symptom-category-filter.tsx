@@ -12,6 +12,7 @@ import type { CategoryType, SymptomType } from '../types'
 import { SYMPTOM_DEFINITIONS } from '../types'
 import type * as TooltipPrimitive from '@radix-ui/react-tooltip'
 import { cn } from "@/lib/utils"
+import { ChevronDown, Check, Menu } from 'lucide-react'
 
 interface SymptomCategoryFilterProps {
   selectedCategory: CategoryType
@@ -31,9 +32,7 @@ export function SymptomCategoryFilter({
         <div className="flex gap-2 flex-wrap">
           {categories.map((category) => (
             <div key={category}>
-              {/* @ts-ignore - Tooltip components have correct types but TypeScript is having issues */}
               <Tooltip>
-                {/* @ts-ignore - Tooltip components have correct types but TypeScript is having issues */}
                 <TooltipTrigger asChild>
                   <div role="button" tabIndex={0}>
                     <Button
@@ -47,7 +46,6 @@ export function SymptomCategoryFilter({
                   </div>
                 </TooltipTrigger>
                 {category !== 'all' && (
-                  /* @ts-ignore - Tooltip components have correct types but TypeScript is having issues */
                   <TooltipContent side="bottom" className="max-w-[250px]">
                     <p className="font-medium">{SYMPTOM_DEFINITIONS[category as SymptomType].description}</p>
                     {SYMPTOM_DEFINITIONS[category as SymptomType].example && (
@@ -60,6 +58,10 @@ export function SymptomCategoryFilter({
               </Tooltip>
             </div>
           ))}
+        </div>
+        <div className="flex items-center">
+          <Menu className="h-4 w-4 mr-2" />
+          <ChevronDown className="h-4 w-4 ml-2" />
         </div>
       </div>
     </TooltipProvider>
