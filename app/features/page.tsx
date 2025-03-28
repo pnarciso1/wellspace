@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { CheckCircle, AlertCircle, FileText, Activity, Star, User, Activity as ActivityIcon, Users, Lock, Mail, Mail as EmailIcon, MessageSquare, Menu } from 'lucide-react'
+import { CheckCircle, AlertCircle, FileText, Activity, Star, User, Activity as ActivityIcon, Users, Lock, Mail, Mail as EmailIcon, MessageSquare, Menu, Heart } from 'lucide-react'
 import { useState } from 'react'
 
 export default function FeaturesPage() {
@@ -98,7 +98,7 @@ export default function FeaturesPage() {
 
         <div className="container mx-auto px-4">
           <section className="mb-12 md:mb-16">
-            <h2 className="text-2xl md:text-3xl font-semibold mb-6 md:mb-8">Free Plan Features</h2>
+            <h2 className="text-2xl md:text-3xl font-semibold mb-6 md:mb-8">Features</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 px-4 md:px-8">
               <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <CardHeader>
@@ -133,93 +133,26 @@ export default function FeaturesPage() {
                   <p>Follow personalized health improvement plans and track your progress over time.</p>
                 </CardContent>
               </Card>
-            </div>
-          </section>
-
-          <section className="mb-16">
-            <h2 className="text-3xl font-semibold mb-8">Premium Plan Features</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <CardHeader>
                   <CardTitle className="flex items-center text-xl">
-                    <CheckCircle className="mr-2 text-indigo-500" />
-                    All Free Plan Features
+                    <Heart className="mr-2 text-indigo-500" />
+                    Rare Disease Management
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p>Enjoy all the features of the Free plan, plus the following premium benefits.</p>
+                  <p>Access evidence-based programs and resources specifically designed to support rare disease patients and caregivers in their unique healthcare journey.</p>
                 </CardContent>
               </Card>
               <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <CardHeader>
                   <CardTitle className="flex items-center text-xl">
-                    <User className="mr-2 text-indigo-500" />
-                    AI Task Agents
+                    <FileText className="mr-2 text-indigo-500" />
+                    Healthcare Financial Support
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p>Access AI agents to help with tasks like finding doctors, reviewing medical bills, and recommending insurance plans.</p>
-                </CardContent>
-              </Card>
-              <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <CardHeader>
-                  <CardTitle className="flex items-center text-xl">
-                    <Star className="mr-2 text-indigo-500" />
-                    Rewards to Cash Conversion
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>Convert earned tokens into cash rewards for maintaining healthy behaviors and engaging with the community.</p>
-                </CardContent>
-              </Card>
-            </div>
-          </section>
-
-          <section className="mb-16">
-            <h2 className="text-3xl font-semibold mb-8">Enterprise Plan Features</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <CardHeader>
-                  <CardTitle className="flex items-center text-xl">
-                    <CheckCircle className="mr-2 text-indigo-500" />
-                    All Premium Plan Features
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>Access all features from the Free and Premium plans, plus exclusive enterprise-level benefits.</p>
-                </CardContent>
-              </Card>
-              <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <CardHeader>
-                  <CardTitle className="flex items-center text-xl">
-                    <ActivityIcon className="mr-2 text-indigo-500" />
-                    Custom AI Navigators
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>Tailor AI health navigators to your organization's specific needs and healthcare policies.</p>
-                </CardContent>
-              </Card>
-              <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <CardHeader>
-                  <CardTitle className="flex items-center text-xl">
-                    <Users className="mr-2 text-indigo-500" />
-                    Team Management
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>Efficiently manage and monitor the health and wellness of your entire team or organization.</p>
-                </CardContent>
-              </Card>
-              <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <CardHeader>
-                  <CardTitle className="flex items-center text-xl">
-                    <Activity className="mr-2 text-indigo-500" />
-                    Custom Health Tracks
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>Create and implement custom health improvement plans tailored to your organization's goals.</p>
+                  <p>Let our advanced AI agents help resolve confusing medical bills, appeal insurance denials, and find financial assistance for unaffordable medical expenses.</p>
                 </CardContent>
               </Card>
               <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">

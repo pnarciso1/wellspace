@@ -9,6 +9,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Icons } from "@/lib/icons"
+import Link from 'next/link'
 
 export default function SignUpFreePage() {
   const [email, setEmail] = useState('')
@@ -52,6 +53,13 @@ export default function SignUpFreePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-indigo-900 py-10">
       <div className="container mx-auto px-4">
+        <div className="max-w-md mx-auto mb-6">
+          <Link href="/">
+            <Button variant="outline" className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20">
+              ← Back to Home
+            </Button>
+          </Link>
+        </div>
         <Card className="max-w-md mx-auto bg-white/10 backdrop-blur-md border-white/20">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-white">Create Your Free Account</CardTitle>

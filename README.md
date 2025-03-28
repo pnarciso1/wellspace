@@ -17,8 +17,6 @@ To set up your environment variables:
    ```
    NEXT_PUBLIC_SUPABASE_URL=your_actual_supabase_project_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_actual_supabase_anon_key
-   STRIPE_SECRET_KEY=your_actual_stripe_secret_key
-   STRIPE_PREMIUM_PLAN_PRICE_ID=your_actual_stripe_premium_plan_price_id
    ```
 
 3. Save the `.env.local` file
@@ -63,10 +61,10 @@ For production deployment, set these environment variables in your hosting platf
   - Customizable health metrics
   - Secure data handling
 
-- **Premium Subscription**
-  - Stripe integration for payments
-  - Premium feature access
-  - Subscription management
+- **AI-Powered Health Navigation**
+  - Personalized healthcare assistance
+  - Health tracking and monitoring
+  - Evidence-based health recommendations
 
 - **Responsive Design**
   - Mobile-friendly interface

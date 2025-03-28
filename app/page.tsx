@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { CheckCircle, MessageSquare, FileText, Activity, Users, Mail, Heart, Video, Menu, Star } from 'lucide-react'
+import { CheckCircle, MessageSquare, FileText, Activity, Users, Mail, Heart, Video, Menu, Star, AlertCircle, User, Lock } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
@@ -13,74 +13,34 @@ import { cn } from "@/lib/utils"
 
 const features = [
   {
-    icon: MessageSquare,
-    title: "Meet Charlie, your AI Health Navigator",
-    description: "Get personalized assistance to navigate complex healthcare decisions with AI support."
+    title: "AI Health Navigator",
+    description: "Get personalized assistance to navigate complex healthcare decisions with AI support.",
+    icon: AlertCircle
   },
   {
-    icon: Video,
-    title: "Curated Health Videos",
-    description: "Access curated videos that guide you on your personalized health journey."
+    title: "Health Records Storage",
+    description: "Securely store and access your medical records in one centralized location.",
+    icon: FileText
   },
   {
-    icon: FileText,
-    title: "Medical Records Storage",
-    description: "Securely store and access your medical records in one centralized location."
+    title: "Evidence-based Health Tracks",
+    description: "Follow personalized health improvement plans and track your progress over time.",
+    icon: Activity
   },
   {
-    icon: Activity,
-    title: "Health Tracks",
-    description: "Follow personalized health improvement plans and track your progress over time."
+    title: "Rare Disease Management",
+    description: "Access evidence-based programs and resources specifically designed to support rare disease patients and caregivers in their unique healthcare journey.",
+    icon: Heart
   },
   {
-    icon: Star,
-    title: "Rewards System",
-    description: "Earn tokens that can be converted into cash for healthy behaviors and engaging with the community."
+    title: "Healthcare Financial Support",
+    description: "Let our advanced AI agents help resolve confusing medical bills, appeal insurance denials, and find financial assistance for unaffordable medical expenses.",
+    icon: FileText
   },
   {
-    icon: MessageSquare,
-    title: "AI Task Agents",
-    description: "Have your AI Task Agent complete essential healthcare tasks like finding doctors, reviewing medical bills, and recommending insurance plans."
-  },
-  {
-    icon: Users,
-    title: "Community Connections",
-    description: "Find local resources and connect with people and organizations to help you achieve your health goals."
-  }
-]
-
-const pricingPlans = [
-  {
-    title: "Free",
-    price: "$0/month",
-    features: [
-      "AI Health Navigator",
-      "Health Records Storage",
-      "Evidence-based Health Tracks"
-    ],
-    buttonText: "Get Started"
-  },
-  {
-    title: "Premium",
-    price: "$9.99/month",
-    features: [
-      "All Free plan features",
-      "Access to AI Agents",
-      "Rewards to Cash Conversion"
-    ],
-    buttonText: "Subscribe Now"
-  },
-  {
-    title: "Enterprise",
-    price: "Contact Sales",
-    features: [
-      "All Premium plan features",
-      "Custom AI Navigators",
-      "Custom AI Agents",
-      "Custom Health Tracks",
-      "Enterprise Health Dashboard"
-    ],
-    buttonText: "Contact Sales"
+    title: "Advanced Security",
+    description: "Benefit from enhanced security features and compliance measures for enterprise-level data protection.",
+    icon: Lock
   }
 ]
 
@@ -218,49 +178,13 @@ export default function HomePage() {
             <h2 className="text-4xl font-bold text-center text-white mb-12">
               Everything you need to manage your healthcare journey
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4 md:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-4 md:px-8">
               {features.map((feature, index) => (
                 <Card key={index} className="bg-white/10 backdrop-blur-md border-white/20">
                   <CardContent className="p-6">
                     <feature.icon className="w-12 h-12 text-indigo-400 mb-4" />
                     <h3 className="text-xl font-semibold text-white mb-2">{feature.title}</h3>
                     <p className="text-gray-300">{feature.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Pricing Section */}
-        <section className="py-12 md:py-20 bg-gray-800">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-8 md:mb-12">
-              Choose the plan that's right for you
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {pricingPlans.map((plan, index) => (
-                <Card key={index} className="bg-white/10 backdrop-blur-md border-white/20">
-                  <CardContent className="p-4 md:p-6">
-                    <h3 className="text-2xl font-bold text-white mb-2">{plan.title}</h3>
-                    <p className="text-3xl font-bold text-indigo-400 mb-6">{plan.price}</p>
-                    <ul className="space-y-3 mb-6">
-                      {plan.features.map((feature, i) => (
-                        <li key={i} className="flex items-center text-gray-300">
-                          <CheckCircle className="w-5 h-5 text-indigo-400 mr-2" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                    <Link href={
-                      plan.title === "Free" ? "/signup/free" :
-                      plan.title === "Premium" ? "/signup/premium" :
-                      "/contact"
-                    }>
-                      <Button className="w-full bg-indigo-500 hover:bg-indigo-600">
-                        {plan.buttonText}
-                      </Button>
-                    </Link>
                   </CardContent>
                 </Card>
               ))}
