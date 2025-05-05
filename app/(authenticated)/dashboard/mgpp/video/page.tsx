@@ -24,7 +24,7 @@ export default function VideoModule() {
   const playerRef = useRef<any>(null)
   const [videoCompleted, setVideoCompleted] = useState(false)
 
-  const VIDEO_ID = 'V2HGYtNHZ68'  // MG program video
+  const VIDEO_ID = 'T98yN0_63zg'  // MG program video
 
   const handleVideoComplete = async () => {
     try {
