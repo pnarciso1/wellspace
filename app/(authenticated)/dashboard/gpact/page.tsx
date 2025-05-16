@@ -6,10 +6,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "../../../../components/ui/use-toast"
-import Activity from 'lucide-react/dist/esm/icons/activity'
-import Book from 'lucide-react/dist/esm/icons/book'
-import Clipboard from 'lucide-react/dist/esm/icons/clipboard'
-import Info from 'lucide-react/dist/esm/icons/info'
+import { Icons } from '@/lib/icons'
 import type { Database } from '../../../../types/supabase'
 
 export default function GPACTPage() {
@@ -90,7 +87,7 @@ export default function GPACTPage() {
       id: 1,
       title: "Video Library",
       description: "Access our comprehensive library of G-PACT educational videos.",
-      icon: Activity,
+      icon: Icons.Activity,
       status: 'available',
       link: '/dashboard/gpact/videos'
     },
@@ -98,7 +95,7 @@ export default function GPACTPage() {
       id: 2,
       title: "Healthcare Terms Glossary",
       description: "Access our comprehensive glossary of G-PACT related healthcare terms with AI-powered chat assistance.",
-      icon: Book,
+      icon: Icons.FileText,
       status: 'available',
       link: '/dashboard/gpact/tools/glossary'
     },
@@ -106,7 +103,7 @@ export default function GPACTPage() {
       id: 3,
       title: "Medication Log",
       description: "Track and manage your medications with our interactive logging tool.",
-      icon: Clipboard,
+      icon: Icons.CheckCircle,
       status: 'available',
       link: '/dashboard/gpact/tools/medications'
     },
@@ -114,7 +111,7 @@ export default function GPACTPage() {
       id: 4,
       title: "Symptom Tracker and Doctor Visit Preparation",
       description: "Track your symptoms and prepare effectively for your medical appointments with our structured tools.",
-      icon: Info,
+      icon: Icons.AlertCircle,
       status: 'available',
       link: '/dashboard/gpact/tools/doctor-visit'
     }
