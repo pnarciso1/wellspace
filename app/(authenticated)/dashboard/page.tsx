@@ -144,6 +144,23 @@ export default function Dashboard() {
             </Button>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Icons.Star className="h-5 w-5" />
+              Gutsmart for G-PACT
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              A comprehensive program designed to help you manage Gastroparesis with specialized tools, resources, and a video library.
+            </p>
+            <Button asChild className="mt-4">
+              <Link href="/dashboard/gpact">Enter Program</Link>
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

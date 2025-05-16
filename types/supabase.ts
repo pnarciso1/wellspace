@@ -186,6 +186,29 @@ export interface Database {
           status?: string
         }
       }
+      gpact_enrollments: {
+        Row: {
+          id: string
+          user_id: string
+          enrolled_at: string
+          current_step: number
+          video_completed: boolean
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          enrolled_at?: string
+          current_step?: number
+          video_completed?: boolean
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          enrolled_at?: string
+          current_step?: number
+          video_completed?: boolean
+        }
+      }
     }
     Views: {
       [_ in never]: never
