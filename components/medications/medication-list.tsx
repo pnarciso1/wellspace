@@ -1,11 +1,19 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { format } from 'date-fns'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Icons } from '@/lib/icons'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { useToast } from "@/components/ui/use-toast"
-import { Icons } from "@/lib/icons"
+import type { Database } from '@/types/supabase'
 import type { Medication } from '@/types/medications'
 
 interface MedicationListProps {
@@ -16,139 +24,104 @@ interface MedicationListProps {
 export function MedicationList({ onEdit, onMedicationsLoaded }: MedicationListProps) {
   const [medications, setMedications] = useState<Medication[]>([])
   const [loading, setLoading] = useState(true)
-  const supabase = createClientComponentClient()
-  const { toast } = useToast()
+  const supabase = createClientComponentClient<Database>()
 
   useEffect(() => {
+    const fetchMedications = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
+
+        const { data: healthRecord } = await supabase
+          .from('health_records')
+          .select('id')
+          .eq('user_id', user.id)
+          .single()
+
+        if (!healthRecord) return
+
+        const { data: medications, error } = await supabase
+          .from('medications')
+          .select('*')
+          .eq('health_record_id', healthRecord.id)
+          .order('start_date', { ascending: false })
+
+        if (error) throw error
+
+        setMedications(medications)
+        onMedicationsLoaded(medications)
+      } catch (error) {
+        console.error('Error fetching medications:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
     fetchMedications()
-  }, [])
-
-  const fetchMedications = async () => {
-    try {
-      setLoading(true)
-      const { data, error } = await supabase
-        .from('medications')
-        .select('*')
-        .order('created_at', { ascending: false })
-
-      if (error) throw error
-
-      const medicationsData = data || []
-      setMedications(medicationsData)
-      onMedicationsLoaded(medicationsData) // Pass medications up to parent
-
-    } catch (error) {
-      console.error('Error fetching medications:', error)
-      toast({
-        title: "Error",
-        description: "Failed to load medications. Please try again.",
-        variant: "destructive"
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleDelete = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('medications')
-        .delete()
-        .eq('id', id)
-
-      if (error) throw error
-
-      const updatedMedications = medications.filter(med => med.id !== id)
-      setMedications(updatedMedications)
-      onMedicationsLoaded(updatedMedications) // Update parent after deletion
-
-      toast({
-        title: "Success",
-        description: "Medication deleted successfully"
-      })
-    } catch (error) {
-      console.error('Error deleting medication:', error)
-      toast({
-        title: "Error",
-        description: "Failed to delete medication. Please try again.",
-        variant: "destructive"
-      })
-    }
-  }
+  }, [supabase, onMedicationsLoaded])
 
   if (loading) {
-    return (
-      <div className="space-y-4">
-        {[1, 2, 3].map((n) => (
-          <Card key={n} className="animate-pulse">
-            <CardContent className="p-6">
-              <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
-              <div className="space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    )
-  }
-
-  if (medications.length === 0) {
-    return (
-      <Card>
-        <CardContent className="p-6 text-center text-muted-foreground">
-          No medications added yet.
-        </CardContent>
-      </Card>
-    )
+    return <div>Loading medications...</div>
   }
 
   return (
-    <div className="space-y-4">
-      {medications.map((medication) => (
-        <Card key={medication.id} className="hover:shadow-md transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="font-semibold text-lg mb-2">{medication.drug_name}</h3>
-                <div className="space-y-1 text-sm text-muted-foreground">
-                  <p>Dosage: {medication.dosage}</p>
-                  <p>Frequency: {medication.frequency}</p>
-                  {medication.timing && <p>Timing: {medication.timing}</p>}
-                  <p>Started: {new Date(medication.start_date).toLocaleDateString()}</p>
-                  {medication.stop_date && (
-                    <p>Stopped: {new Date(medication.stop_date).toLocaleDateString()}</p>
-                  )}
-                  {medication.indication && (
-                    <p>Indication: {medication.indication}</p>
-                  )}
-                </div>
-                {medication.notes && (
-                  <p className="mt-2 text-sm italic">{medication.notes}</p>
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Medication</TableHead>
+            <TableHead>Dosage</TableHead>
+            <TableHead>Frequency</TableHead>
+            <TableHead>Start Date</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {medications.map((medication) => (
+            <TableRow key={medication.id}>
+              <TableCell className="font-medium">
+                {medication.drug_name}
+                {medication.gastroparesis_specific && (
+                  <span className="ml-2 text-xs text-primary">GP</span>
                 )}
-              </div>
-              <div className="flex gap-2">
+              </TableCell>
+              <TableCell>{medication.dosage}</TableCell>
+              <TableCell>
+                {medication.frequency}
+                {medication.as_needed && (
+                  <span className="ml-2 text-xs text-muted-foreground">(as needed)</span>
+                )}
+              </TableCell>
+              <TableCell>
+                {format(new Date(medication.start_date), 'MMM d, yyyy')}
+              </TableCell>
+              <TableCell>
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                  ${medication.still_using ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                  {medication.still_using ? 'Active' : 'Inactive'}
+                </span>
+              </TableCell>
+              <TableCell>
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onClick={() => onEdit(medication)}
                 >
                   <Icons.Edit className="h-4 w-4" />
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleDelete(medication.id)}
-                  className="text-destructive hover:text-destructive"
-                >
-                  <Icons.Trash className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+              </TableCell>
+            </TableRow>
+          ))}
+          {medications.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={6} className="text-center text-muted-foreground">
+                No medications found. Add your first medication to get started.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </div>
   )
 }

@@ -17,7 +17,8 @@ export interface Database {
           date_of_birth: string | null
           height_feet: number | null
           height_inches: number | null
-          weight_lbs: number | null
+          weight: number | null
+          gender: string | null
           blood_type: string | null
           allergies: string[] | null
           created_at: string
@@ -30,7 +31,8 @@ export interface Database {
           date_of_birth?: string | null
           height_feet?: number | null
           height_inches?: number | null
-          weight_lbs?: number | null
+          weight?: number | null
+          gender?: string | null
           blood_type?: string | null
           allergies?: string[] | null
           created_at?: string
@@ -43,11 +45,91 @@ export interface Database {
           date_of_birth?: string | null
           height_feet?: number | null
           height_inches?: number | null
-          weight_lbs?: number | null
+          weight?: number | null
+          gender?: string | null
           blood_type?: string | null
           allergies?: string[] | null
           created_at?: string
           updated_at?: string
+        }
+      }
+      health_records: {
+        Row: {
+          id: string
+          user_id: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      medications: {
+        Row: {
+          id: string
+          health_record_id: string
+          drug_name: string
+          indication: string | null
+          dosage: string
+          frequency: string
+          timing: string | null
+          start_date: string
+          stop_date: string | null
+          still_using: boolean
+          status: string
+          notes: string | null
+          created_at: string
+          updated_at: string
+          as_needed: boolean
+          gastroparesis_specific: boolean
+          symptom_target: string[]
+        }
+        Insert: {
+          id?: string
+          health_record_id: string
+          drug_name: string
+          indication?: string | null
+          dosage: string
+          frequency: string
+          timing?: string | null
+          start_date: string
+          stop_date?: string | null
+          still_using: boolean
+          status: string
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+          as_needed: boolean
+          gastroparesis_specific: boolean
+          symptom_target: string[]
+        }
+        Update: {
+          id?: string
+          health_record_id?: string
+          drug_name?: string
+          indication?: string | null
+          dosage?: string
+          frequency?: string
+          timing?: string | null
+          start_date?: string
+          stop_date?: string | null
+          still_using?: boolean
+          status?: string
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+          as_needed?: boolean
+          gastroparesis_specific?: boolean
+          symptom_target?: string[]
         }
       }
       medical_records: {

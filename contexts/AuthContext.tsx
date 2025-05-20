@@ -13,7 +13,7 @@ export type UpdateHealthProfileInput = {
   date_of_birth?: string | null
   height_feet?: number | null
   height_inches?: number | null
-  weight_lbs?: number | null
+  weight?: number | null
   blood_type?: string | null
   allergies?: string[] | null
 }

@@ -1,183 +1,307 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import { Button } from '@/components/ui/button'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Checkbox } from '@/components/ui/checkbox'
+import { useToast } from '@/components/ui/use-toast'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/components/ui/use-toast"
-import type { Database } from '@/types/database'
+import type { Database } from '@/types/supabase'
+import { format } from 'date-fns'
+
+const medicationSchema = z.object({
+  drug_name: z.string().min(1, 'Drug name is required'),
+  indication: z.string().optional(),
+  dosage: z.string().min(1, 'Dosage is required'),
+  frequency: z.string().min(1, 'Frequency is required'),
+  timing: z.string().optional(),
+  start_date: z.string().min(1, 'Start date is required'),
+  stop_date: z.string().optional(),
+  still_using: z.boolean().default(true),
+  status: z.string().default('active'),
+  notes: z.string().optional(),
+  as_needed: z.boolean().default(false),
+  gastroparesis_specific: z.boolean().default(false),
+  symptom_target: z.array(z.string()).default([])
+})
+
+type MedicationFormValues = z.infer<typeof medicationSchema>
 
 interface MedicationFormProps {
-  onSuccess?: () => void
+  onSuccess: () => void
+  initialData?: Partial<MedicationFormValues>
 }
 
-export function MedicationForm({ onSuccess }: MedicationFormProps) {
-  const [drug_name, setDrugName] = useState('')
-  const [dosage, setDosage] = useState('')
-  const [frequency, setFrequency] = useState('')
-  const [notes, setNotes] = useState('')
-  const [loading, setLoading] = useState(false)
-
-  const router = useRouter()
+export function MedicationForm({ onSuccess, initialData }: MedicationFormProps) {
+  const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
   const supabase = createClientComponentClient<Database>()
 
-  const validateAndGetHealthRecord = async () => {
+  const form = useForm<MedicationFormValues>({
+    resolver: zodResolver(medicationSchema),
+    defaultValues: {
+      drug_name: '',
+      indication: '',
+      dosage: '',
+      frequency: '',
+      timing: '',
+      start_date: format(new Date(), 'yyyy-MM-dd'),
+      stop_date: '',
+      still_using: true,
+      status: 'active',
+      notes: '',
+      as_needed: false,
+      gastroparesis_specific: false,
+      symptom_target: [],
+      ...initialData
+    }
+  })
+
+  const onSubmit = async (data: MedicationFormValues) => {
     try {
-      // Get current user
-      const { data: { user }, error: authError } = await supabase.auth.getUser()
-      if (authError) throw authError
-      if (!user) return { error: 'Please sign in to add medications' }
+      setIsLoading(true)
 
-      // First check MGPP enrollment and access
-      const { data: enrollment, error: enrollmentError } = await supabase
-        .from('mgpp_enrollments' as any)
-        .select('*')
-        .eq('user_id', user.id)
-        .single()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('User not authenticated')
 
-      if (enrollmentError || !enrollment) {
-        return { error: 'Please enroll in the MGPP program first' }
-      }
-
-      if (!enrollment.medication_log_unlocked) {
-        return { error: 'Please complete the required steps to unlock the medication log' }
-      }
-
-      // Then get or create health record
-      const { data: healthRecord, error: healthRecordError } = await supabase
-        .from('health_records' as any)
+      // Get the user's health record ID
+      const { data: healthRecord } = await supabase
+        .from('health_records')
         .select('id')
         .eq('user_id', user.id)
         .single()
 
-      if (healthRecordError && healthRecordError.code !== 'PGRST116') {
-        console.error('Health record error:', healthRecordError)
-        throw healthRecordError
+      if (!healthRecord) throw new Error('Health record not found')
+
+      // Build medicationData with required fields
+      const medicationData: any = {
+        ...data,
+        start_date: new Date(data.start_date).toISOString(),
+        health_record_id: healthRecord.id,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }
+      if (data.stop_date && data.stop_date !== '') {
+        medicationData.stop_date = new Date(data.stop_date).toISOString()
+      } else {
+        delete medicationData.stop_date
       }
 
-      if (!healthRecord) {
-        // Create new health record
-        const { data: newHealthRecord, error: createError } = await supabase
-          .from('health_records' as any)
-          .insert([{ user_id: user.id }] as any)
-          .select()
-          .single()
+      const { error } = await supabase
+        .from('medications')
+        .insert([medicationData])
 
-        if (createError) throw createError
-        return { healthRecordId: newHealthRecord.id }
-      }
-
-      return { healthRecordId: healthRecord.id }
-    } catch (error) {
-      console.error('Validation error:', error)
-      return { error: 'Error validating health record' }
-    }
-  }
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setLoading(true)
-
-    try {
-      const validation = await validateAndGetHealthRecord()
-      if ('error' in validation) {
-        toast({
-          title: "Error",
-          description: validation.error,
-          variant: "destructive"
-        })
-        return
-      }
-
-      const { healthRecordId } = validation
-
-      const { error: insertError } = await supabase
-        .from('medications' as any)
-        .insert([{
-          health_record_id: healthRecordId,
-          drug_name,
-          dosage,
-          frequency,
-          notes,
-          start_date: new Date().toISOString(),
-          still_using: true,
-          status: 'active'
-        }] as any)
-
-      if (insertError) throw insertError
+      if (error) throw error
 
       toast({
-        title: "Success",
-        description: "Medication added successfully"
+        title: 'Success',
+        description: 'Medication added successfully'
       })
 
-      router.refresh()
-      setDrugName('')
-      setDosage('')
-      setFrequency('')
-      setNotes('')
-      onSuccess?.()
-    } catch (error) {
-      console.error('Error adding medication:', error)
+      onSuccess()
+    } catch (error: any) {
+      console.error('Error adding medication:', error, error?.message, error?.details)
       toast({
-        title: "Error",
-        description: "Failed to add medication. Please try again.",
-        variant: "destructive"
+        title: 'Error',
+        description: 'Failed to add medication. Please try again.',
+        variant: 'destructive'
       })
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <Label htmlFor="drug_name">Medication Name</Label>
-        <Input
-          id="drug_name"
-          value={drug_name}
-          onChange={(e) => setDrugName(e.target.value)}
-          required
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="drug_name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Drug Name</FormLabel>
+              <FormControl>
+                <Input {...field} value={field.value || ''} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
 
-      <div>
-        <Label htmlFor="dosage">Dosage</Label>
-        <Input
-          id="dosage"
-          value={dosage}
-          onChange={(e) => setDosage(e.target.value)}
-          required
+        <FormField
+          control={form.control}
+          name="indication"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Indication (Why are you taking this medication?)</FormLabel>
+              <FormControl>
+                <Input {...field} value={field.value || ''} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
 
-      <div>
-        <Label htmlFor="frequency">Frequency</Label>
-        <Input
-          id="frequency"
-          value={frequency}
-          onChange={(e) => setFrequency(e.target.value)}
-          required
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="dosage"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Dosage</FormLabel>
+                <FormControl>
+                  <Input {...field} value={field.value || ''} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="frequency"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Frequency</FormLabel>
+                <FormControl>
+                  <Input {...field} value={field.value || ''} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <FormField
+          control={form.control}
+          name="timing"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Timing (e.g., with meals, before bed)</FormLabel>
+              <FormControl>
+                <Input {...field} value={field.value || ''} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
 
-      <div>
-        <Label htmlFor="notes">Notes</Label>
-        <Textarea
-          id="notes"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          className="h-32"
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="start_date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Start Date</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} value={field.value || ''} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="stop_date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Stop Date (if applicable)</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} value={field.value || ''} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="still_using"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Still Using</FormLabel>
+                </div>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="as_needed"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>As Needed</FormLabel>
+                </div>
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <FormField
+          control={form.control}
+          name="gastroparesis_specific"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>Gastroparesis-Specific Medication</FormLabel>
+              </div>
+            </FormItem>
+          )}
         />
-      </div>
 
-      <Button type="submit" disabled={loading}>
-        {loading ? 'Adding...' : 'Add Medication'}
-      </Button>
-    </form>
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes</FormLabel>
+              <FormControl>
+                <Textarea {...field} value={field.value || ''} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? 'Adding...' : 'Add Medication'}
+        </Button>
+      </form>
+    </Form>
   )
 }

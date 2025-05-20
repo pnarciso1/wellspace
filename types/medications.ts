@@ -2,18 +2,20 @@ export interface Medication {
   id: string;
   health_record_id: string;
   drug_name: string;
-  indication?: string;
+  indication?: string | null;
   dosage: string;
   frequency: string;
-  timing?: string;
-  start_date: Date;
-  stop_date?: Date;
-  still_using?: boolean;
-  status?: string;
-  notes?: string;
-  created_at?: Date;
-  updated_at?: Date;
-  as_needed?: boolean;
+  timing?: string | null;
+  start_date: string;
+  stop_date?: string | null;
+  still_using: boolean;
+  status: string;
+  notes?: string | null;
+  created_at: string;
+  updated_at: string;
+  as_needed: boolean;
+  gastroparesis_specific: boolean;
+  symptom_target: string[];
 }
 
 export type MedicationStatus = 'active' | 'discontinued' | 'completed';

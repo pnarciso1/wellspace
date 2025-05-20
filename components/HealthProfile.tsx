@@ -49,7 +49,7 @@ export default function HealthProfile() {
         // Convert height from feet/inches to total inches
         height: data.height_feet && data.height_inches ? 
           data.height_feet * 12 + data.height_inches : null,
-        weight: data.weight_lbs,
+        weight: data.weight,
         blood_type: data.blood_type,
         allergies: data.allergies
       }
@@ -85,7 +85,7 @@ export default function HealthProfile() {
           name: user!.email || 'Unknown', // Add required name field
           height_feet: updatedProfile.height ? Math.floor(updatedProfile.height / 12) : null, // Convert height to feet
           height_inches: updatedProfile.height ? updatedProfile.height % 12 : null, // Convert remaining inches
-          weight_lbs: updatedProfile.weight // Rename to match DB column
+          weight: updatedProfile.weight // changed from weight_lbs
         })
         .select()
         .single()
@@ -100,7 +100,7 @@ export default function HealthProfile() {
         // Convert height from feet/inches to total inches
         height: data.height_feet && data.height_inches ? 
           data.height_feet * 12 + data.height_inches : null,
-        weight: data.weight_lbs,
+        weight: data.weight, // changed from data.weight_lbs
         blood_type: data.blood_type,
         allergies: data.allergies
       }

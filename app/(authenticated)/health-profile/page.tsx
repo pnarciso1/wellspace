@@ -26,7 +26,7 @@ type HealthProfile = {
   allergies: string[] | null
   height_feet: number | null
   height_inches: number | null
-  weight_lbs: number | null
+  weight: number | null
   gender: string | null
   chronic_conditions: string | null
   past_surgeries: string | null
@@ -106,7 +106,8 @@ export default function HealthProfilePage() {
       'blood_type',
       'gender',
       'height_feet',
-      'weight_lbs',
+      'height_inches',
+      'weight',
       'allergies',
       'medications',
       'chronic_conditions',
@@ -285,8 +286,8 @@ export default function HealthProfilePage() {
                 <Input
                   id="weight"
                   type="number"
-                  value={profile.weight_lbs || ''}
-                  onChange={e => handleChange('weight_lbs', Number(e.target.value))}
+                  value={profile.weight || ''}
+                  onChange={e => handleChange('weight', Number(e.target.value))}
                 />
               </div>
             </div>

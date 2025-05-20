@@ -17,7 +17,7 @@ export interface Database {
           date_of_birth: string | null
           height_feet: number | null
           height_inches: number | null
-          weight_lbs: number | null
+          weight: number | null
           blood_type: string | null
           allergies: string[] | null
           created_at: string
@@ -30,7 +30,7 @@ export interface Database {
           date_of_birth?: string | null
           height_feet?: number | null
           height_inches?: number | null
-          weight_lbs?: number | null
+          weight?: number | null
           blood_type?: string | null
           allergies?: string[] | null
           created_at?: string
@@ -43,7 +43,7 @@ export interface Database {
           date_of_birth?: string | null
           height_feet?: number | null
           height_inches?: number | null
-          weight_lbs?: number | null
+          weight?: number | null
           blood_type?: string | null
           allergies?: string[] | null
           created_at?: string
