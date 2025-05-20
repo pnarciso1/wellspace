@@ -87,9 +87,9 @@ export default function GPACTPage() {
       id: 1,
       title: "Video Library",
       description: "Access our comprehensive library of G-PACT educational videos.",
-      icon: Icons.Activity,
+      icon: Icons.Video,
       status: 'available',
-      link: '/dashboard/gpact/videos'
+      link: '/dashboard/gpact/tools/videos'
     },
     {
       id: 2,
