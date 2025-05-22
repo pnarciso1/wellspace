@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "../../../../components/ui/use-toast"
 import { Icons } from '@/lib/icons'
-import type { Database } from '../../../../types/supabase'
+import type { Database } from 'wellspace/types/supabase'
 
 export default function GPACTPage() {
   const router = useRouter()
@@ -34,8 +34,8 @@ export default function GPACTPage() {
       if (enrollment) {
         setIsEnrolled(true)
         setEnrollmentStatus({
-          videoCompleted: enrollment.video_completed,
-          currentStep: enrollment.current_step
+          videoCompleted: enrollment.video_completed ?? false,
+          currentStep: enrollment.current_step ?? 1
         })
       } else {
         setIsEnrolled(false)

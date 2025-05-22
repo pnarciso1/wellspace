@@ -1,5 +1,3 @@
-import { Database } from '@/types/supabase'
-
 // Mock database types since they don't exist in the Database type
 export interface DbDoctorVisitRecord {
   id: string;

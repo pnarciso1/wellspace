@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import type { Database } from '@/types/supabase'
+import type { Database } from 'wellspace/types/supabase'
 
 type MedicalRecord = Database['public']['Tables']['medical_records']['Row']
 

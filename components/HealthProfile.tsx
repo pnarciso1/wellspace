@@ -11,7 +11,7 @@ import { useToast } from "@/components/ui/use-toast"
 
 type HealthProfile = {
   id: string
-  user_id: string
+  user_id: string | null
   date_of_birth: string | null
   height: number | null
   weight: number | null
@@ -67,6 +67,15 @@ export default function HealthProfile() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to update your health profile",
+        variant: "destructive",
+      })
+      return
+    }
+
     const formData = new FormData(event.currentTarget)
     const updatedProfile = {
       date_of_birth: formData.get('date_of_birth') as string || null,
@@ -81,8 +90,8 @@ export default function HealthProfile() {
         .from('health_profiles')
         .upsert({ 
           ...updatedProfile,
-          user_id: user!.id,
-          name: user!.email || 'Unknown', // Add required name field
+          user_id: user.id,
+          name: user.email || 'Unknown', // Add required name field
           height_feet: updatedProfile.height ? Math.floor(updatedProfile.height / 12) : null, // Convert height to feet
           height_inches: updatedProfile.height ? updatedProfile.height % 12 : null, // Convert remaining inches
           weight: updatedProfile.weight // changed from weight_lbs
@@ -100,7 +109,7 @@ export default function HealthProfile() {
         // Convert height from feet/inches to total inches
         height: data.height_feet && data.height_inches ? 
           data.height_feet * 12 + data.height_inches : null,
-        weight: data.weight, // changed from data.weight_lbs
+        weight: data.weight,
         blood_type: data.blood_type,
         allergies: data.allergies
       }

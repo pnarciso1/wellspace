@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { User } from '@supabase/auth-helpers-nextjs'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import type { Database } from '@/types/supabase'
+import type { Database } from 'wellspace/types/supabase'
 
 // Define the HealthProfile type using the Database type
 export type HealthProfile = Database['public']['Tables']['health_profiles']['Row']

@@ -1112,37 +1112,37 @@ export type Database = {
       }
       medical_records: {
         Row: {
-          description: string | null
-          file_name: string
-          file_path: string
-          file_size: number
-          file_type: string
           id: string
-          record_type: string | null
-          upload_date: string | null
           user_id: string
+          file_name: string
+          file_type: string
+          file_size: number
+          file_path: string
+          upload_date: string | null
+          description: string | null
+          record_type: string | null
         }
         Insert: {
-          description?: string | null
-          file_name: string
-          file_path: string
-          file_size: number
-          file_type: string
           id?: string
-          record_type?: string | null
-          upload_date?: string | null
           user_id: string
+          file_name: string
+          file_type: string
+          file_size: number
+          file_path: string
+          upload_date?: string | null
+          description?: string | null
+          record_type?: string | null
         }
         Update: {
-          description?: string | null
-          file_name?: string
-          file_path?: string
-          file_size?: number
-          file_type?: string
           id?: string
-          record_type?: string | null
-          upload_date?: string | null
           user_id?: string
+          file_name?: string
+          file_type?: string
+          file_size?: number
+          file_path?: string
+          upload_date?: string | null
+          description?: string | null
+          record_type?: string | null
         }
         Relationships: []
       }

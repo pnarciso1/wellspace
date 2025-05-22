@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { useToast } from "@/components/ui/use-toast"
+import type { Database } from 'wellspace/types/supabase'
 import {
   Select,
   SelectContent,
@@ -17,39 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-type HealthProfile = {
-  id: string
-  user_id: string
-  name: string | null
-  date_of_birth: string | null
-  blood_type: string | null
-  allergies: string[] | null
-  height_feet: number | null
-  height_inches: number | null
-  weight: number | null
-  gender: string | null
-  chronic_conditions: string | null
-  past_surgeries: string | null
-  family_history: string | null
-  primary_physician: {
-    name: string
-    phone: string
-    address: string
-  } | null
-  stress_level: number | null
-  sleep_hours: string | null
-  exercise_frequency: string | null
-  dietary_restrictions: string | null
-  emergency_contact: {
-    name: string
-    relationship: string
-    phone: string
-  } | null
-  additional_notes: string | null
-  medications: string | null
-  created_at?: string
-  updated_at?: string
-}
+type HealthProfile = Database['public']['Tables']['health_profiles']['Row']
 
 const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
 const exerciseFrequencies = [
@@ -154,13 +123,16 @@ export default function HealthProfilePage() {
   }
 
   const handleNestedChange = (parent: keyof HealthProfile, field: string, value: string) => {
-    setProfile(prev => ({
-      ...prev,
-      [parent]: {
-        ...((prev[parent] as any) ?? {}),
-        [field]: value
+    setProfile(prev => {
+      const currentValue = prev[parent] as Record<string, any> | null
+      return {
+        ...prev,
+        [parent]: {
+          ...(currentValue || {}),
+          [field]: value
+        }
       }
-    }))
+    })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -187,6 +159,9 @@ export default function HealthProfilePage() {
   if (loading) {
     return <div>Loading...</div>
   }
+
+  const primaryPhysician = profile.primary_physician as Record<string, string> | null
+  const emergencyContact = profile.emergency_contact as Record<string, string> | null
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-4xl">
@@ -418,7 +393,7 @@ export default function HealthProfilePage() {
                   <Label htmlFor="physician_name">Name</Label>
                   <Input
                     id="physician_name"
-                    value={profile.primary_physician?.name ?? ''}
+                    value={primaryPhysician?.name ?? ''}
                     onChange={e => handleNestedChange('primary_physician', 'name', e.target.value)}
                   />
                 </div>
@@ -426,7 +401,7 @@ export default function HealthProfilePage() {
                   <Label htmlFor="physician_phone">Phone</Label>
                   <Input
                     id="physician_phone"
-                    value={profile.primary_physician?.phone ?? ''}
+                    value={primaryPhysician?.phone ?? ''}
                     onChange={e => handleNestedChange('primary_physician', 'phone', e.target.value)}
                   />
                 </div>
@@ -435,7 +410,7 @@ export default function HealthProfilePage() {
                 <Label htmlFor="physician_address">Address</Label>
                 <Input
                   id="physician_address"
-                  value={profile.primary_physician?.address ?? ''}
+                  value={primaryPhysician?.address ?? ''}
                   onChange={e => handleNestedChange('primary_physician', 'address', e.target.value)}
                 />
               </div>
@@ -443,12 +418,12 @@ export default function HealthProfilePage() {
             
             <div className="grid gap-4">
               <h3 className="font-medium">Emergency Contact</h3>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="emergency_name">Name</Label>
                   <Input
                     id="emergency_name"
-                    value={profile.emergency_contact?.name ?? ''}
+                    value={emergencyContact?.name ?? ''}
                     onChange={e => handleNestedChange('emergency_contact', 'name', e.target.value)}
                   />
                 </div>
@@ -456,18 +431,18 @@ export default function HealthProfilePage() {
                   <Label htmlFor="emergency_relationship">Relationship</Label>
                   <Input
                     id="emergency_relationship"
-                    value={profile.emergency_contact?.relationship ?? ''}
+                    value={emergencyContact?.relationship ?? ''}
                     onChange={e => handleNestedChange('emergency_contact', 'relationship', e.target.value)}
                   />
                 </div>
-                <div>
-                  <Label htmlFor="emergency_phone">Phone</Label>
-                  <Input
-                    id="emergency_phone"
-                    value={profile.emergency_contact?.phone ?? ''}
-                    onChange={e => handleNestedChange('emergency_contact', 'phone', e.target.value)}
-                  />
-                </div>
+              </div>
+              <div>
+                <Label htmlFor="emergency_phone">Phone</Label>
+                <Input
+                  id="emergency_phone"
+                  value={emergencyContact?.phone ?? ''}
+                  onChange={e => handleNestedChange('emergency_contact', 'phone', e.target.value)}
+                />
               </div>
             </div>
           </CardContent>

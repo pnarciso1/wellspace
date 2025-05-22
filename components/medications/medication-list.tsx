@@ -13,8 +13,8 @@ import {
 import { Button } from '@/components/ui/button'
 import { Icons } from '@/lib/icons'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import type { Database } from '@/types/supabase'
 import type { Medication } from '@/types/medications'
+import type { Database } from 'wellspace/types/supabase'
 
 interface MedicationListProps {
   onEdit: (medication: Medication) => void
@@ -24,7 +24,7 @@ interface MedicationListProps {
 export function MedicationList({ onEdit, onMedicationsLoaded }: MedicationListProps) {
   const [medications, setMedications] = useState<Medication[]>([])
   const [loading, setLoading] = useState(true)
-  const supabase = createClientComponentClient<Database>()
+  const supabase = createClientComponentClient()
 
   useEffect(() => {
     const fetchMedications = async () => {

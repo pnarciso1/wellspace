@@ -23,7 +23,8 @@
       "@/components/*": ["./components/*", "./app/components/*"],
       "@/wellspace/*": ["../*"],
       "@/lib/*": ["./lib/*"],
-      "@/types/*": ["./types/*", "./app/types/*"]
+      "@/types/*": ["./types/*", "./app/types/*"],
+      "wellspace/types/*": ["./types/*"]
     },
     "baseUrl": ".",
     "rootDir": "."

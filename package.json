@@ -9,7 +9,8 @@
     "lint": "next lint",
     "clean": "./scripts/clean-build.sh",
     "clean:dev": "npm run clean && npm run dev",
-    "clean:build": "npm run clean && npm run build"
+    "clean:build": "npm run clean && npm run build",
+    "generate-types": "ts-node --project scripts/tsconfig.json scripts/generate-types.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.1",

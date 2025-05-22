@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/components/ui/use-toast"
 import Link from 'next/link'
 import type { Medication } from "@/types/medications"
+import type { Database } from 'wellspace/types/supabase'
 
 export default function MedicationsPage() {
   const [showForm, setShowForm] = useState(false)

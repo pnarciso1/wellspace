@@ -18,8 +18,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useToast } from '@/components/ui/use-toast'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import type { Database } from '@/types/supabase'
 import { format } from 'date-fns'
+import type { Database } from 'wellspace/types/supabase'
 
 const medicationSchema = z.object({
   drug_name: z.string().min(1, 'Drug name is required'),
@@ -47,7 +47,7 @@ interface MedicationFormProps {
 export function MedicationForm({ onSuccess, initialData }: MedicationFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
-  const supabase = createClientComponentClient<Database>()
+  const supabase = createClientComponentClient()
 
   const form = useForm<MedicationFormValues>({
     resolver: zodResolver(medicationSchema),

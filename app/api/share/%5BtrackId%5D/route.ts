@@ -1,0 +1,1 @@
+import type { Database } from 'wellspace/types/supabase' 
