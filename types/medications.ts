@@ -1,6 +1,6 @@
 export interface Medication {
   id: string;
-  health_record_id: string;
+  user_id: string;
   drug_name: string;
   indication?: string | null;
   dosage: string;

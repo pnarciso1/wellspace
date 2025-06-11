@@ -32,18 +32,10 @@ export function MedicationList({ onEdit, onMedicationsLoaded }: MedicationListPr
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) return
 
-        const { data: healthRecord } = await supabase
-          .from('health_records')
-          .select('id')
-          .eq('user_id', user.id)
-          .single()
-
-        if (!healthRecord) return
-
         const { data: medications, error } = await supabase
           .from('medications')
           .select('*')
-          .eq('health_record_id', healthRecord.id)
+          .eq('user_id', user.id)
           .order('start_date', { ascending: false })
 
         if (error) throw error

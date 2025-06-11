@@ -76,20 +76,11 @@ export function MedicationForm({ onSuccess, initialData }: MedicationFormProps) 
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('User not authenticated')
 
-      // Get the user's health record ID
-      const { data: healthRecord } = await supabase
-        .from('health_records')
-        .select('id')
-        .eq('user_id', user.id)
-        .single()
-
-      if (!healthRecord) throw new Error('Health record not found')
-
       // Build medicationData with required fields
       const medicationData: any = {
         ...data,
         start_date: new Date(data.start_date).toISOString(),
-        health_record_id: healthRecord.id,
+        user_id: user.id,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       }
