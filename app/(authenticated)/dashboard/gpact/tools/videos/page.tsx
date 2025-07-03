@@ -151,7 +151,7 @@ export default function GPACTVideosPage() {
           <Card key={video.id} className="overflow-hidden">
             <div className="aspect-video relative">
               <img
-                src={video.thumbnail}
+                src={video.thumbnail || `https://img.youtube.com/vi/${video.youtube_id}/hqdefault.jpg`}
                 alt={video.title}
                 className="w-full h-full object-cover"
               />

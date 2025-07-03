@@ -65,7 +65,6 @@ export default function VideoPlayer({ videoId }: VideoPlayerProps) {
   }, [videoId, supabase, toast])
 
   const opts = {
-    height: '500',
     width: '100%',
     playerVars: {
       autoplay: 0,
@@ -124,7 +123,7 @@ export default function VideoPlayer({ videoId }: VideoPlayerProps) {
                 <YouTube
                   videoId={video.youtube_id}
                   opts={opts}
-                  className="w-full"
+                  className="w-full h-full"
                 />
               </div>
             </CardContent>

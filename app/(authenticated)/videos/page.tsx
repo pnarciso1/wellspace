@@ -115,6 +115,11 @@ export default function VideosPage() {
               <CardTitle>{video.title}</CardTitle>
             </CardHeader>
             <CardContent>
+              <img
+                src={video.thumbnail || `https://img.youtube.com/vi/${video.youtube_id}/hqdefault.jpg`}
+                alt={video.title}
+                className="w-full h-full object-cover"
+              />
               <p className="text-sm text-muted-foreground mb-4">
                 {video.description}
               </p>
