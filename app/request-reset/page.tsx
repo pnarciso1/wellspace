@@ -6,12 +6,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/components/ui/use-toast"
+import { useRouter } from 'next/navigation'
 
 export default function RequestResetPage() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
   const supabase = createClientComponentClient()
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -36,6 +38,9 @@ export default function RequestResetPage() {
         title: "Check your email",
         description: "Reset link sent. Please check your spam folder if you don't see it.",
       })
+      setTimeout(() => {
+        router.push('/login')
+      }, 2000)
     } catch (error: any) {
       toast({
         title: "Error",
@@ -61,6 +66,7 @@ export default function RequestResetPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={loading}
             />
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Sending...' : 'Send Reset Link'}
