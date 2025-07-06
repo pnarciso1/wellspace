@@ -70,7 +70,6 @@ function ResetPasswordForm() {
         </CardHeader>
         <CardContent>
           <p className="text-gray-500">This password reset link is invalid or has expired.</p>
-          <div className="text-xs text-red-500 mt-2">[DEBUG] searchParams: {searchParams?.toString() || 'null'}<br/>access_token: {access_token || 'null'}</div>
           <Button className="w-full mt-4" onClick={() => router.push('/login')}>
             Return to Login
           </Button>
@@ -95,7 +94,6 @@ function ResetPasswordForm() {
             />
             <Button type="submit" className="w-full">Continue</Button>
           </form>
-          <div className="text-xs text-blue-500 mt-2">[DEBUG] searchParams: {searchParams?.toString() || 'null'}<br/>access_token: {access_token || 'null'}</div>
         </CardContent>
       </Card>
     )
@@ -109,7 +107,6 @@ function ResetPasswordForm() {
         </CardHeader>
         <CardContent>
           <p className="text-gray-500">Please wait while we verify your reset link.</p>
-          <div className="text-xs text-blue-500 mt-2">[DEBUG] searchParams: {searchParams?.toString() || 'null'}<br/>access_token: {access_token || 'null'}<br/>email: {emailFromUrl || email || 'null'}</div>
         </CardContent>
       </Card>
     )
@@ -135,7 +132,6 @@ function ResetPasswordForm() {
             {loading ? 'Resetting...' : 'Reset Password'}
           </Button>
         </form>
-        <div className="text-xs text-green-500 mt-2">[DEBUG] searchParams: {searchParams?.toString() || 'null'}<br/>access_token: {access_token || 'null'}<br/>email: {emailFromUrl || email || 'null'}</div>
       </CardContent>
     </Card>
   )
