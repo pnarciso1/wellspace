@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -20,6 +20,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { format } from 'date-fns'
 import type { Database } from 'wellspace/types/supabase'
+import type { Medication } from '@/types/medications'
 
 const medicationSchema = z.object({
   drug_name: z.string().min(1, 'Drug name is required'),
@@ -40,18 +41,37 @@ const medicationSchema = z.object({
 type MedicationFormValues = z.infer<typeof medicationSchema>
 
 interface MedicationFormProps {
-  onSuccess: () => void
+  onSuccess: (medicationData?: any, isEdit?: boolean) => void
   initialData?: Partial<MedicationFormValues>
+  editingMedication?: Medication | null
 }
 
-export function MedicationForm({ onSuccess, initialData }: MedicationFormProps) {
+export function MedicationForm({ onSuccess, initialData, editingMedication }: MedicationFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
   const supabase = createClientComponentClient()
 
-  const form = useForm<MedicationFormValues>({
-    resolver: zodResolver(medicationSchema),
-    defaultValues: {
+  // Prepare initial data for editing
+  const getInitialData = () => {
+    if (editingMedication) {
+      return {
+        drug_name: editingMedication.drug_name || '',
+        indication: editingMedication.indication || '',
+        dosage: editingMedication.dosage || '',
+        frequency: editingMedication.frequency || '',
+        timing: editingMedication.timing || '',
+        start_date: editingMedication.start_date ? format(new Date(editingMedication.start_date), 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd'),
+        stop_date: editingMedication.stop_date ? format(new Date(editingMedication.stop_date), 'yyyy-MM-dd') : '',
+        still_using: editingMedication.still_using ?? true,
+        status: editingMedication.status || 'active',
+        notes: editingMedication.notes || '',
+        as_needed: editingMedication.as_needed ?? false,
+        gastroparesis_specific: editingMedication.gastroparesis_specific ?? false,
+        symptom_target: editingMedication.symptom_target || [],
+        ...initialData
+      }
+    }
+    return {
       drug_name: '',
       indication: '',
       dosage: '',
@@ -67,7 +87,17 @@ export function MedicationForm({ onSuccess, initialData }: MedicationFormProps) 
       symptom_target: [],
       ...initialData
     }
+  }
+
+  const form = useForm<MedicationFormValues>({
+    resolver: zodResolver(medicationSchema),
+    defaultValues: getInitialData()
   })
+
+  // Reset form when editingMedication changes
+  useEffect(() => {
+    form.reset(getInitialData())
+  }, [editingMedication])
 
   const onSubmit = async (data: MedicationFormValues) => {
     try {
@@ -80,8 +110,6 @@ export function MedicationForm({ onSuccess, initialData }: MedicationFormProps) 
       const medicationData: any = {
         ...data,
         start_date: new Date(data.start_date).toISOString(),
-        user_id: user.id,
-        created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       }
       if (data.stop_date && data.stop_date !== '') {
@@ -90,23 +118,44 @@ export function MedicationForm({ onSuccess, initialData }: MedicationFormProps) 
         delete medicationData.stop_date
       }
 
-      const { error } = await supabase
-        .from('medications')
-        .insert([medicationData])
+      if (editingMedication) {
+        // Update existing medication
+        const { error } = await supabase
+          .from('medications')
+          .update(medicationData)
+          .eq('id', editingMedication.id)
 
-      if (error) throw error
+        if (error) throw error
 
-      toast({
-        title: 'Success',
-        description: 'Medication added successfully'
-      })
+        toast({
+          title: 'Success',
+          description: 'Medication updated successfully'
+        })
 
-      onSuccess()
+        onSuccess(medicationData, true)
+      } else {
+        // Create new medication
+        medicationData.user_id = user.id
+        medicationData.created_at = new Date().toISOString()
+
+        const { error } = await supabase
+          .from('medications')
+          .insert([medicationData])
+
+        if (error) throw error
+
+        toast({
+          title: 'Success',
+          description: 'Medication added successfully'
+        })
+
+        onSuccess(medicationData, false)
+      }
     } catch (error: any) {
-      console.error('Error adding medication:', error, error?.message, error?.details)
+      console.error('Error saving medication:', error, error?.message, error?.details)
       toast({
         title: 'Error',
-        description: 'Failed to add medication. Please try again.',
+        description: `Failed to ${editingMedication ? 'update' : 'add'} medication. Please try again.`,
         variant: 'destructive'
       })
     } finally {
@@ -290,7 +339,7 @@ export function MedicationForm({ onSuccess, initialData }: MedicationFormProps) 
         />
 
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? 'Adding...' : 'Add Medication'}
+          {isLoading ? (editingMedication ? 'Updating...' : 'Adding...') : (editingMedication ? 'Update Medication' : 'Add Medication')}
         </Button>
       </form>
     </Form>

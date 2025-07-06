@@ -31,21 +31,13 @@ function ResetPasswordForm() {
   const router = useRouter()
   const { toast } = useToast()
 
-  // DEBUG: Log at every render
-  console.log('[DEBUG] ResetPasswordForm rendered')
-  console.log('[DEBUG] searchParams:', searchParams?.toString())
   const access_token = searchParams?.get('access_token')
   const refresh_token = searchParams?.get('refresh_token')
   const emailFromUrl = searchParams?.get('email')
-  console.log('[DEBUG] access_token:', access_token)
-  console.log('[DEBUG] refresh_token:', refresh_token)
-  console.log('[DEBUG] emailFromUrl:', emailFromUrl)
 
   useEffect(() => {
-    console.log('[DEBUG] useEffect running. access_token:', access_token)
     const effectiveEmail = emailFromUrl || email
     if (!access_token || !effectiveEmail) {
-      console.warn('[DEBUG] No access_token or email in URL/input')
       return
     }
     const doRecovery = async () => {
@@ -55,9 +47,7 @@ function ResetPasswordForm() {
         token: access_token,
         email: effectiveEmail
       })
-      console.log('[DEBUG] verifyOtp result:', { data, error })
       if (error) {
-        console.error('[DEBUG] verifyOtp error:', error)
         toast({
           title: 'Error',
           description: 'Failed to authenticate reset link. Please try again.',

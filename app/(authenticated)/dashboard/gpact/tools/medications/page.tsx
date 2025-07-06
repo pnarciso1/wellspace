@@ -14,15 +14,26 @@ import { useToast } from "@/components/ui/use-toast"
 import Link from 'next/link'
 import type { Medication } from "@/types/medications"
 import type { Database } from 'wellspace/types/supabase'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useEffect } from 'react'
 
 export default function MedicationsPage() {
   const [showForm, setShowForm] = useState(false)
+  const [editingMedication, setEditingMedication] = useState<Medication | null>(null)
   const [medications, setMedications] = useState<Medication[]>([])
   const { toast } = useToast()
+  const [discontinueModalOpen, setDiscontinueModalOpen] = useState(false)
+  const [medicationToDiscontinue, setMedicationToDiscontinue] = useState<Medication | null>(null)
+  const [discontinueReason, setDiscontinueReason] = useState('')
+  const [discontinueLoading, setDiscontinueLoading] = useState(false)
+  const supabase = createClientComponentClient()
 
   const handleEdit = (medication: Medication) => {
-    // Handle edit functionality
-    console.log('Edit medication:', medication)
+    setEditingMedication(medication)
+    setShowForm(true)
   }
 
   const handleMedicationsLoaded = (loadedMedications: Medication[]) => {
@@ -31,6 +42,35 @@ export default function MedicationsPage() {
 
   const handleFormClose = () => {
     setShowForm(false)
+    setEditingMedication(null)
+  }
+
+  const handleFormSuccess = async (medicationData: any, isEdit: boolean = false) => {
+    if (isEdit && editingMedication) {
+      // Log the change event in medication_history
+      try {
+        const { error: historyError } = await supabase
+          .from('medication_history')
+          .insert({
+            medication_id: editingMedication.id,
+            user_id: editingMedication.user_id,
+            event_type: 'change',
+            event_date: new Date().toISOString(),
+            reason: `Medication updated - Previous: ${editingMedication.dosage} ${editingMedication.frequency}`,
+            dosage: medicationData.dosage,
+            frequency: medicationData.frequency,
+            notes: medicationData.notes,
+          })
+
+        if (historyError) {
+          console.error('Error logging medication change:', historyError)
+        }
+      } catch (error) {
+        console.error('Error logging medication change:', error)
+      }
+    }
+    
+    handleFormClose()
   }
 
   const handleExport = async () => {
@@ -65,6 +105,66 @@ export default function MedicationsPage() {
     }
   }
 
+  const handleDiscontinue = (medication: Medication) => {
+    setMedicationToDiscontinue(medication)
+    setDiscontinueModalOpen(true)
+  }
+
+  const handleDiscontinueConfirm = async () => {
+    if (!medicationToDiscontinue) return
+    setDiscontinueLoading(true)
+    try {
+      // Update medication as discontinued
+      const { error: updateError } = await supabase
+        .from('medications')
+        .update({
+          still_using: false,
+          status: 'discontinued',
+          stop_date: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', medicationToDiscontinue.id)
+
+      if (updateError) throw updateError
+
+      // Log event in medication_history
+      const { error: historyError } = await supabase
+        .from('medication_history')
+        .insert({
+          medication_id: medicationToDiscontinue.id,
+          user_id: medicationToDiscontinue.user_id,
+          event_type: 'stop',
+          event_date: new Date().toISOString(),
+          reason: discontinueReason,
+          dosage: medicationToDiscontinue.dosage,
+          frequency: medicationToDiscontinue.frequency,
+          notes: medicationToDiscontinue.notes,
+        })
+
+      if (historyError) throw historyError
+
+      toast({
+        title: 'Medication discontinued',
+        description: 'The medication was discontinued and logged.',
+      })
+      setDiscontinueModalOpen(false)
+      setMedicationToDiscontinue(null)
+      setDiscontinueReason('')
+      // Refresh list
+      // Optionally: refetch medications
+      // We'll trigger handleMedicationsLoaded by updating MedicationList key
+      // Or you can call a fetch function here if needed
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to discontinue medication. Please try again.',
+        variant: 'destructive',
+      })
+    } finally {
+      setDiscontinueLoading(false)
+    }
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
@@ -74,7 +174,10 @@ export default function MedicationsPage() {
             <Icons.Download className="mr-2 h-4 w-4" />
             Export PDF
           </Button>
-          <Button onClick={() => setShowForm(true)}>
+          <Button onClick={() => {
+            setEditingMedication(null)
+            setShowForm(true)
+          }}>
             <Icons.Plus className="mr-2 h-4 w-4" />
             Add Medication
           </Button>
@@ -91,10 +194,13 @@ export default function MedicationsPage() {
         {showForm && (
           <Card>
             <CardHeader>
-              <CardTitle>Add New Medication</CardTitle>
+              <CardTitle>{editingMedication ? 'Edit Medication' : 'Add New Medication'}</CardTitle>
             </CardHeader>
             <CardContent>
-              <MedicationForm onSuccess={handleFormClose} />
+              <MedicationForm 
+                onSuccess={handleFormSuccess}
+                editingMedication={editingMedication}
+              />
               <Button
                 variant="outline"
                 className="mt-4"
@@ -121,6 +227,7 @@ export default function MedicationsPage() {
             <MedicationList 
               onEdit={handleEdit}
               onMedicationsLoaded={handleMedicationsLoaded}
+              onDiscontinue={handleDiscontinue}
             />
           </TabsContent>
           <TabsContent value="timeline">
@@ -128,6 +235,41 @@ export default function MedicationsPage() {
           </TabsContent>
         </Tabs>
       </div>
+      {/* Discontinue Modal */}
+      <Dialog open={discontinueModalOpen} onOpenChange={setDiscontinueModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Discontinue Medication</DialogTitle>
+            <DialogDescription>
+              Please provide a reason for discontinuing this medication. This will be logged in your medication history.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Label htmlFor="discontinue-reason">Reason</Label>
+            <Textarea
+              id="discontinue-reason"
+              value={discontinueReason}
+              onChange={e => setDiscontinueReason(e.target.value)}
+              placeholder="Reason for discontinuation (required)"
+              required
+              minLength={2}
+              rows={3}
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="destructive"
+              onClick={handleDiscontinueConfirm}
+              disabled={discontinueLoading || !discontinueReason.trim()}
+            >
+              {discontinueLoading ? 'Discontinuing...' : 'Discontinue'}
+            </Button>
+            <DialogClose asChild>
+              <Button variant="outline" type="button">Cancel</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 } 

@@ -15,13 +15,20 @@ import { Icons } from '@/lib/icons'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import type { Medication } from '@/types/medications'
 import type { Database } from 'wellspace/types/supabase'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu'
 
 interface MedicationListProps {
   onEdit: (medication: Medication) => void
   onMedicationsLoaded: (medications: Medication[]) => void
+  onDiscontinue?: (medication: Medication) => void
 }
 
-export function MedicationList({ onEdit, onMedicationsLoaded }: MedicationListProps) {
+export function MedicationList({ onEdit, onMedicationsLoaded, onDiscontinue }: MedicationListProps) {
   const [medications, setMedications] = useState<Medication[]>([])
   const [loading, setLoading] = useState(true)
   const supabase = createClientComponentClient()
@@ -95,13 +102,21 @@ export function MedicationList({ onEdit, onMedicationsLoaded }: MedicationListPr
                 </span>
               </TableCell>
               <TableCell>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onEdit(medication)}
-                >
-                  <Icons.Edit className="h-4 w-4" />
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <Icons.Menu className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => onEdit(medication)}>
+                      <Icons.Edit className="mr-2 h-4 w-4" /> Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onDiscontinue && onDiscontinue(medication)}>
+                      <Icons.Trash className="mr-2 h-4 w-4 text-red-500" /> Discontinue
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           ))}
