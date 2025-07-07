@@ -4,7 +4,13 @@ import { format } from 'date-fns'
 import { jsPDF } from 'jspdf'
 import type { Medication } from '@/types/medications'
 
-export async function generateMedicationPDF(medications: Medication[]): Promise<Uint8Array> {
+// Add MedicationHistoryEvent type (fallback to any for now)
+type MedicationHistoryEvent = any
+
+export async function generateMedicationPDF(
+  medications: Medication[],
+  events?: MedicationHistoryEvent[]
+): Promise<Uint8Array> {
   const doc = new jsPDF()
   const pageWidth = doc.internal.pageSize.getWidth()
   const margin = 20
@@ -135,6 +141,69 @@ export async function generateMedicationPDF(medications: Medication[]): Promise<
       }
 
       // Add space between medications
+      y += lineHeight
+    })
+  }
+
+  // Add event timeline section if events are provided
+  if (events && events.length > 0) {
+    if (y > doc.internal.pageSize.getHeight() - margin - 40) {
+      doc.addPage()
+      y = margin
+    }
+    doc.setFontSize(16)
+    doc.text('Medication Event Timeline', margin, y)
+    y += lineHeight * 1.5
+
+    events.forEach(event => {
+      if (y > doc.internal.pageSize.getHeight() - margin - 40) {
+        doc.addPage()
+        y = margin
+      }
+      doc.setFontSize(12)
+      doc.setFont('helvetica', 'bold')
+      doc.text(`${event.event_type?.toUpperCase() || ''}: ${event.drug_name || 'Medication'}`, margin, y)
+      y += lineHeight
+      doc.setFont('helvetica', 'normal')
+      doc.text(`Date: ${event.event_date ? format(new Date(event.event_date), 'MMM d, yyyy') : ''}`, margin, y)
+      y += lineHeight
+      if (event.dosage) {
+        doc.text(`Dosage: ${event.dosage}`, margin, y)
+        y += lineHeight
+      }
+      if (event.frequency) {
+        doc.text(`Frequency: ${event.frequency}`, margin, y)
+        y += lineHeight
+      }
+      if (event.timing) {
+        doc.text(`Timing: ${event.timing}`, margin, y)
+        y += lineHeight
+      }
+      if (event.indication) {
+        doc.text(`Indication: ${event.indication}`, margin, y)
+        y += lineHeight
+      }
+      if (event.reason) {
+        doc.text(`Reason: ${event.reason}`, margin, y)
+        y += lineHeight
+      }
+      if (event.notes) {
+        doc.text(`Notes: ${event.notes}`, margin, y)
+        y += lineHeight
+      }
+      if (event.gastroparesis_specific) {
+        doc.text('Gastroparesis-Specific Medication', margin, y)
+        y += lineHeight
+      }
+      if (event.as_needed) {
+        doc.text('As Needed', margin, y)
+        y += lineHeight
+      }
+      if (event.symptom_target && event.symptom_target.length > 0) {
+        doc.text(`Symptom Target: ${event.symptom_target.join(', ')}`, margin, y)
+        y += lineHeight
+      }
+      // Add space between events
       y += lineHeight
     })
   }

@@ -138,11 +138,32 @@ export function MedicationForm({ onSuccess, initialData, editingMedication }: Me
         medicationData.user_id = user.id
         medicationData.created_at = new Date().toISOString()
 
-        const { error } = await supabase
+        const { data: inserted, error } = await supabase
           .from('medications')
           .insert([medicationData])
+          .select()
 
         if (error) throw error
+
+        // Log 'start' event in medication_history
+        if (inserted && inserted.length > 0) {
+          const med = inserted[0]
+          await supabase.from('medication_history').insert({
+            medication_id: med.id,
+            user_id: med.user_id,
+            event_type: 'start',
+            event_date: med.start_date,
+            dosage: med.dosage,
+            frequency: med.frequency,
+            notes: med.notes,
+            drug_name: med.drug_name,
+            indication: med.indication,
+            timing: med.timing,
+            gastroparesis_specific: med.gastroparesis_specific,
+            as_needed: med.as_needed,
+            symptom_target: med.symptom_target,
+          })
+        }
 
         toast({
           title: 'Success',

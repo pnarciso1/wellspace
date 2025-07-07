@@ -19,6 +19,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useEffect } from 'react'
+import { MedicationEventTimeline } from "@/components/medications/medication-event-timeline"
 
 export default function MedicationsPage() {
   const [showForm, setShowForm] = useState(false)
@@ -30,6 +31,8 @@ export default function MedicationsPage() {
   const [discontinueReason, setDiscontinueReason] = useState('')
   const [discontinueLoading, setDiscontinueLoading] = useState(false)
   const supabase = createClientComponentClient()
+  type MedicationHistoryEvent = any
+  const [events, setEvents] = useState<MedicationHistoryEvent[]>([])
 
   const handleEdit = (medication: Medication) => {
     setEditingMedication(medication)
@@ -39,6 +42,21 @@ export default function MedicationsPage() {
   const handleMedicationsLoaded = (loadedMedications: Medication[]) => {
     setMedications(loadedMedications)
   }
+
+  // Fetch medication events for export and timeline
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { data, error } = await supabase
+        .from('medication_history')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('event_date', { ascending: true })
+      if (!error && data) setEvents(data)
+    }
+    fetchEvents()
+  }, [supabase])
 
   const handleFormClose = () => {
     setShowForm(false)
@@ -60,11 +78,23 @@ export default function MedicationsPage() {
             dosage: medicationData.dosage,
             frequency: medicationData.frequency,
             notes: medicationData.notes,
+            drug_name: editingMedication.drug_name,
+            indication: editingMedication.indication,
+            timing: editingMedication.timing,
+            gastroparesis_specific: editingMedication.gastroparesis_specific,
+            as_needed: editingMedication.as_needed,
+            symptom_target: editingMedication.symptom_target,
           })
-
         if (historyError) {
           console.error('Error logging medication change:', historyError)
         }
+        // Refresh events after change
+        const { data, error } = await supabase
+          .from('medication_history')
+          .select('*')
+          .eq('user_id', editingMedication.user_id)
+          .order('event_date', { ascending: true })
+        if (!error && data) setEvents(data)
       } catch (error) {
         console.error('Error logging medication change:', error)
       }
@@ -75,8 +105,18 @@ export default function MedicationsPage() {
 
   const handleExport = async () => {
     try {
-      const pdfBytes = await generateMedicationPDF(medications)
-      
+      // Fetch latest events before export
+      const { data: { user } } = await supabase.auth.getUser()
+      let exportEvents = events
+      if (user) {
+        const { data, error } = await supabase
+          .from('medication_history')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('event_date', { ascending: true })
+        if (!error && data) exportEvents = data
+      }
+      const pdfBytes = await generateMedicationPDF(medications, exportEvents)
       // Create blob and download
       const blob = new Blob([pdfBytes], { type: 'application/pdf' })
       const url = window.URL.createObjectURL(blob)
@@ -139,6 +179,12 @@ export default function MedicationsPage() {
           dosage: medicationToDiscontinue.dosage,
           frequency: medicationToDiscontinue.frequency,
           notes: medicationToDiscontinue.notes,
+          drug_name: medicationToDiscontinue.drug_name,
+          indication: medicationToDiscontinue.indication,
+          timing: medicationToDiscontinue.timing,
+          gastroparesis_specific: medicationToDiscontinue.gastroparesis_specific,
+          as_needed: medicationToDiscontinue.as_needed,
+          symptom_target: medicationToDiscontinue.symptom_target,
         })
 
       if (historyError) throw historyError
@@ -222,6 +268,10 @@ export default function MedicationsPage() {
               <Icons.FileText className="mr-2 h-4 w-4" />
               Timeline View
             </TabsTrigger>
+            <TabsTrigger value="event-timeline">
+              <Icons.FileText className="mr-2 h-4 w-4" />
+              Event Timeline
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="list">
             <MedicationList 
@@ -232,6 +282,9 @@ export default function MedicationsPage() {
           </TabsContent>
           <TabsContent value="timeline">
             <MedicationTimeline medications={medications} />
+          </TabsContent>
+          <TabsContent value="event-timeline">
+            <MedicationEventTimeline />
           </TabsContent>
         </Tabs>
       </div>

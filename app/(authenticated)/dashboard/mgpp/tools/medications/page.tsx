@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -13,11 +13,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/components/ui/use-toast"
 import Link from 'next/link'
 import type { Medication } from "@/types/medications"
+import { MedicationEventTimeline } from "@/components/medications/medication-event-timeline"
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 export default function MedicationsPage() {
   const [showForm, setShowForm] = useState(false)
   const [medications, setMedications] = useState<Medication[]>([])
   const { toast } = useToast()
+  type MedicationHistoryEvent = any
+  const [events, setEvents] = useState<MedicationHistoryEvent[]>([])
+  const supabase = createClientComponentClient()
+
+  // Fetch medication events for export and timeline
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { data, error } = await supabase
+        .from('medication_history')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('event_date', { ascending: true })
+      if (!error && data) setEvents(data)
+    }
+    fetchEvents()
+  }, [supabase])
 
   const handleEdit = (medication: Medication) => {
     // Handle edit functionality
@@ -34,7 +54,18 @@ export default function MedicationsPage() {
 
   const handleExport = async () => {
     try {
-      const pdfBytes = await generateMedicationPDF(medications)
+      // Fetch latest events before export
+      const { data: { user } } = await supabase.auth.getUser()
+      let exportEvents = events
+      if (user) {
+        const { data, error } = await supabase
+          .from('medication_history')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('event_date', { ascending: true })
+        if (!error && data) exportEvents = data
+      }
+      const pdfBytes = await generateMedicationPDF(medications, exportEvents)
       
       // Create blob and download
       const blob = new Blob([pdfBytes], { type: 'application/pdf' })
@@ -115,6 +146,10 @@ export default function MedicationsPage() {
               <FileText className="mr-2 h-4 w-4" />
               Timeline View
             </TabsTrigger>
+            <TabsTrigger value="event-timeline">
+              <FileText className="mr-2 h-4 w-4" />
+              Event Timeline
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="list">
             <MedicationList 
@@ -124,6 +159,9 @@ export default function MedicationsPage() {
           </TabsContent>
           <TabsContent value="timeline">
             <MedicationTimeline medications={medications} />
+          </TabsContent>
+          <TabsContent value="event-timeline">
+            <MedicationEventTimeline />
           </TabsContent>
         </Tabs>
       </div>
